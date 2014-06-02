@@ -1,0 +1,29 @@
+{
+    "name": "allure-framework/allure-php-api",
+    "keywords":["testing", "report", "steps", "attachments", "cases", "allure", "api"],
+    "description": "PHP API for Allure adapter",
+    "homepage": "http://allure.qatools.ru/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Ivan Krutov",
+            "email": "vania-pooh@yandex-team.ru",
+	        "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "allure@yandex-team.ru",
+        "source": "https://github.com/allure-framework/allure-php-api"
+    },
+    "require": {
+	    "php": ">=5.4.0",
+        "jms/serializer": ">=0.16.0",
+        "rhumsaa/uuid": ">=2.7.0",
+        "moontoast/math": ">=1.1.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Yandex": "src/"
+        }
+    }
+}
