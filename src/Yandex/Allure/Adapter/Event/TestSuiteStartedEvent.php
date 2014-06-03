@@ -35,10 +35,10 @@ class TestSuiteStartedEvent extends AbstractTestSuiteEvent {
     {
         parent::__construct();
         $this->name = $name;
-        $this->labels = array();
+        $this->labels = [];
     }
     
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof TestSuite){
             $context->setName($this->name);
@@ -55,7 +55,7 @@ class TestSuiteStartedEvent extends AbstractTestSuiteEvent {
      * @param string $title
      * @return $this
      */
-    function withTitle($title){
+    public function withTitle($title){
         $this->setTitle($title);
         return $this;
     }
@@ -64,7 +64,7 @@ class TestSuiteStartedEvent extends AbstractTestSuiteEvent {
      * @param Description $description
      * @return $this
      */
-    function withDescription(Description $description){
+    public function withDescription(Description $description){
         $this->setDescription($description);
         return $this;
     }
@@ -73,7 +73,7 @@ class TestSuiteStartedEvent extends AbstractTestSuiteEvent {
      * @param array $labels
      * @return $this
      */
-    function withLabels(array $labels){
+    public function withLabels(array $labels){
         $this->setLabels($labels);
         return $this;
     }
@@ -110,4 +110,36 @@ class TestSuiteStartedEvent extends AbstractTestSuiteEvent {
         $this->title = $title;
     }
 
+    /**
+     * @return \Yandex\Allure\Adapter\Model\Description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+    
 } 

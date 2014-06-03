@@ -10,7 +10,7 @@ use Yandex\Allure\Adapter\Model\Step;
 use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\AllureException;
 
-class RemoveAttachmentEvent implements Event {
+class RemoveAttachmentsEvent implements Event {
 
     private $pattern;
 
@@ -19,16 +19,17 @@ class RemoveAttachmentEvent implements Event {
         $this->pattern = $pattern;
     }
 
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof Step){
-            $attachments = $context->getAttachments();
-            foreach ($attachments as $key => $attachment){
+            foreach ($context->getAttachments() as $index => $attachment){
                 if ($attachment instanceof Attachment){
                     $path = $attachment->getSource();
-                    if (file_exists($path) && is_writable($path)){
-                        unlink($path);
-                        unset($attachments[$key]);
+                    if (preg_match($this->pattern, $path)) {
+                        if (file_exists($path) && is_writable($path)) {
+                            unlink($path);
+                        }
+                        $context->removeAttachment($index);
                     }
                 }
             }

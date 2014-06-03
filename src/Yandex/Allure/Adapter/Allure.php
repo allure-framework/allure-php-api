@@ -3,33 +3,24 @@
 namespace Yandex\Allure\Adapter;
 
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
+use Yandex\Allure\Adapter\Event\ClearStepStorageEvent;
+use Yandex\Allure\Adapter\Event\ClearTestCaseStorageEvent;
 use Yandex\Allure\Adapter\Event\Event;
 use Yandex\Allure\Adapter\Event\StepEvent;
 use Yandex\Allure\Adapter\Event\StepFinishedEvent;
 use Yandex\Allure\Adapter\Event\StepStartedEvent;
 use Yandex\Allure\Adapter\Event\Storage\StepStorage;
-use Yandex\Allure\Adapter\Event\TestCaseFinishedEvent;
-use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\Storage\TestCaseStorage;
-use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Event\Storage\TestSuiteStorage;
 use Yandex\Allure\Adapter\Event\TestCaseEvent;
+use Yandex\Allure\Adapter\Event\TestCaseFinishedEvent;
+use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteEvent;
+use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
 use Yandex\Allure\Adapter\Model\TestSuite;
 use Yandex\Allure\Adapter\Support\Utils;
-
-AnnotationRegistry::registerAutoloadNamespace(
-    'JMS\Serializer\Annotation',
-    __DIR__ . "/../../../../../../../../vendor/jms/serializer/src"
-);
-
-AnnotationRegistry::registerAutoloadNamespace(
-    'Yandex\Allure\Adapter\Annotation',
-    __DIR__ . "/../../../../../src"
-);
 
 class Allure {
     
@@ -70,10 +61,14 @@ class Allure {
             $this->processTestSuiteFinishedEvent($event);
         } else if ($event instanceof TestSuiteEvent){
             $this->processTestSuiteEvent($event);
-        } else if ($event instanceof StepEvent) {
-            $this->processStepEvent($event);
+        } else if ($event instanceof ClearStepStorageEvent){
+            $this->processClearStepStorageEvent();
+        } else if ($event instanceof ClearTestCaseStorageEvent){
+            $this->processClearTestCaseStorageEvent();
         } else if ($event instanceof TestCaseEvent){
             $this->processTestCaseEvent($event);
+        } else if ($event instanceof StepEvent) {
+            $this->processStepEvent($event);
         } else {
             throw new AllureException("Unknown event: " . get_class($event));
         }
@@ -127,7 +122,14 @@ class Allure {
         $testCase = $this->getTestCaseStorage()->get();
         $event->process($testCase);
     }
-    
+
+    private function processTestSuiteEvent(TestSuiteEvent $event)
+    {
+        $uuid = $event->getUuid();
+        $testSuite = $this->getTestSuiteStorage()->get($uuid);
+        $event->process($testSuite);
+    }
+
     private function processTestSuiteFinishedEvent(TestSuiteFinishedEvent $event)
     {
         $suiteUuid = $event->getUuid();
@@ -135,13 +137,6 @@ class Allure {
         $event->process($testSuite);
         $this->getTestSuiteStorage()->remove($suiteUuid);
         $this->saveToFile($testSuite);
-    }
-    
-    private function processTestSuiteEvent(TestSuiteEvent $event)
-    {
-        $uuid = $event->getUuid();
-        $testSuite = $this->getTestSuiteStorage()->get($uuid);
-        $event->process($testSuite);
     }
     
     private function saveToFile(TestSuite $testSuite)
@@ -152,7 +147,16 @@ class Allure {
             $filePath = Provider::getOutputDirectory() . DIRECTORY_SEPARATOR . $fileName;
             file_put_contents($filePath, $xml);
         }
-
+    }
+    
+    private function processClearStepStorageEvent()
+    {
+        $this->getStepStorage()->clear();
+    }
+    
+    private function processClearTestCaseStorageEvent()
+    {
+        $this->getTestCaseStorage()->clear();
     }
     
     /**

@@ -24,7 +24,7 @@ abstract class TestCaseStatusChangedEvent implements TestCaseEvent {
      */
     protected abstract function getStatus();
     
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof TestCase){
             $context->setStatus($this->getStatus());
@@ -37,11 +37,19 @@ abstract class TestCaseStatusChangedEvent implements TestCaseEvent {
         }
     }
 
+    /**
+     * @param string $message
+     * @return $this
+     */
     public function withMessage($message){
         $this->message = $message;
         return $this;
     }
-    
+
+    /**
+     * @param \Exception $exception
+     * @return $this
+     */
     public function withException($exception){
         $this->exception = $exception;
         return $this;

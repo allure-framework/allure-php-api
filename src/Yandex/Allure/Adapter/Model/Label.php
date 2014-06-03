@@ -54,7 +54,7 @@ class Label implements Entity
      */
     public static function feature($featureName)
     {
-        return new Label('feature', $featureName);
+        return new Label(LabelType::FEATURE, $featureName);
     }
 
     /**
@@ -63,7 +63,7 @@ class Label implements Entity
      */
     public static function story($storyName)
     {
-        return new Label("story", $storyName);
+        return new Label(LabelType::STORY, $storyName);
     }
     
     /**
@@ -72,7 +72,7 @@ class Label implements Entity
      */
     public static function severity($severityLevel)
     {
-        return new Label("severity", $severityLevel);
+        return new Label(LabelType::SEVERITY, $severityLevel);
     }
     
     

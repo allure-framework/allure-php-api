@@ -61,8 +61,8 @@ class Step implements Entity
 
     function __construct()
     {
-        $this->steps = array();
-        $this->attachments = array();
+        $this->steps = [];
+        $this->attachments = [];
     }
 
     /**
@@ -175,6 +175,16 @@ class Step implements Entity
     public function addAttachment(Attachment $attachment)
     {
         $this->attachments[] = $attachment;
+    }
+
+    /**
+     * @param $index
+     */
+    public function removeAttachment($index)
+    {
+        if (isset($this->attachments[$index])) {
+            unset($this->attachments[$index]);
+        }
     }
 
 }

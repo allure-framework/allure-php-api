@@ -3,7 +3,18 @@
 namespace Yandex\Allure\Adapter\Annotation;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\IndexedReader;
+
+AnnotationRegistry::registerAutoloadNamespace(
+    'JMS\Serializer\Annotation',
+    __DIR__ . "/../../../../../../../../vendor/jms/serializer/src"
+);
+
+AnnotationRegistry::registerAutoloadNamespace(
+    'Yandex\Allure\Adapter\Annotation',
+    __DIR__ . "/../../../../../src"
+);
 
 class AnnotationProvider
 {

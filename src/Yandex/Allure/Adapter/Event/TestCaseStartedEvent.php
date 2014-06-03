@@ -46,20 +46,23 @@ class TestCaseStartedEvent implements TestCaseEvent {
     {
         $this->suiteUuid = $suiteUuid;
         $this->name = $name;
-        $this->labels = array();
-        $this->parameters = array();
+        $this->labels = [];
+        $this->parameters = [];
     }
     
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof TestCase){
-            $context->setName($this->name);
+            $context->setName($this->getName());
             $context->setStatus(Status::PASSED);
             $context->setStart(self::getTimestamp());
-            $context->setTitle($this->title);
-            $context->setDescription($this->description);
-            foreach ($this->labels as $label){
+            $context->setTitle($this->getTitle());
+            $context->setDescription($this->getDescription());
+            foreach ($this->getLabels() as $label){
                 $context->addLabel($label);
+            }
+            foreach ($this->getParameters() as $parameter){
+                $context->addParameter($parameter);
             }
         }
     }
@@ -68,7 +71,7 @@ class TestCaseStartedEvent implements TestCaseEvent {
      * @param string $title
      * @return $this
      */
-    function withTitle($title){
+    public function withTitle($title){
         $this->setTitle($title);
         return $this;
     }
@@ -77,7 +80,7 @@ class TestCaseStartedEvent implements TestCaseEvent {
      * @param Description $description
      * @return $this
      */
-    function withDescription(Description $description){
+    public function withDescription(Description $description){
         $this->setDescription($description);
         return $this;
     }
@@ -86,7 +89,7 @@ class TestCaseStartedEvent implements TestCaseEvent {
      * @param array $labels
      * @return $this
      */
-    function withLabels(array $labels){
+    public function withLabels(array $labels){
         $this->setLabels($labels);
         return $this;
     }
@@ -95,7 +98,7 @@ class TestCaseStartedEvent implements TestCaseEvent {
      * @param array $parameters
      * @return $this
      */
-    function withParameters(array $parameters){
+    public function withParameters(array $parameters){
         $this->setParameters($parameters);
         return $this;
     }
@@ -138,6 +141,46 @@ class TestCaseStartedEvent implements TestCaseEvent {
     public function setParameters($parameters)
     {
         $this->parameters = $parameters;
+    }
+
+    /**
+     * @return \Yandex\Allure\Adapter\Model\Description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
     
 } 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Model;
+use Yandex\Allure\Adapter\AllureException;
 
 
 /**
@@ -14,7 +15,7 @@ class ConstantChecker
      * exception is thrown otherwise.
      * @param $className
      * @param $value
-     * @throws \Exception
+     * @throws AllureException
      * @return
      */
     public static function validate($className, $value)
@@ -25,7 +26,7 @@ class ConstantChecker
                 return $value;
             }
         }
-        throw new \Exception("Value \"$value\" is not present in class $className. You should use a constant from this class.");
+        throw new AllureException("Value \"$value\" is not present in class $className. You should use a constant from this class.");
     }
 
 }

@@ -32,8 +32,8 @@ class AnnotationManager {
 
     function __construct(array $annotations)
     {
-        $this->labels = array();
-        $this->parameters = array();
+        $this->labels = [];
+        $this->parameters = [];
         $this->processAnnotations($annotations);
     }
     
@@ -58,7 +58,7 @@ class AnnotationManager {
             } else if ($annotation instanceof Severity) {
                 $this->labels[] = Model\Label::severity($annotation->level);
             } else if ($annotation instanceof Parameter) {
-                $this->parameters[] = new Parameter(
+                $this->parameters[] = new Model\Parameter(
                     $annotation->name,
                     $annotation->value,
                     $annotation->kind
@@ -99,7 +99,7 @@ class AnnotationManager {
         }
         
         if ($this->areParametersPresent()){
-            $event->setParameters($this->getLabels());
+            $event->setParameters($this->getParameters());
         }
         
     }
@@ -148,11 +148,11 @@ class AnnotationManager {
     
     public function areLabelsPresent()
     {
-        return empty($this->labels);
+        return !empty($this->labels);
     }
     
     public function areParametersPresent()
     {
-        return empty($this->parameters);
+        return !empty($this->parameters);
     }
 } 

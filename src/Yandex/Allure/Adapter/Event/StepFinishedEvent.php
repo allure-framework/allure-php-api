@@ -10,7 +10,7 @@ class StepFinishedEvent implements StepEvent {
     
     use Utils;
     
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof Step){
             $context->setStop(self::getTimestamp());

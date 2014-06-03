@@ -88,8 +88,8 @@ class TestSuite implements \Serializable, Entity
 
     function __construct()
     {
-        $this->testCases = array();
-        $this->labels = array();
+        $this->testCases = [];
+        $this->labels = [];
     }
 
     /**

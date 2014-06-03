@@ -20,7 +20,7 @@ class AddParameterEvent implements Event {
         $this->kind = $kind;
     }
 
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof TestCase){
             $context->addParameter(new Parameter($this->name, $this->value, $this->kind));

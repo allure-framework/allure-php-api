@@ -10,7 +10,7 @@ class TestCaseFinishedEvent implements TestCaseEvent {
     
     use Utils;
     
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof TestCase){
             $context->setStop(self::getTimestamp());

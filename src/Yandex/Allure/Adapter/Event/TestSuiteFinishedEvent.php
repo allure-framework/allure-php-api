@@ -16,7 +16,7 @@ class TestSuiteFinishedEvent extends AbstractTestSuiteEvent {
         parent::__construct();
     }
 
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof TestSuite){
             $context->setStop(self::getTimestamp());

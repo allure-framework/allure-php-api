@@ -11,6 +11,8 @@ class StepStorage {
 
     use Utils;
     
+    const ROOT_STEP_NAME = 'root-step';
+    
     /**
      * @var SplStack
      */
@@ -50,12 +52,33 @@ class StepStorage {
         $this->storage->push($step);
     }
 
+    public function clear()
+    {
+        $this->storage = new SplStack();
+        $this->put($this->getRootStep());
+    }
+    
+    public function isEmpty()
+    {
+        return ($this->size() === 0) && $this->isRootStep($this->getLast());
+    }
+    
+    public function size()
+    {
+        return $this->storage->count() - 1;
+    }
+    
+    public function isRootStep(Step $step)
+    {
+        return $step->getName() === self::ROOT_STEP_NAME;
+    }
+
     /**
      * @return Step
      */
-    private function getRootStep(){
+    protected function getRootStep(){
         $step = new Step();
-        $step->setName("Root step");
+        $step->setName(self::ROOT_STEP_NAME);
         $step->setTitle("If you're seeing this then there's an error in step processing. Please send feedback to allure@yandex-team.ru. Thank you.");
         $step->setStart(self::getTimestamp());
         $step->setStatus(Status::BROKEN);

@@ -20,7 +20,7 @@ class StepStartedEvent implements StepEvent {
         $this->name = $name;
     }
     
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof Step){
             $context->setName($this->name);
@@ -30,7 +30,7 @@ class StepStartedEvent implements StepEvent {
         }
     }
     
-    function withTitle($title){
+    public function withTitle($title){
         $this->title = $title;
         return $this;
     }

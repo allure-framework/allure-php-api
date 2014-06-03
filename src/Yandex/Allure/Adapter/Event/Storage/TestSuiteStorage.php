@@ -14,7 +14,7 @@ class TestSuiteStorage {
 
     function __construct()
     {
-        $this->storage = array();
+        $this->storage = [];
     }
 
     /**

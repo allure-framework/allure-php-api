@@ -98,10 +98,10 @@ class TestCase implements Entity
 
     function __construct()
     {
-        $this->steps = array();
-        $this->labels = array();
-        $this->attachments = array();
-        $this->parameters = array();
+        $this->steps = [];
+        $this->labels = [];
+        $this->attachments = [];
+        $this->parameters = [];
     }
 
     /**

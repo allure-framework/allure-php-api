@@ -8,7 +8,7 @@ use Yandex\Allure\Adapter\Model\Step;
 
 class StepFailedEvent implements StepEvent {
     
-    function process(Entity $context)
+    public function process(Entity $context)
     {
         if ($context instanceof Step){
             $context->setStatus(Status::FAILED);

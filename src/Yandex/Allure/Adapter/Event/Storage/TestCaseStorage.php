@@ -28,4 +28,13 @@ class TestCaseStorage {
         $this->case = $case;
     }
     
+    public function clear()
+    {
+        unset($this->case);
+    }
+    
+    public function isEmpty()
+    {
+        return !isset($this->case);
+    }
 } 
