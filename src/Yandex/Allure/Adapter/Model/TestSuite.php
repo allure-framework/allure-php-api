@@ -199,22 +199,6 @@ class TestSuite implements \Serializable, Entity
     }
 
     /**
-     * @param \Yandex\Allure\Adapter\Model\TestCase $currentTestCase
-     */
-    public function setCurrentTestCase($currentTestCase)
-    {
-        $this->currentTestCase = $currentTestCase;
-    }
-
-    /**
-     * @return \Yandex\Allure\Adapter\Model\TestCase
-     */
-    public function getCurrentTestCase()
-    {
-        return $this->currentTestCase;
-    }
-
-    /**
      * Return total count of child elements (test cases or test suites)
      * @return int
      */

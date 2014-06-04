@@ -8,7 +8,10 @@ use Doctrine\Common\Annotations\IndexedReader;
 
 AnnotationRegistry::registerAutoloadNamespace(
     'JMS\Serializer\Annotation',
-    __DIR__ . "/../../../../../../../../vendor/jms/serializer/src"
+    array(
+        __DIR__ . "/../../../../../../../../vendor/jms/serializer/src",
+        __DIR__ . "/../../../../vendor/jms/serializer/src"
+    )
 );
 
 AnnotationRegistry::registerAutoloadNamespace(

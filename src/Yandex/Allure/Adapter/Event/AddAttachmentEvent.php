@@ -2,15 +2,14 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
-use Yandex\Allure\Adapter\Event\Event;
+use Yandex\Allure\Adapter\AllureException;
 use Yandex\Allure\Adapter\Model\Attachment;
+use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Model\Entity;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
-use Yandex\Allure\Adapter\Model\AttachmentType;
-use Yandex\Allure\Adapter\AllureException;
 
-class AddAttachmentEvent implements Event {
+class AddAttachmentEvent implements StepEvent {
 
     private $filePathOrContents;
     
@@ -68,4 +67,28 @@ class AddAttachmentEvent implements Event {
         return Provider::getOutputDirectory() . DIRECTORY_SEPARATOR . $this->getOutputFileName($sha1, $type);
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCaption()
+    {
+        return $this->caption;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFilePathOrContents()
+    {
+        return $this->filePathOrContents;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+    
 } 

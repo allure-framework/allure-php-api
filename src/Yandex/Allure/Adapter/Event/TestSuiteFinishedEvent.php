@@ -6,14 +6,18 @@ use Yandex\Allure\Adapter\Model\Entity;
 use Yandex\Allure\Adapter\Model\TestSuite;
 use Yandex\Allure\Adapter\Support\Utils;
 
-class TestSuiteFinishedEvent extends AbstractTestSuiteEvent {
+class TestSuiteFinishedEvent implements TestSuiteEvent {
     
     use Utils;
 
+    /**
+     * @var string
+     */
+    private $uuid;
 
-    function __construct()
+    function __construct($uuid)
     {
-        parent::__construct();
+        $this->uuid = $uuid;
     }
 
     public function process(Entity $context)
@@ -21,6 +25,11 @@ class TestSuiteFinishedEvent extends AbstractTestSuiteEvent {
         if ($context instanceof TestSuite){
             $context->setStop(self::getTimestamp());
         }
+    }
+
+    function getUuid()
+    {
+        return $this->uuid;
     }
 
 } 

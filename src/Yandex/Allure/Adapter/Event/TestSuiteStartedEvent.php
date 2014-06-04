@@ -7,7 +7,7 @@ use Yandex\Allure\Adapter\Model\Entity;
 use Yandex\Allure\Adapter\Model\TestSuite;
 use Yandex\Allure\Adapter\Support\Utils;
 
-class TestSuiteStartedEvent extends AbstractTestSuiteEvent {
+class TestSuiteStartedEvent implements TestSuiteEvent {
     
     use Utils;
 
@@ -33,7 +33,6 @@ class TestSuiteStartedEvent extends AbstractTestSuiteEvent {
 
     function __construct($name)
     {
-        parent::__construct();
         $this->name = $name;
         $this->labels = [];
     }
@@ -141,5 +140,10 @@ class TestSuiteStartedEvent extends AbstractTestSuiteEvent {
     {
         return $this->title;
     }
-    
+
+    function getUuid()
+    {
+        return self::generateUUID();
+    }
+
 } 

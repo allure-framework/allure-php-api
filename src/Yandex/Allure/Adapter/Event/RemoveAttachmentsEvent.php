@@ -2,15 +2,11 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
-use Yandex\Allure\Adapter\Event\Event;
 use Yandex\Allure\Adapter\Model\Attachment;
 use Yandex\Allure\Adapter\Model\Entity;
-use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
-use Yandex\Allure\Adapter\Model\AttachmentType;
-use Yandex\Allure\Adapter\AllureException;
 
-class RemoveAttachmentsEvent implements Event {
+class RemoveAttachmentsEvent implements StepEvent {
 
     private $pattern;
 

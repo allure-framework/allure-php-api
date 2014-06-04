@@ -25,28 +25,49 @@ use Yandex\Allure\Adapter\Support\Utils;
 class Allure {
     
     use Utils;
-    
+
+    /**
+     * @var Allure
+     */
     private static $lifecycle;
 
     private $stepStorage;
     private $testCaseStorage;
     private $testSuiteStorage;
 
-    private function __construct()
+    /**
+     * @var Event
+     */
+    private $lastEvent;
+
+    protected function __construct()
     {
         $this->stepStorage = new StepStorage();
         $this->testCaseStorage = new TestCaseStorage();
         $this->testSuiteStorage = new TestSuiteStorage();
     }
 
+    /**
+     * @return Allure
+     */
     public static function lifecycle()
     {
         if (!isset(self::$lifecycle)){
-            self::$lifecycle = new Allure();
+            self::setDefaultLifecycle();
         }
         return self::$lifecycle;
     }
 
+    public static function setLifecycle(Allure $lifecycle)
+    {
+        self::$lifecycle = $lifecycle;
+    }
+    
+    public static function setDefaultLifecycle()
+    {
+        self::$lifecycle = new Allure();
+    }
+    
     public function fire(Event $event)
     {
         if ($event instanceof StepStartedEvent){
@@ -72,31 +93,32 @@ class Allure {
         } else {
             throw new AllureException("Unknown event: " . get_class($event));
         }
+        $this->lastEvent = $event;
     }
 
-    private function processStepStartedEvent(StepStartedEvent $event)
+    protected function processStepStartedEvent(StepStartedEvent $event)
     {
         $step = new Step();
         $event->process($step);
         $this->getStepStorage()->put($step);
     }
     
-    private function processStepFinishedEvent(StepFinishedEvent $event)
+    protected function processStepFinishedEvent(StepFinishedEvent $event)
     {
         $step = $this->getStepStorage()->pollLast();
         $event->process($step);
         $this->getStepStorage()->getLast()->addStep($step);
     }
     
-    private function processStepEvent(StepEvent $event)
+    protected function processStepEvent(StepEvent $event)
     {
         $step = $this->getStepStorage()->getLast();
         $event->process($step);
     }
     
-    private function processTestCaseStartedEvent(TestCaseStartedEvent $event)
+    protected function processTestCaseStartedEvent(TestCaseStartedEvent $event)
     {
-        //init root step in parent thread if needed
+        //init root step if needed
         $this->getStepStorage()->getLast();
         
         $testCase = $this->getTestCaseStorage()->get();
@@ -104,57 +126,57 @@ class Allure {
         $this->getTestSuiteStorage()->get($event->getSuiteUuid())->addTestCase($testCase);
     }
 
-    private function processTestCaseFinishedEvent(TestCaseFinishedEvent $event)
+    protected function processTestCaseFinishedEvent(TestCaseFinishedEvent $event)
     {
         $testCase = $this->getTestCaseStorage()->get();
         $event->process($testCase);
-        $root = $this->getStepStorage()->pollLast();
-        foreach ($root->getSteps() as $step){
+        $rootStep = $this->getStepStorage()->pollLast();
+        foreach ($rootStep->getSteps() as $step){
             $testCase->addStep($step);
         }
-        foreach ($root->getAttachments() as $attachment){
+        foreach ($rootStep->getAttachments() as $attachment){
             $testCase->addAttachment($attachment);
         }
     }
     
-    private function processTestCaseEvent(TestCaseEvent $event)
+    protected function processTestCaseEvent(TestCaseEvent $event)
     {
         $testCase = $this->getTestCaseStorage()->get();
         $event->process($testCase);
     }
 
-    private function processTestSuiteEvent(TestSuiteEvent $event)
+    protected function processTestSuiteEvent(TestSuiteEvent $event)
     {
         $uuid = $event->getUuid();
         $testSuite = $this->getTestSuiteStorage()->get($uuid);
         $event->process($testSuite);
     }
 
-    private function processTestSuiteFinishedEvent(TestSuiteFinishedEvent $event)
+    protected function processTestSuiteFinishedEvent(TestSuiteFinishedEvent $event)
     {
         $suiteUuid = $event->getUuid();
         $testSuite = $this->getTestSuiteStorage()->get($suiteUuid);
         $event->process($testSuite);
         $this->getTestSuiteStorage()->remove($suiteUuid);
-        $this->saveToFile($testSuite);
+        $this->saveToFile($suiteUuid, $testSuite);
     }
     
-    private function saveToFile(TestSuite $testSuite)
+    protected function saveToFile($testSuiteUuid, TestSuite $testSuite)
     {
         if ($testSuite->size() > 0) {
             $xml = $testSuite->serialize();
-            $fileName = self::generateUUID() . '-testsuite.xml';
+            $fileName = $testSuiteUuid . '-testsuite.xml';
             $filePath = Provider::getOutputDirectory() . DIRECTORY_SEPARATOR . $fileName;
             file_put_contents($filePath, $xml);
         }
     }
     
-    private function processClearStepStorageEvent()
+    protected function processClearStepStorageEvent()
     {
         $this->getStepStorage()->clear();
     }
     
-    private function processClearTestCaseStorageEvent()
+    protected function processClearTestCaseStorageEvent()
     {
         $this->getTestCaseStorage()->clear();
     }
@@ -182,6 +204,13 @@ class Allure {
     {
         return $this->testSuiteStorage;
     }
-    
+
+    /**
+     * @return \Yandex\Allure\Adapter\Event\Event
+     */
+    public function getLastEvent()
+    {
+        return $this->lastEvent;
+    }
     
 }

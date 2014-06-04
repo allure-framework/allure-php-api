@@ -14,7 +14,7 @@ class TestSuiteStorage {
 
     function __construct()
     {
-        $this->storage = [];
+        $this->clear();
     }
 
     /**
@@ -32,6 +32,21 @@ class TestSuiteStorage {
         if (array_key_exists($uuid, $this->storage)){
             unset($this->storage[$uuid]);
         }
+    }
+    
+    public function clear()
+    {
+        $this->storage = [];
+    }
+    
+    public function isEmpty()
+    {
+        return $this->size() === 0;
+    }
+    
+    public function size()
+    {
+        return sizeof($this->storage);
     }
 
 } 

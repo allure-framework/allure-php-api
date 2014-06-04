@@ -7,7 +7,7 @@ use Yandex\Allure\Adapter\Model\Parameter;
 use Yandex\Allure\Adapter\Model\ParameterKind;
 use Yandex\Allure\Adapter\Model\TestCase;
 
-class AddParameterEvent implements Event {
+class AddParameterEvent implements TestCaseEvent {
 
     private $name;
     private $value;
