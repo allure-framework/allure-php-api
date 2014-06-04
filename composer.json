@@ -1,6 +1,6 @@
 {
     "name": "allure-framework/allure-php-api",
-    "keywords":["testing", "report", "steps", "attachments", "cases", "allure", "api"],
+    "keywords":["php", "report", "allure", "api"],
     "description": "PHP API for Allure adapter",
     "homepage": "http://allure.qatools.ru/",
     "license": "Apache-2.0",
