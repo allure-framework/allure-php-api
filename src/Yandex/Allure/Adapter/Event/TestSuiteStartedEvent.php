@@ -40,11 +40,14 @@ class TestSuiteStartedEvent implements TestSuiteEvent {
     public function process(Entity $context)
     {
         if ($context instanceof TestSuite){
-            $context->setName($this->name);
+            $context->setName($this->getName());
             $context->setStart(self::getTimestamp());
-            $context->setTitle($this->title);
-            $context->setDescription($this->description);
-            foreach ($this->labels as $label){
+            $context->setTitle($this->getTitle());
+            $description = $this->getDescription();
+            if (isset($description)){
+                $context->setDescription($this->getDescription());
+            }
+            foreach ($this->getLabels() as $label){
                 $context->addLabel($label);
             }
         }

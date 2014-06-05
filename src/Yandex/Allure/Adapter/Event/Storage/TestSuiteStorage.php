@@ -18,7 +18,7 @@ class TestSuiteStorage {
     }
 
     /**
-     * @param $uuid
+     * @param string $uuid
      * @return TestSuite
      */
     public function get($uuid){

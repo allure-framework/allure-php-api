@@ -45,7 +45,7 @@ class AddAttachmentEvent implements StepEvent {
             if (!file_exists($outputPath) && !copy($filePathOrContents, $outputPath)) {
                 throw new AllureException("Failed to copy attachment from $filePathOrContents to $outputPath.");
             }
-            return $this->getOutputPath($fileSha1, $type);
+            return $this->getOutputFileName($fileSha1, $type);
         } else {
             //Trying to attach string content outputted by method
             $contentsSha1 = sha1($filePathOrContents);
@@ -53,7 +53,7 @@ class AddAttachmentEvent implements StepEvent {
             if (!file_exists($outputPath) && !file_put_contents($outputPath, $filePathOrContents)) {
                 throw new AllureException("Failed to save file data to $outputPath.");
             }
-            return $this->getOutputPath($contentsSha1, $type);
+            return $this->getOutputFileName($contentsSha1, $type);
         }
     }
 
