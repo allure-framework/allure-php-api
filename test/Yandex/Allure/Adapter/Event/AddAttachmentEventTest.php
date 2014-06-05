@@ -26,8 +26,9 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase {
         $step = new Step();
         $event->process($step);
         
-        $attachmentFileName = $event->getOutputPath($sha1_sum, $attachmentType);
-        $this->checkAttachmentIsCorrect($step, $attachmentFileName, $attachmentCaption, $attachmentType, true);
+        $attachmentFileName = $event->getOutputFileName($sha1_sum, $attachmentType);
+        $attachmentOutputPath = $event->getOutputPath($sha1_sum, $attachmentType);
+        $this->checkAttachmentIsCorrect($step, $attachmentOutputPath, $attachmentFileName, $attachmentCaption, $attachmentType, true);
     }
     
     public function testEventWithStringContents()
@@ -43,8 +44,9 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase {
         $step = new Step();
         $event->process($step);
 
-        $attachmentFileName = $event->getOutputPath($sha1_sum, $attachmentType);
-        $this->checkAttachmentIsCorrect($step, $attachmentFileName, $attachmentCaption, $attachmentType, true);
+        $attachmentFileName = $event->getOutputFileName($sha1_sum, $attachmentType);
+        $attachmentOutputPath = $event->getOutputPath($sha1_sum, $attachmentType);
+        $this->checkAttachmentIsCorrect($step, $attachmentOutputPath, $attachmentFileName, $attachmentCaption, $attachmentType, true);
     }
     
     public function testEventWithUrl()
@@ -57,13 +59,13 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase {
         $step = new Step();
         $event->process($step);
 
-        $this->checkAttachmentIsCorrect($step, $attachmentUrl, $attachmentCaption, $attachmentType);
+        $this->checkAttachmentIsCorrect($step, '', $attachmentUrl, $attachmentCaption, $attachmentType);
     }
     
-    private function checkAttachmentIsCorrect(Step $step, $attachmentFileName, $attachmentCaption, $attachmentType, $checkIfFileExists = false)
+    private function checkAttachmentIsCorrect(Step $step, $attachmentOutputPath, $attachmentFileName, $attachmentCaption, $attachmentType, $checkIfFileExists = false)
     {
         if ($checkIfFileExists){
-            $this->assertTrue(file_exists($attachmentFileName));
+            $this->assertTrue(file_exists($attachmentOutputPath));
         }
         $attachments = $step->getAttachments();
         $this->assertEquals(1, sizeof($attachments));

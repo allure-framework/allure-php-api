@@ -57,7 +57,10 @@ class TestCaseStartedEvent implements TestCaseEvent {
             $context->setStatus(Status::PASSED);
             $context->setStart(self::getTimestamp());
             $context->setTitle($this->getTitle());
-            $context->setDescription($this->getDescription());
+            $description = $this->getDescription();
+            if (isset($description)) {
+                $context->setDescription($description);
+            }
             foreach ($this->getLabels() as $label){
                 $context->addLabel($label);
             }
