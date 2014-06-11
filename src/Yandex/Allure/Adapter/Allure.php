@@ -137,6 +137,7 @@ class Allure {
         foreach ($rootStep->getAttachments() as $attachment){
             $testCase->addAttachment($attachment);
         }
+        $this->getTestCaseStorage()->clear();
     }
     
     protected function processTestCaseEvent(TestCaseEvent $event)
