@@ -98,11 +98,11 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         $attachment = new Attachment(self::STEP_ATTACHMENT_TITLE, self::STEP_ATTACHMENT_SOURCE, self::STEP_ATTACHMENT_TYPE);
         Allure::lifecycle()->getStepStorage()->getLast()->addStep($step);
         Allure::lifecycle()->getStepStorage()->getLast()->addAttachment($attachment);
-        
-        Allure::lifecycle()->fire(new TestCaseFinishedEvent());
 
         $testCaseFromStorage = Allure::lifecycle()->getTestCaseStorage()->get();
         
+        Allure::lifecycle()->fire(new TestCaseFinishedEvent());
+
         //Checking that attachments were moved
         $attachments = $testCaseFromStorage->getAttachments();
         $this->assertEquals(1, sizeof($attachments));
@@ -122,6 +122,7 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
             ($stepFromStorage instanceof Step) &&
             ($stepFromStorage->getName() === self::STEP_NAME)
         );
+        $this->assertTrue(Allure::lifecycle()->getTestCaseStorage()->isEmpty());
     }
 
     public function testGenericTestCaseEvent()
