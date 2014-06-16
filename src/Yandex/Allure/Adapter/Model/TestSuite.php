@@ -24,6 +24,8 @@ use JMS\Serializer\Annotation\XmlRoot;
 class TestSuite implements \Serializable, Entity
 {
 
+    const DEFAULT_VERSION = '1.4.0';
+
     /**
      * @var int
      * @Type("integer")
@@ -37,6 +39,13 @@ class TestSuite implements \Serializable, Entity
      * @XmlAttribute
      */
     private $stop;
+
+    /**
+     * @var string
+     * @Type("string")
+     * @XmlAttribute
+     */
+    private $version;
 
     /**
      * @var string
@@ -90,6 +99,7 @@ class TestSuite implements \Serializable, Entity
     {
         $this->testCases = [];
         $this->labels = [];
+        $this->version = self::DEFAULT_VERSION;
     }
 
     /**
@@ -133,6 +143,14 @@ class TestSuite implements \Serializable, Entity
     }
 
     /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
      * @return int
      */
     public function getTitle()
@@ -170,6 +188,14 @@ class TestSuite implements \Serializable, Entity
     public function setStop($stop)
     {
         $this->stop = $stop;
+    }
+
+    /**
+     * @param string $version
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
     }
 
     /**
