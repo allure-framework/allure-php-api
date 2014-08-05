@@ -29,7 +29,7 @@ class Parameter implements Entity
      */
     private $kind;
 
-    function __construct($name, $value, $kind)
+    function __construct($name, $value, $kind = ParameterKind::SYSTEM_PROPERTY)
     {
         $this->kind = ConstantChecker::validate('Yandex\Allure\Adapter\Model\ParameterKind', $kind);
         $this->name = $name;

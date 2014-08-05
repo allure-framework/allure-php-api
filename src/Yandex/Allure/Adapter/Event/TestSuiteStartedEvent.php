@@ -31,6 +31,11 @@ class TestSuiteStartedEvent implements TestSuiteEvent {
      */
     private $labels;
 
+    /**
+     * @var string
+     */
+    private $uuid;
+
     function __construct($name)
     {
         $this->name = $name;
@@ -144,9 +149,12 @@ class TestSuiteStartedEvent implements TestSuiteEvent {
         return $this->title;
     }
 
-    function getUuid()
+    public function getUuid()
     {
-        return self::generateUUID();
+        if (!isset($this->uuid)){
+            $this->uuid = self::generateUUID();
+        }
+        return $this->uuid;
     }
 
 } 
