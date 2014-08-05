@@ -46,13 +46,6 @@ class TestCase implements Entity
     /**
      * @var string
      * @Type("string")
-     * @XmlAttribute
-     */
-    private $severity = SeverityLevel::NORMAL;
-
-    /**
-     * @var string
-     * @Type("string")
      * @XmlElement(cdata=false)
      */
     private $title;
@@ -169,14 +162,6 @@ class TestCase implements Entity
     }
 
     /**
-     * @return string
-     */
-    public function getSeverity()
-    {
-        return $this->severity;
-    }
-
-    /**
      * @return \Yandex\Allure\Adapter\Model\Description
      */
     public function getDescription()
@@ -214,14 +199,6 @@ class TestCase implements Entity
     public function setStart($start)
     {
         $this->start = $start;
-    }
-
-    /**
-     * @param string $severity
-     */
-    public function setSeverity($severity)
-    {
-        $this->severity = ConstantChecker::validate('Yandex\Allure\Adapter\Model\SeverityLevel', $severity);
     }
 
     /**

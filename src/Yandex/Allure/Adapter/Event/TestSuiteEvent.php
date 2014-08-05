@@ -7,6 +7,6 @@ interface TestSuiteEvent extends Event {
     /**
      * @return string
      */
-    function getUuid();
+    public function getUuid();
     
 }

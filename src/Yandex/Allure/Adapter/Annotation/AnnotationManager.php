@@ -6,6 +6,7 @@ use Doctrine\Common\Annotations\Annotation;
 use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
+use Yandex\Allure\Adapter\Model\ConstantChecker;
 
 class AnnotationManager {
 
@@ -56,7 +57,7 @@ class AnnotationManager {
                     $this->labels[] = Model\Label::story($storyName);
                 }
             } else if ($annotation instanceof Severity) {
-                $this->labels[] = Model\Label::severity($annotation->level);
+                $this->labels[] = Model\Label::severity(ConstantChecker::validate('Yandex\Allure\Adapter\Model\SeverityLevel', $annotation->level));
             } else if ($annotation instanceof Parameter) {
                 $this->parameters[] = new Model\Parameter(
                     $annotation->name,
