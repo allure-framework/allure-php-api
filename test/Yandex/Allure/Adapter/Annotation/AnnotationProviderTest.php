@@ -2,65 +2,46 @@
 
 namespace Yandex\Allure\Adapter\Annotation;
 
-use Doctrine\Common\Annotations\Annotation\Required;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
-const TYPE_CLASS = 'class';
-const TYPE_METHOD = 'method';
-const ANNOTATION_NAME = 'TestAnnotation';
-const METHOD_NAME = 'methodWithAnnotations';
+class AnnotationProviderTest extends \PHPUnit_Framework_TestCase
+{
+    const TYPE_CLASS = 'class';
+    const TYPE_METHOD = 'method';
+    const ANNOTATION_NAME = 'TestAnnotation';
+    const METHOD_NAME = 'methodWithAnnotations';
 
-class AnnotationProviderTest extends \PHPUnit_Framework_TestCase {
-    
+    public static function setUpBeforeClass()
+    {
+        AnnotationRegistry::registerFile(__DIR__ . '/Fixtures/TestAnnotation.php');
+    }
+
     public function testGetClassAnnotations()
     {
-        $instance = new ClassWithAnnotations();
+        //new TestAnnotation();
+        $instance = new Fixtures\ClassWithAnnotations();
         $annotations = AnnotationProvider::getClassAnnotations($instance);
         $this->assertTrue(sizeof($annotations) === 1);
         $annotation = array_pop($annotations);
-        $this->assertTrue($annotation instanceof TestAnnotation);
-        $this->assertEquals(TYPE_CLASS, $annotation->value);
+        $this->assertInstanceOf('Yandex\Allure\Adapter\Annotation\Fixtures\TestAnnotation', $annotation);
+        $this->assertEquals(self::TYPE_CLASS, $annotation->value);
     }
-    
+
     public function testGetMethodAnnotations()
     {
-        $instance = new ClassWithAnnotations();
-        $annotations = AnnotationProvider::getMethodAnnotations($instance, METHOD_NAME);
+        $instance = new Fixtures\ClassWithAnnotations();
+        $annotations = AnnotationProvider::getMethodAnnotations($instance, self::METHOD_NAME);
         $this->assertTrue(sizeof($annotations) === 1);
         $annotation = array_pop($annotations);
-        $this->assertTrue($annotation instanceof TestAnnotation);
-        $this->assertEquals(TYPE_METHOD, $annotation->value);
+        $this->assertInstanceOf('Yandex\Allure\Adapter\Annotation\Fixtures\TestAnnotation', $annotation);
+        $this->assertEquals(self::TYPE_METHOD, $annotation->value);
     }
 
     public function testIgnoreAnnotations()
     {
-        $instance = new ClassWithAnnotations();
-        AnnotationProvider::addIgnoredAnnotations([ANNOTATION_NAME]);
+        $instance = new Fixtures\ClassWithAnnotations();
+        AnnotationProvider::addIgnoredAnnotations([self::ANNOTATION_NAME]);
         $this->assertEmpty(AnnotationProvider::getClassAnnotations($instance));
-        $this->assertEmpty(AnnotationProvider::getMethodAnnotations($instance, METHOD_NAME));
+        $this->assertEmpty(AnnotationProvider::getMethodAnnotations($instance, self::METHOD_NAME));
     }
-
-}
-
-/**
- * @TestAnnotation("class")
- */
-class ClassWithAnnotations {
-    
-    /**
-     * @TestAnnotation("method")
-     */
-    public function methodWithAnnotations(){}
-}
-
-/**
- * @Annotation
- * @Target({"CLASS", "METHOD"})
- */
-class TestAnnotation
-{
-    /**
-     * @var string
-     * @Required
-     */
-    public $value;
 }

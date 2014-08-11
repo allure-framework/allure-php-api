@@ -7,20 +7,19 @@ use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model\DescriptionType;
 use Yandex\Allure\Adapter\Model\ParameterKind;
 use Yandex\Allure\Adapter\Model\SeverityLevel;
-use Yandex\Allure\Adapter\Model;
 use Yandex\Allure\Adapter\Model\Label;
 use Yandex\Allure\Adapter\Model\LabelType;
 
-class AnnotationManagerTest extends \PHPUnit_Framework_TestCase{
-    
+class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
+{
     public function testUpdateTestSuiteStartedEvent()
     {
-        $instance = new ExampleTestSuite();
+        $instance = new Fixtures\ExampleTestSuite();
         $testSuiteAnnotations = AnnotationProvider::getClassAnnotations($instance);
         $annotationManager = new AnnotationManager($testSuiteAnnotations);
         $event = new TestSuiteStartedEvent('some-name');
         $annotationManager->updateTestSuiteEvent($event);
-        
+
         $this->assertEquals('test-suite-title', $event->getTitle());
         $this->assertEquals('test-suite-description', $event->getDescription()->getValue());
         $this->assertEquals(DescriptionType::MARKDOWN, $event->getDescription()->getType());
@@ -30,8 +29,9 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase{
         $features = $this->getLabelsByType($event->getLabels(), LabelType::FEATURE);
         $this->assertEquals(2, sizeof($features));
         $index = 1;
-        foreach ($features as $feature){
-            $this->assertTrue( ($feature instanceof Label) && ($feature->getValue() === "test-suite-feature$index") );
+        foreach ($features as $feature) {
+            $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $feature);
+            $this->assertEquals("test-suite-feature$index", $feature->getValue());
             $index++;
         }
 
@@ -39,15 +39,16 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase{
         $stories = $this->getLabelsByType($event->getLabels(), LabelType::STORY);
         $this->assertEquals(2, sizeof($stories));
         $index = 1;
-        foreach ($stories as $story){
-            $this->assertTrue( ($story instanceof Label) && ($story->getValue() === "test-suite-story$index") );
+        foreach ($stories as $story) {
+            $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $story);
+            $this->assertEquals("test-suite-story$index", $story->getValue());
             $index++;
         }
     }
 
     public function testUpdateTestCaseStartedEvent()
     {
-        $instance = new ExampleTestSuite();
+        $instance = new Fixtures\ExampleTestSuite();
         $testCaseAnnotations = AnnotationProvider::getMethodAnnotations($instance, 'exampleTestCase');
         $annotationManager = new AnnotationManager($testCaseAnnotations);
         $event = new TestCaseStartedEvent('some-uid', 'some-name');
@@ -63,8 +64,9 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase{
         $features = $this->getLabelsByType($event->getLabels(), LabelType::FEATURE);
         $this->assertEquals(2, sizeof($features));
         $index = 1;
-        foreach ($features as $feature){
-            $this->assertTrue( ($feature instanceof Label) && ($feature->getValue() === "test-case-feature$index") );
+        foreach ($features as $feature) {
+            $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $feature);
+            $this->assertEquals("test-case-feature$index", $feature->getValue());
             $index++;
         }
 
@@ -72,8 +74,9 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase{
         $stories = $this->getLabelsByType($event->getLabels(), LabelType::STORY);
         $this->assertEquals(2, sizeof($stories));
         $index = 1;
-        foreach ($stories as $story){
-            $this->assertTrue( ($story instanceof Label) && ($story->getValue() === "test-case-story$index") );
+        foreach ($stories as $story) {
+            $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $story);
+            $this->assertEquals("test-case-story$index", $story->getValue());
             $index++;
         }
 
@@ -81,19 +84,18 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase{
         $severities = $this->getLabelsByType($event->getLabels(), LabelType::SEVERITY);
         $this->assertEquals(1, sizeof($severities));
         $severity = array_pop($severities);
-        $this->assertTrue( ($severity instanceof Label) && ($severity->getValue() === SeverityLevel::BLOCKER) );
-        
+        $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $severity);
+        $this->assertSame(SeverityLevel::BLOCKER, $severity->getValue());
+
         //Check parameter presence
         $parameters = $event->getParameters();
         $this->assertEquals(1, sizeof($parameters));
         $parameter = array_pop($parameters);
-        $this->assertTrue(
-            ($parameter instanceof Model\Parameter) &&
-            ($parameter->getName() === 'test-case-parameter-name') &&
-            ($parameter->getValue() === 'test-case-parameter-value') &&
-            ($parameter->getKind() === ParameterKind::ARGUMENT)
-        );
-        
+
+        $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Parameter', $parameter);
+        $this->assertSame('test-case-param-name', $parameter->getName());
+        $this->assertSame('test-case-param-value', $parameter->getValue());
+        $this->assertSame(ParameterKind::ARGUMENT, $parameter->getKind());
     }
 
     /**
@@ -103,38 +105,23 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase{
      */
     private function getLabelsByType(array $labels, $labelType)
     {
-        $filteredArray =  array_filter($labels, function($element) use ($labelType) {
-            return ($element instanceof Label) && ($element->getName() === $labelType);
-        });
-        uasort($filteredArray, function(Label $l1, Label $l2){
-            $label1Value = $l1->getValue();
-            $label2Value = $l2->getValue();
-            if ($label1Value === $label2Value) {
-                return 0;
+        $filteredArray =  array_filter(
+            $labels,
+            function ($element) use ($labelType) {
+                return ($element instanceof Label) && ($element->getName() === $labelType);
             }
-            return ($label1Value < $label2Value) ? -1 : 1;
-        });
+        );
+        uasort(
+            $filteredArray,
+            function (Label $l1, Label $l2) {
+                $label1Value = $l1->getValue();
+                $label2Value = $l2->getValue();
+                if ($label1Value === $label2Value) {
+                    return 0;
+                }
+                return ($label1Value < $label2Value) ? -1 : 1;
+            }
+        );
         return $filteredArray;
     }
-}
-
-/**
- * @Title("test-suite-title")
- * @Description(value="test-suite-description", type=DescriptionType::MARKDOWN)
- * @Features({"test-suite-feature1", "test-suite-feature2"})
- * @Stories({"test-suite-story1", "test-suite-story2"})
- */
-class ExampleTestSuite {
-
-
-    /**
-     * @Title("test-case-title")
-     * @Description(value="test-case-description", type=DescriptionType::HTML)
-     * @Features({"test-case-feature1", "test-case-feature2"})
-     * @Stories({"test-case-story1", "test-case-story2"})
-     * @Severity(SeverityLevel::BLOCKER)
-     * @Parameter(name = "test-case-parameter-name", value = "test-case-parameter-value", kind = ParameterKind::ARGUMENT)
-     */
-    public function exampleTestCase(){}
-    
 }
