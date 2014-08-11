@@ -83,9 +83,17 @@ class AnnotationProvider
      */
     public static function addIgnoredAnnotations(array $annotations)
     {
-        foreach ($annotations as $annotation){
+        foreach ($annotations as $annotation) {
             self::getAnnotationReader()->addGlobalIgnoredName($annotation);
         }
     }
 
+    /**
+     * Remove the singleton instances. Useful in unit-testing.
+     */
+    public static function tearDown()
+    {
+        static::$indexedReader = null;
+        static::$annotationReader = null;
+    }
 }

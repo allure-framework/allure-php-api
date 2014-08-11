@@ -8,7 +8,6 @@ class AnnotationProviderTest extends \PHPUnit_Framework_TestCase
 {
     const TYPE_CLASS = 'class';
     const TYPE_METHOD = 'method';
-    const ANNOTATION_NAME = 'TestAnnotation';
     const METHOD_NAME = 'methodWithAnnotations';
 
     public static function setUpBeforeClass()
@@ -16,9 +15,13 @@ class AnnotationProviderTest extends \PHPUnit_Framework_TestCase
         AnnotationRegistry::registerFile(__DIR__ . '/Fixtures/TestAnnotation.php');
     }
 
+    protected function tearDown()
+    {
+        AnnotationProvider::tearDown();
+    }
+
     public function testGetClassAnnotations()
     {
-        //new TestAnnotation();
         $instance = new Fixtures\ClassWithAnnotations();
         $annotations = AnnotationProvider::getClassAnnotations($instance);
         $this->assertTrue(sizeof($annotations) === 1);
@@ -37,11 +40,21 @@ class AnnotationProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::TYPE_METHOD, $annotation->value);
     }
 
-    public function testIgnoreAnnotations()
+    /**
+     * @expectedException \Doctrine\Common\Annotations\AnnotationException
+     */
+    public function testShouldThrowExceptionForNotImportedAnnotations()
     {
-        $instance = new Fixtures\ClassWithAnnotations();
-        AnnotationProvider::addIgnoredAnnotations([self::ANNOTATION_NAME]);
+        $instance = new Fixtures\ClassWithIgnoreAnnotation();
+        AnnotationProvider::getClassAnnotations($instance);
+    }
+
+    public function testShouldIgnoreGivenAnnotations()
+    {
+        $instance = new Fixtures\ClassWithIgnoreAnnotation();
+        AnnotationProvider::addIgnoredAnnotations(['SomeCustomClassAnnotation', 'SomeCustomMethodAnnotation']);
+
         $this->assertEmpty(AnnotationProvider::getClassAnnotations($instance));
-        $this->assertEmpty(AnnotationProvider::getMethodAnnotations($instance, self::METHOD_NAME));
+        $this->assertEmpty(AnnotationProvider::getMethodAnnotations($instance, 'methodWithIgnoredAnnotation'));
     }
 }
