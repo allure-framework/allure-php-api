@@ -25,7 +25,12 @@ class AnnotationProvider
     /**
      * @var AnnotationReader
      */
-    private static $annotationsReader;
+    private static $annotationReader;
+
+    /**
+     * @var IndexedReader
+     */
+    private static $indexedReader;
 
     /**
      * Returns a list of class annotations
@@ -35,7 +40,7 @@ class AnnotationProvider
     public static function getClassAnnotations($instance)
     {
         $ref = new \ReflectionClass($instance);
-        return self::getAnnotationsReader()->getClassAnnotations($ref);
+        return self::getIndexedReader()->getClassAnnotations($ref);
     }
 
     /**
@@ -47,18 +52,48 @@ class AnnotationProvider
     public static function getMethodAnnotations($instance, $methodName)
     {
         $ref = new \ReflectionMethod($instance, $methodName);
-        return self::getAnnotationsReader()->getMethodAnnotations($ref);
+        return self::getIndexedReader()->getMethodAnnotations($ref);
     }
 
     /**
      * @return IndexedReader
      */
-    private static function getAnnotationsReader()
+    private static function getIndexedReader()
     {
-        if (!isset(self::$annotationsReader)) {
-            self::$annotationsReader = new IndexedReader(new AnnotationReader());
+        if (!isset(self::$indexedReader)) {
+            self::$indexedReader = new IndexedReader(self::getAnnotationReader());
         }
-        return self::$annotationsReader;
+        return self::$indexedReader;
     }
 
+    /**
+     * @return AnnotationReader
+     */
+    private static function getAnnotationReader()
+    {
+        if (!isset(self::$annotationReader)) {
+            self::$annotationReader = new AnnotationReader();
+        }
+        return self::$annotationReader;
+    }
+
+    /**
+     * Allows to ignore framework-specific annotations
+     * @param array $annotations
+     */
+    public static function addIgnoredAnnotations(array $annotations)
+    {
+        foreach ($annotations as $annotation) {
+            self::getAnnotationReader()->addGlobalIgnoredName($annotation);
+        }
+    }
+
+    /**
+     * Remove the singleton instances. Useful in unit-testing.
+     */
+    public static function tearDown()
+    {
+        static::$indexedReader = null;
+        static::$annotationReader = null;
+    }
 }

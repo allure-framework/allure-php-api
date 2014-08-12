@@ -2,51 +2,59 @@
 
 namespace Yandex\Allure\Adapter\Annotation;
 
-use Doctrine\Common\Annotations\Annotation\Required;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
-class AnnotationProviderTest extends \PHPUnit_Framework_TestCase {
-    
+class AnnotationProviderTest extends \PHPUnit_Framework_TestCase
+{
+    const TYPE_CLASS = 'class';
+    const TYPE_METHOD = 'method';
+    const METHOD_NAME = 'methodWithAnnotations';
+
+    public static function setUpBeforeClass()
+    {
+        AnnotationRegistry::registerFile(__DIR__ . '/Fixtures/TestAnnotation.php');
+    }
+
+    protected function tearDown()
+    {
+        AnnotationProvider::tearDown();
+    }
+
     public function testGetClassAnnotations()
     {
-        $instance = new ClassWithAnnotations();
+        $instance = new Fixtures\ClassWithAnnotations();
         $annotations = AnnotationProvider::getClassAnnotations($instance);
         $this->assertTrue(sizeof($annotations) === 1);
         $annotation = array_pop($annotations);
-        $this->assertTrue($annotation instanceof TestAnnotation);
-        $this->assertEquals('class', $annotation->value);
+        $this->assertInstanceOf('Yandex\Allure\Adapter\Annotation\Fixtures\TestAnnotation', $annotation);
+        $this->assertEquals(self::TYPE_CLASS, $annotation->value);
     }
-    
+
     public function testGetMethodAnnotations()
     {
-        $instance = new ClassWithAnnotations();
-        $annotations = AnnotationProvider::getMethodAnnotations($instance, 'methodWithAnnotations');
+        $instance = new Fixtures\ClassWithAnnotations();
+        $annotations = AnnotationProvider::getMethodAnnotations($instance, self::METHOD_NAME);
         $this->assertTrue(sizeof($annotations) === 1);
         $annotation = array_pop($annotations);
-        $this->assertTrue($annotation instanceof TestAnnotation);
-        $this->assertEquals('method', $annotation->value);
+        $this->assertInstanceOf('Yandex\Allure\Adapter\Annotation\Fixtures\TestAnnotation', $annotation);
+        $this->assertEquals(self::TYPE_METHOD, $annotation->value);
     }
-}
 
-/**
- * @TestAnnotation("class")
- */
-class ClassWithAnnotations {
-    
     /**
-     * @TestAnnotation("method")
+     * @expectedException \Doctrine\Common\Annotations\AnnotationException
      */
-    public function methodWithAnnotations(){}
-}
+    public function testShouldThrowExceptionForNotImportedAnnotations()
+    {
+        $instance = new Fixtures\ClassWithIgnoreAnnotation();
+        AnnotationProvider::getClassAnnotations($instance);
+    }
 
-/**
- * @Annotation
- * @Target({"CLASS", "METHOD"})
- */
-class TestAnnotation
-{
-    /**
-     * @var string
-     * @Required
-     */
-    public $value;
+    public function testShouldIgnoreGivenAnnotations()
+    {
+        $instance = new Fixtures\ClassWithIgnoreAnnotation();
+        AnnotationProvider::addIgnoredAnnotations(['SomeCustomClassAnnotation', 'SomeCustomMethodAnnotation']);
+
+        $this->assertEmpty(AnnotationProvider::getClassAnnotations($instance));
+        $this->assertEmpty(AnnotationProvider::getMethodAnnotations($instance, 'methodWithIgnoredAnnotation'));
+    }
 }
