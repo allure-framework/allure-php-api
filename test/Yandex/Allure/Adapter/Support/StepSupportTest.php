@@ -45,7 +45,10 @@ class StepSupportTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($events[0] instanceof StepStartedEvent);
         $this->assertTrue($events[1] instanceof StepFinishedEvent);
     }
-    
+
+    /**
+     * @expectedException Exception
+     */
     public function testExecuteFailingStep()
     {
         $logicWithException = function(){
