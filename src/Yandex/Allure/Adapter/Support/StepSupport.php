@@ -44,6 +44,7 @@ trait StepSupport
                 $stepFailedEvent = new StepFailedEvent();
                 Allure::lifecycle()->fire($stepFailedEvent);
                 Allure::lifecycle()->fire(new StepFinishedEvent());
+                throw $e;
             }
         } else {
             throw new AllureException("Step name shouldn't be null and logic should be a callable.");
