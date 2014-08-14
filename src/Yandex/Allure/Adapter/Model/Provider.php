@@ -25,5 +25,4 @@ class Provider
     {
         return self::$outputDirectory;
     }
-
 }

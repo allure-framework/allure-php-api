@@ -3,10 +3,9 @@
 namespace Yandex\Allure\Adapter\Event;
 
 use Yandex\Allure\Adapter\Model\Status;
-use Yandex\Allure\Adapter\Support\Utils;
 
-class TestCasePendingEvent extends TestCaseStatusChangedEvent {
-    
+class TestCasePendingEvent extends TestCaseStatusChangedEvent
+{
     /**
      * @return string
      */
@@ -14,5 +13,4 @@ class TestCasePendingEvent extends TestCaseStatusChangedEvent {
     {
         return Status::PENDING;
     }
-
-} 
+}

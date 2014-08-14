@@ -7,18 +7,18 @@ use Yandex\Allure\Adapter\Model\Step;
 use \SplStack;
 use Yandex\Allure\Adapter\Support\Utils;
 
-class StepStorage {
-
+class StepStorage
+{
     use Utils;
-    
+
     const ROOT_STEP_NAME = 'root-step';
-    
+
     /**
      * @var SplStack
      */
     private $storage;
 
-    function __construct()
+    public function __construct()
     {
         $this->storage = new SplStack();
     }
@@ -26,10 +26,12 @@ class StepStorage {
     /**
      * @return Step
      */
-    public function getLast(){
-        if ($this->storage->isEmpty()){
+    public function getLast()
+    {
+        if ($this->storage->isEmpty()) {
             $this->put($this->getRootStep());
         }
+
         return $this->storage->top();
     }
 
@@ -39,16 +41,18 @@ class StepStorage {
     public function pollLast()
     {
         $step = $this->storage->pop();
-        if ($this->storage->isEmpty()){
+        if ($this->storage->isEmpty()) {
             $this->storage->push($this->getRootStep());
         }
+
         return $step;
     }
-    
+
     /**
      * @param Step $step
      */
-    public function put(Step $step){
+    public function put(Step $step)
+    {
         $this->storage->push($step);
     }
 
@@ -57,17 +61,17 @@ class StepStorage {
         $this->storage = new SplStack();
         $this->put($this->getRootStep());
     }
-    
+
     public function isEmpty()
     {
         return ($this->size() === 0) && $this->isRootStep($this->getLast());
     }
-    
+
     public function size()
     {
         return $this->storage->count() - 1;
     }
-    
+
     public function isRootStep(Step $step)
     {
         return $step->getName() === self::ROOT_STEP_NAME;
@@ -76,13 +80,17 @@ class StepStorage {
     /**
      * @return Step
      */
-    protected function getRootStep(){
+    protected function getRootStep()
+    {
         $step = new Step();
         $step->setName(self::ROOT_STEP_NAME);
-        $step->setTitle("If you're seeing this then there's an error in step processing. Please send feedback to allure@yandex-team.ru. Thank you.");
+        $step->setTitle(
+            "If you're seeing this then there's an error in step processing. "
+            . "Please send feedback to allure@yandex-team.ru. Thank you."
+        );
         $step->setStart(self::getTimestamp());
         $step->setStatus(Status::BROKEN);
+
         return $step;
     }
-
-} 
+}

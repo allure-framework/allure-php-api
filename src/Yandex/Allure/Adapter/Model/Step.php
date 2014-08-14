@@ -59,7 +59,7 @@ class Step implements Entity
      */
     private $status;
 
-    function __construct()
+    public function __construct()
     {
         $this->steps = [];
         $this->attachments = [];
@@ -96,7 +96,7 @@ class Step implements Entity
     {
         $this->status = ConstantChecker::validate('Yandex\Allure\Adapter\Model\Status', $status);
     }
-    
+
     /**
      * @return array
      */
@@ -186,5 +186,4 @@ class Step implements Entity
             unset($this->attachments[$index]);
         }
     }
-
 }

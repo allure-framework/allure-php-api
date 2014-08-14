@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Annotation;
+
 use Doctrine\Common\Annotations\Annotation\Required;
 use Yandex\Allure\Adapter\Model\ParameterKind;
 
@@ -27,5 +28,4 @@ class Parameter
      * @var string
      */
     public $kind = ParameterKind::ARGUMENT;
-
 }

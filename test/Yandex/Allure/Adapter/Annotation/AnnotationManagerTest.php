@@ -119,9 +119,11 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
                 if ($label1Value === $label2Value) {
                     return 0;
                 }
+
                 return ($label1Value < $label2Value) ? -1 : 1;
             }
         );
+
         return $filteredArray;
     }
 }

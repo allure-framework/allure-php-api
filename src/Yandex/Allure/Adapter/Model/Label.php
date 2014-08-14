@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Model;
+
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlRoot;
@@ -26,7 +27,7 @@ class Label implements Entity
      */
     private $value;
 
-    function __construct($name, $value)
+    public function __construct($name, $value)
     {
         $this->name = $name;
         $this->value = $value;
@@ -35,7 +36,7 @@ class Label implements Entity
     /**
      * @return string
      */
-    function getName()
+    public function getName()
     {
         return $this->name;
     }
@@ -43,7 +44,7 @@ class Label implements Entity
     /**
      * @return string
      */
-    function getValue()
+    public function getValue()
     {
         return $this->value;
     }
@@ -65,7 +66,7 @@ class Label implements Entity
     {
         return new Label(LabelType::STORY, $storyName);
     }
-    
+
     /**
      * @param $severityLevel
      * @return Label
@@ -74,6 +75,4 @@ class Label implements Entity
     {
         return new Label(LabelType::SEVERITY, $severityLevel);
     }
-    
-    
 }

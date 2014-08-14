@@ -2,15 +2,14 @@
 
 namespace Yandex\Allure\Adapter\Support;
 
-
 use Exception;
 use Yandex\Allure\Adapter\Allure;
 use Yandex\Allure\Adapter\Event\StepFailedEvent;
 use Yandex\Allure\Adapter\Event\StepFinishedEvent;
 use Yandex\Allure\Adapter\Event\StepStartedEvent;
 
-class StepSupportTest extends \PHPUnit_Framework_TestCase {
-
+class StepSupportTest extends \PHPUnit_Framework_TestCase
+{
     use StepSupport;
 
     const STEP_NAME = 'step-name';
@@ -21,7 +20,7 @@ class StepSupportTest extends \PHPUnit_Framework_TestCase {
      */
     private $mockedLifecycle;
 
-    function __construct()
+    public function __construct()
     {
         $this->mockedLifecycle = new MockedLifecycle();
     }
@@ -36,7 +35,7 @@ class StepSupportTest extends \PHPUnit_Framework_TestCase {
 
     public function testExecuteStepCorrectly()
     {
-        $logicWithNoException = function(){
+        $logicWithNoException = function () {
             //We do nothing, hence no error
         };
         $this->executeStep(self::STEP_NAME, $logicWithNoException, self::STEP_TITLE);
@@ -51,7 +50,7 @@ class StepSupportTest extends \PHPUnit_Framework_TestCase {
      */
     public function testExecuteFailingStep()
     {
-        $logicWithException = function(){
+        $logicWithException = function () {
             throw new Exception();
         };
         $this->executeStep(self::STEP_NAME, $logicWithException, self::STEP_TITLE);
@@ -63,13 +62,13 @@ class StepSupportTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException \Yandex\Allure\Adapter\AllureException 
+     * @expectedException \Yandex\Allure\Adapter\AllureException
      */
     public function testExecuteStepWithMissingData()
     {
         $this->executeStep(null, null, null);
     }
-    
+
     protected function tearDown()
     {
         parent::tearDown();
@@ -83,5 +82,4 @@ class StepSupportTest extends \PHPUnit_Framework_TestCase {
     {
         return $this->mockedLifecycle;
     }
-    
 }

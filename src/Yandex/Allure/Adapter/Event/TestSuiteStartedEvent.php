@@ -7,8 +7,8 @@ use Yandex\Allure\Adapter\Model\Entity;
 use Yandex\Allure\Adapter\Model\TestSuite;
 use Yandex\Allure\Adapter\Support\Utils;
 
-class TestSuiteStartedEvent implements TestSuiteEvent {
-    
+class TestSuiteStartedEvent implements TestSuiteEvent
+{
     use Utils;
 
     /**
@@ -36,23 +36,23 @@ class TestSuiteStartedEvent implements TestSuiteEvent {
      */
     private $uuid;
 
-    function __construct($name)
+    public function __construct($name)
     {
         $this->name = $name;
         $this->labels = [];
     }
-    
+
     public function process(Entity $context)
     {
-        if ($context instanceof TestSuite){
+        if ($context instanceof TestSuite) {
             $context->setName($this->getName());
             $context->setStart(self::getTimestamp());
             $context->setTitle($this->getTitle());
             $description = $this->getDescription();
-            if (isset($description)){
+            if (isset($description)) {
                 $context->setDescription($this->getDescription());
             }
-            foreach ($this->getLabels() as $label){
+            foreach ($this->getLabels() as $label) {
                 $context->addLabel($label);
             }
         }
@@ -62,8 +62,10 @@ class TestSuiteStartedEvent implements TestSuiteEvent {
      * @param string $title
      * @return $this
      */
-    public function withTitle($title){
+    public function withTitle($title)
+    {
         $this->setTitle($title);
+
         return $this;
     }
 
@@ -71,8 +73,10 @@ class TestSuiteStartedEvent implements TestSuiteEvent {
      * @param Description $description
      * @return $this
      */
-    public function withDescription(Description $description){
+    public function withDescription(Description $description)
+    {
         $this->setDescription($description);
+
         return $this;
     }
 
@@ -80,8 +84,10 @@ class TestSuiteStartedEvent implements TestSuiteEvent {
      * @param array $labels
      * @return $this
      */
-    public function withLabels(array $labels){
+    public function withLabels(array $labels)
+    {
         $this->setLabels($labels);
+
         return $this;
     }
 
@@ -151,10 +157,10 @@ class TestSuiteStartedEvent implements TestSuiteEvent {
 
     public function getUuid()
     {
-        if (!isset($this->uuid)){
+        if (!isset($this->uuid)) {
             $this->uuid = self::generateUUID();
         }
+
         return $this->uuid;
     }
-
-} 
+}

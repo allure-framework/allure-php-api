@@ -2,16 +2,15 @@
 
 namespace Yandex\Allure\Adapter\Support;
 
-
 use Yandex\Allure\Adapter\Allure;
 use Yandex\Allure\Adapter\Event\AddAttachmentEvent;
 use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Model\Provider;
 
-class AttachmentSupportTest extends \PHPUnit_Framework_TestCase {
-
+class AttachmentSupportTest extends \PHPUnit_Framework_TestCase
+{
     use AttachmentSupport;
-    
+
     public function testAddAttachment()
     {
         $attachmentContents = 'test-contents';
@@ -27,4 +26,4 @@ class AttachmentSupportTest extends \PHPUnit_Framework_TestCase {
             ($event->getType() === $attachmentType)
         );
     }
-} 
+}

@@ -89,7 +89,7 @@ class TestCase implements Entity
      */
     private $parameters;
 
-    function __construct()
+    public function __construct()
     {
         $this->steps = [];
         $this->labels = [];
@@ -272,5 +272,4 @@ class TestCase implements Entity
     {
         $this->parameters[] = $parameter;
     }
-
 }

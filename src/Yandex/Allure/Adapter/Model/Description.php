@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Model;
+
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlRoot;
@@ -25,7 +26,7 @@ class Description implements Entity
      */
     private $value;
 
-    function __construct($type, $value)
+    public function __construct($type, $value)
     {
         $this->type = ConstantChecker::validate('Yandex\Allure\Adapter\Model\DescriptionType', $type);
         $this->value = $value;
@@ -46,5 +47,4 @@ class Description implements Entity
     {
         return $this->value;
     }
-
 }

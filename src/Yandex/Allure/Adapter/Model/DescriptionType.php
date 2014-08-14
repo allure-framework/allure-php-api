@@ -12,4 +12,3 @@ final class DescriptionType
     const HTML = 'html';
     const MARKDOWN = 'markdown';
 }
- 

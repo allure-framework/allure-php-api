@@ -2,7 +2,6 @@
 
 namespace Yandex\Allure\Adapter\Support;
 
-
 use Rhumsaa\Uuid\Uuid;
 
 trait Utils
@@ -23,5 +22,4 @@ trait Utils
     {
         return Uuid::uuid4()->toString();
     }
-
 }

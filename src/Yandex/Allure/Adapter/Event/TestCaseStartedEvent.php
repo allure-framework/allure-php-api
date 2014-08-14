@@ -8,8 +8,8 @@ use Yandex\Allure\Adapter\Model\Status;
 use Yandex\Allure\Adapter\Model\TestCase;
 use Yandex\Allure\Adapter\Support\Utils;
 
-class TestCaseStartedEvent implements TestCaseEvent {
-    
+class TestCaseStartedEvent implements TestCaseEvent
+{
     use Utils;
 
     /**
@@ -36,23 +36,23 @@ class TestCaseStartedEvent implements TestCaseEvent {
      * @var array
      */
     private $labels;
-    
+
     /**
      * @var array
      */
     private $parameters;
 
-    function __construct($suiteUuid, $name)
+    public function __construct($suiteUuid, $name)
     {
         $this->suiteUuid = $suiteUuid;
         $this->name = $name;
         $this->labels = [];
         $this->parameters = [];
     }
-    
+
     public function process(Entity $context)
     {
-        if ($context instanceof TestCase){
+        if ($context instanceof TestCase) {
             $context->setName($this->getName());
             $context->setStatus(Status::PASSED);
             $context->setStart(self::getTimestamp());
@@ -61,10 +61,10 @@ class TestCaseStartedEvent implements TestCaseEvent {
             if (isset($description)) {
                 $context->setDescription($description);
             }
-            foreach ($this->getLabels() as $label){
+            foreach ($this->getLabels() as $label) {
                 $context->addLabel($label);
             }
-            foreach ($this->getParameters() as $parameter){
+            foreach ($this->getParameters() as $parameter) {
                 $context->addParameter($parameter);
             }
         }
@@ -74,8 +74,10 @@ class TestCaseStartedEvent implements TestCaseEvent {
      * @param string $title
      * @return $this
      */
-    public function withTitle($title){
+    public function withTitle($title)
+    {
         $this->setTitle($title);
+
         return $this;
     }
 
@@ -83,8 +85,10 @@ class TestCaseStartedEvent implements TestCaseEvent {
      * @param Description $description
      * @return $this
      */
-    public function withDescription(Description $description){
+    public function withDescription(Description $description)
+    {
         $this->setDescription($description);
+
         return $this;
     }
 
@@ -92,17 +96,21 @@ class TestCaseStartedEvent implements TestCaseEvent {
      * @param array $labels
      * @return $this
      */
-    public function withLabels(array $labels){
+    public function withLabels(array $labels)
+    {
         $this->setLabels($labels);
+
         return $this;
     }
-    
+
     /**
      * @param array $parameters
      * @return $this
      */
-    public function withParameters(array $parameters){
+    public function withParameters(array $parameters)
+    {
         $this->setParameters($parameters);
+
         return $this;
     }
 
@@ -185,5 +193,4 @@ class TestCaseStartedEvent implements TestCaseEvent {
     {
         return $this->name;
     }
-    
-} 
+}

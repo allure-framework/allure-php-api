@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Annotation;
+
 use Yandex\Allure\Adapter\Model\SeverityLevel;
 
 /**

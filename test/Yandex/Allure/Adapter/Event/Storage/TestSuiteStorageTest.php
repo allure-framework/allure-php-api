@@ -2,9 +2,8 @@
 
 namespace Yandex\Allure\Adapter\Event\Storage;
 
-
-class TestSuiteStorageTest extends \PHPUnit_Framework_TestCase {
-    
+class TestSuiteStorageTest extends \PHPUnit_Framework_TestCase
+{
     public function testLifecycle()
     {
         $storage = new TestSuiteStorage();
@@ -14,8 +13,8 @@ class TestSuiteStorageTest extends \PHPUnit_Framework_TestCase {
         $this->assertEmpty($testSuite->getName());
         $testSuite->setName($name);
         $this->assertEquals($name, $storage->get($uuid)->getName());
-        
+
         $storage->remove($uuid);
         $this->assertEmpty($storage->get($uuid)->getName());
     }
-} 
+}

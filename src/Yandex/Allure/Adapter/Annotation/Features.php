@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Annotation;
+
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
@@ -23,5 +24,4 @@ class Features
     {
         return $this->featureNames;
     }
-
 }

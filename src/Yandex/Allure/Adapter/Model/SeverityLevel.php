@@ -13,4 +13,4 @@ final class SeverityLevel
     const NORMAL = 'normal';
     const MINOR = 'minor';
     const TRIVIAL = 'trivial';
-} 
+}
