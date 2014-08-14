@@ -2,7 +2,6 @@
 
 namespace Yandex\Allure\Adapter\Support;
 
-
 use Yandex\Allure\Adapter\Allure;
 use Yandex\Allure\Adapter\Event\AddAttachmentEvent;
 use Yandex\Allure\Adapter\Model;
@@ -25,5 +24,4 @@ trait AttachmentSupport
     {
         Allure::lifecycle()->fire(new AddAttachmentEvent($filePathOrContents, $caption, $type));
     }
-
 }

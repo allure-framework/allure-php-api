@@ -2,7 +2,6 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
-
 use Yandex\Allure\Adapter\Model\Description;
 use Yandex\Allure\Adapter\Model\DescriptionType;
 use Yandex\Allure\Adapter\Model\Label;
@@ -12,8 +11,8 @@ use Yandex\Allure\Adapter\Model\ParameterKind;
 use Yandex\Allure\Adapter\Model\Status;
 use Yandex\Allure\Adapter\Model\TestCase;
 
-class TestCaseStartedEventTest extends \PHPUnit_Framework_TestCase {
-    
+class TestCaseStartedEventTest extends \PHPUnit_Framework_TestCase
+{
     public function testEvent()
     {
         $testCase = new TestCase();
@@ -31,10 +30,10 @@ class TestCaseStartedEventTest extends \PHPUnit_Framework_TestCase {
         $event
             ->withTitle($testCaseTitle)
             ->withDescription(new Description($testCaseDescriptionType, $testCaseDescriptionValue))
-            ->withLabels(array(new Label($testCaseLabelName, $testCaseLabelValue)))
-            ->withParameters(array(new Parameter($testCaseParameterName, $testCaseParameterValue, $testCaseParameterKind)));
+            ->withLabels([new Label($testCaseLabelName, $testCaseLabelValue)])
+            ->withParameters([new Parameter($testCaseParameterName, $testCaseParameterValue, $testCaseParameterKind)]);
         $event->process($testCase);
-        
+
         $this->assertEquals(Status::PASSED, $testCase->getStatus());
         $this->assertEquals($testCaseTitle, $testCase->getTitle());
         $this->assertNotEmpty($testCase->getStart());
@@ -63,5 +62,4 @@ class TestCaseStartedEventTest extends \PHPUnit_Framework_TestCase {
         $this->assertEmpty($testCase->getSteps());
         $this->assertEmpty($testCase->getAttachments());
     }
-    
-} 
+}

@@ -1,13 +1,13 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Support;
+
 use Exception;
 use Yandex\Allure\Adapter\Allure;
 use Yandex\Allure\Adapter\AllureException;
 use Yandex\Allure\Adapter\Event\StepFailedEvent;
 use Yandex\Allure\Adapter\Event\StepFinishedEvent;
 use Yandex\Allure\Adapter\Event\StepStartedEvent;
-use Yandex\Allure\Adapter\Model;
 
 const STEP_LOGIC_KEY = 'logic';
 const STEP_TITLE_KEY = 'title';
@@ -31,9 +31,9 @@ trait StepSupport
      */
     public function executeStep($name, $logic, $title = null)
     {
-        if (isset($name) && is_callable($logic)){
+        if (isset($name) && is_callable($logic)) {
             $event = new StepStartedEvent($name);
-            if (isset($title)){
+            if (isset($title)) {
                 $event->withTitle($title);
             }
             Allure::lifecycle()->fire($event);
@@ -50,5 +50,4 @@ trait StepSupport
             throw new AllureException("Step name shouldn't be null and logic should be a callable.");
         }
     }
-
 }

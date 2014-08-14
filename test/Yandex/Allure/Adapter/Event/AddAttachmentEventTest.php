@@ -2,16 +2,15 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
-
 use Yandex\Allure\Adapter\Model\Attachment;
 use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
 
-class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase {
-    
+class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase
+{
     const ATTACHMENT_CAPTION = 'test-caption';
-    
+
     public function testEventWithFile()
     {
         $attachmentCaption = self::ATTACHMENT_CAPTION;
@@ -25,12 +24,19 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase {
         $event = new AddAttachmentEvent($tmpFilename, $attachmentCaption, $attachmentType);
         $step = new Step();
         $event->process($step);
-        
+
         $attachmentFileName = $event->getOutputFileName($sha1_sum, $attachmentType);
         $attachmentOutputPath = $event->getOutputPath($sha1_sum, $attachmentType);
-        $this->checkAttachmentIsCorrect($step, $attachmentOutputPath, $attachmentFileName, $attachmentCaption, $attachmentType, true);
+        $this->checkAttachmentIsCorrect(
+            $step,
+            $attachmentOutputPath,
+            $attachmentFileName,
+            $attachmentCaption,
+            $attachmentType,
+            true
+        );
     }
-    
+
     public function testEventWithStringContents()
     {
         $attachmentCaption = self::ATTACHMENT_CAPTION;
@@ -46,9 +52,16 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase {
 
         $attachmentFileName = $event->getOutputFileName($sha1_sum, $attachmentType);
         $attachmentOutputPath = $event->getOutputPath($sha1_sum, $attachmentType);
-        $this->checkAttachmentIsCorrect($step, $attachmentOutputPath, $attachmentFileName, $attachmentCaption, $attachmentType, true);
+        $this->checkAttachmentIsCorrect(
+            $step,
+            $attachmentOutputPath,
+            $attachmentFileName,
+            $attachmentCaption,
+            $attachmentType,
+            true
+        );
     }
-    
+
     public function testEventWithUrl()
     {
         $attachmentCaption = self::ATTACHMENT_CAPTION;
@@ -61,10 +74,16 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase {
 
         $this->checkAttachmentIsCorrect($step, '', $attachmentUrl, $attachmentCaption, $attachmentType);
     }
-    
-    private function checkAttachmentIsCorrect(Step $step, $attachmentOutputPath, $attachmentFileName, $attachmentCaption, $attachmentType, $checkIfFileExists = false)
-    {
-        if ($checkIfFileExists){
+
+    private function checkAttachmentIsCorrect(
+        Step $step,
+        $attachmentOutputPath,
+        $attachmentFileName,
+        $attachmentCaption,
+        $attachmentType,
+        $checkIfFileExists = false
+    ) {
+        if ($checkIfFileExists) {
             $this->assertTrue(file_exists($attachmentOutputPath));
         }
         $attachments = $step->getAttachments();
@@ -77,9 +96,9 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase {
             ($attachment->getType() === $attachmentType)
         );
     }
-    
+
     private function getTestContents()
     {
         return str_shuffle('test-contents');
     }
-} 
+}

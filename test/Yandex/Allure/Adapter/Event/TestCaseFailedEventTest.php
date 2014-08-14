@@ -2,11 +2,10 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
-
 use Yandex\Allure\Adapter\Model\Status;
 
-class TestCaseFailedEventTest extends TestCaseStatusChangedEventTest {
-    
+class TestCaseFailedEventTest extends TestCaseStatusChangedEventTest
+{
     /**
      * @return string
      */
@@ -22,5 +21,4 @@ class TestCaseFailedEventTest extends TestCaseStatusChangedEventTest {
     {
         return new TestCaseFailedEvent();
     }
-
-} 
+}

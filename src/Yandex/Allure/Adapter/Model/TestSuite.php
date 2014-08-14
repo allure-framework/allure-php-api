@@ -2,7 +2,6 @@
 
 namespace Yandex\Allure\Adapter\Model;
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
@@ -95,7 +94,7 @@ class TestSuite implements \Serializable, Entity
      */
     private $currentTestCase;
 
-    function __construct()
+    public function __construct()
     {
         $this->testCases = [];
         $this->labels = [];
@@ -266,6 +265,7 @@ class TestSuite implements \Serializable, Entity
         if (!isset($this->serializer)) {
             $this->serializer = SerializerBuilder::create()->build();
         }
+
         return $this->serializer;
     }
 }

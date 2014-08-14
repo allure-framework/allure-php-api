@@ -2,7 +2,6 @@
 
 namespace Yandex\Allure\Adapter;
 
-
 use Yandex\Allure\Adapter\Event\ClearStepStorageEvent;
 use Yandex\Allure\Adapter\Event\ClearTestCaseStorageEvent;
 use Yandex\Allure\Adapter\Event\Event;
@@ -22,8 +21,8 @@ use Yandex\Allure\Adapter\Model\Step;
 use Yandex\Allure\Adapter\Model\TestSuite;
 use Yandex\Allure\Adapter\Support\Utils;
 
-class Allure {
-    
+class Allure
+{
     use Utils;
 
     /**
@@ -52,9 +51,10 @@ class Allure {
      */
     public static function lifecycle()
     {
-        if (!isset(self::$lifecycle)){
+        if (!isset(self::$lifecycle)) {
             self::setDefaultLifecycle();
         }
+
         return self::$lifecycle;
     }
 
@@ -62,33 +62,33 @@ class Allure {
     {
         self::$lifecycle = $lifecycle;
     }
-    
+
     public static function setDefaultLifecycle()
     {
         self::$lifecycle = new Allure();
     }
-    
+
     public function fire(Event $event)
     {
-        if ($event instanceof StepStartedEvent){
+        if ($event instanceof StepStartedEvent) {
             $this->processStepStartedEvent($event);
-        } else if ($event instanceof StepFinishedEvent){
+        } elseif ($event instanceof StepFinishedEvent) {
             $this->processStepFinishedEvent($event);
-        } else if ($event instanceof TestCaseStartedEvent){
+        } elseif ($event instanceof TestCaseStartedEvent) {
             $this->processTestCaseStartedEvent($event);
-        } else if ($event instanceof TestCaseFinishedEvent){
+        } elseif ($event instanceof TestCaseFinishedEvent) {
             $this->processTestCaseFinishedEvent($event);
-        } else if ($event instanceof TestSuiteFinishedEvent){
+        } elseif ($event instanceof TestSuiteFinishedEvent) {
             $this->processTestSuiteFinishedEvent($event);
-        } else if ($event instanceof TestSuiteEvent){
+        } elseif ($event instanceof TestSuiteEvent) {
             $this->processTestSuiteEvent($event);
-        } else if ($event instanceof ClearStepStorageEvent){
+        } elseif ($event instanceof ClearStepStorageEvent) {
             $this->processClearStepStorageEvent();
-        } else if ($event instanceof ClearTestCaseStorageEvent){
+        } elseif ($event instanceof ClearTestCaseStorageEvent) {
             $this->processClearTestCaseStorageEvent();
-        } else if ($event instanceof TestCaseEvent){
+        } elseif ($event instanceof TestCaseEvent) {
             $this->processTestCaseEvent($event);
-        } else if ($event instanceof StepEvent) {
+        } elseif ($event instanceof StepEvent) {
             $this->processStepEvent($event);
         } else {
             throw new AllureException("Unknown event: " . get_class($event));
@@ -102,25 +102,25 @@ class Allure {
         $event->process($step);
         $this->getStepStorage()->put($step);
     }
-    
+
     protected function processStepFinishedEvent(StepFinishedEvent $event)
     {
         $step = $this->getStepStorage()->pollLast();
         $event->process($step);
         $this->getStepStorage()->getLast()->addStep($step);
     }
-    
+
     protected function processStepEvent(StepEvent $event)
     {
         $step = $this->getStepStorage()->getLast();
         $event->process($step);
     }
-    
+
     protected function processTestCaseStartedEvent(TestCaseStartedEvent $event)
     {
         //init root step if needed
         $this->getStepStorage()->getLast();
-        
+
         $testCase = $this->getTestCaseStorage()->get();
         $event->process($testCase);
         $this->getTestSuiteStorage()->get($event->getSuiteUuid())->addTestCase($testCase);
@@ -131,15 +131,15 @@ class Allure {
         $testCase = $this->getTestCaseStorage()->get();
         $event->process($testCase);
         $rootStep = $this->getStepStorage()->pollLast();
-        foreach ($rootStep->getSteps() as $step){
+        foreach ($rootStep->getSteps() as $step) {
             $testCase->addStep($step);
         }
-        foreach ($rootStep->getAttachments() as $attachment){
+        foreach ($rootStep->getAttachments() as $attachment) {
             $testCase->addAttachment($attachment);
         }
         $this->getTestCaseStorage()->clear();
     }
-    
+
     protected function processTestCaseEvent(TestCaseEvent $event)
     {
         $testCase = $this->getTestCaseStorage()->get();
@@ -161,7 +161,7 @@ class Allure {
         $this->getTestSuiteStorage()->remove($suiteUuid);
         $this->saveToFile($suiteUuid, $testSuite);
     }
-    
+
     protected function saveToFile($testSuiteUuid, TestSuite $testSuite)
     {
         if ($testSuite->size() > 0) {
@@ -171,17 +171,17 @@ class Allure {
             file_put_contents($filePath, $xml);
         }
     }
-    
+
     protected function processClearStepStorageEvent()
     {
         $this->getStepStorage()->clear();
     }
-    
+
     protected function processClearTestCaseStorageEvent()
     {
         $this->getTestCaseStorage()->clear();
     }
-    
+
     /**
      * @return \Yandex\Allure\Adapter\Event\Storage\StepStorage
      */
@@ -213,5 +213,4 @@ class Allure {
     {
         return $this->lastEvent;
     }
-    
 }

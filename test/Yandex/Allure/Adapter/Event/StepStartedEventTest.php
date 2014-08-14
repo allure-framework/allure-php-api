@@ -2,12 +2,11 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
-
 use Yandex\Allure\Adapter\Model\Status;
 use Yandex\Allure\Adapter\Model\Step;
 
-class StepStartedEventTest extends \PHPUnit_Framework_TestCase {
-    
+class StepStartedEventTest extends \PHPUnit_Framework_TestCase
+{
     public function testEvent()
     {
         $step = new Step();
@@ -24,5 +23,4 @@ class StepStartedEventTest extends \PHPUnit_Framework_TestCase {
         $this->assertEmpty($step->getSteps());
         $this->assertEmpty($step->getAttachments());
     }
-    
-} 
+}

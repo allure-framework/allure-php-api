@@ -3,28 +3,24 @@
 namespace Yandex\Allure\Adapter;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Yandex\Allure\Adapter\Annotation\AnnotationProvider;
 use Yandex\Allure\Adapter\Event\ClearStepStorageEvent;
 use Yandex\Allure\Adapter\Event\ClearTestCaseStorageEvent;
-use Yandex\Allure\Adapter\Event\StepEvent;
 use Yandex\Allure\Adapter\Event\StepFinishedEvent;
 use Yandex\Allure\Adapter\Event\StepStartedEvent;
-use Yandex\Allure\Adapter\Event\TestCaseEvent;
 use Yandex\Allure\Adapter\Event\TestCaseFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
-use Yandex\Allure\Adapter\Event\TestSuiteEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
-use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model\Attachment;
 use Yandex\Allure\Adapter\Model\AttachmentType;
-use Yandex\Allure\Adapter\Model\Entity;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
 use Yandex\Allure\Adapter\Model\TestCase;
-use Yandex\Allure\Adapter\Model\TestSuite;
+use Yandex\Allure\Adapter\Fixtures\GenericStepEvent;
+use Yandex\Allure\Adapter\Fixtures\GenericTestCaseEvent;
+use Yandex\Allure\Adapter\Fixtures\GenericTestSuiteEvent;
 
-class AllureTest extends \PHPUnit_Framework_TestCase {
-
+class AllureTest extends \PHPUnit_Framework_TestCase
+{
     const STEP_NAME = 'step-name';
     const TEST_CASE_NAME = 'test-case-name';
     const TEST_SUITE_NAME = 'test-suite-name';
@@ -32,7 +28,7 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
     const STEP_ATTACHMENT_TITLE = 'step-attachment-caption';
     const STEP_ATTACHMENT_SOURCE = 'step-attachment-source';
     const STEP_ATTACHMENT_TYPE = AttachmentType::TXT;
-    
+
     public function testStepStorageClearEvent()
     {
         Allure::lifecycle()->getStepStorage()->clear();
@@ -40,7 +36,7 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         Allure::lifecycle()->fire(new ClearStepStorageEvent());
         $this->assertTrue(Allure::lifecycle()->getStepStorage()->isEmpty());
     }
-    
+
     public function testTestCaseStorageClear()
     {
         Allure::lifecycle()->getTestCaseStorage()->clear();
@@ -48,7 +44,7 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         Allure::lifecycle()->fire(new ClearTestCaseStorageEvent());
         $this->assertTrue(Allure::lifecycle()->getTestCaseStorage()->isEmpty());
     }
-    
+
     public function testStepStartedEvent()
     {
         Allure::lifecycle()->getStepStorage()->clear();
@@ -58,7 +54,7 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         $step = Allure::lifecycle()->getStepStorage()->getLast();
         $this->assertEquals(self::STEP_NAME, $step->getName());
     }
-    
+
     public function testStepFinishedEvent()
     {
         $step = new Step();
@@ -68,7 +64,7 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         $step = Allure::lifecycle()->getStepStorage()->getLast();
         $this->assertEquals(self::STEP_NAME, $step->getName());
     }
-    
+
     public function testGenericStepEvent()
     {
         $step = new Step();
@@ -77,18 +73,21 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         Allure::lifecycle()->fire(new GenericStepEvent(self::STEP_NAME));
         $this->assertEquals(self::STEP_NAME, $step->getName());
     }
-    
+
     public function testTestCaseStarted()
     {
         Allure::lifecycle()->getTestCaseStorage()->clear();
         Allure::lifecycle()->getTestSuiteStorage()->clear();
         $this->assertTrue(Allure::lifecycle()->getTestCaseStorage()->isEmpty());
         Allure::lifecycle()->fire(new TestCaseStartedEvent(self::TEST_SUITE_UUID, self::TEST_CASE_NAME));
-        $testCase = Allure::lifecycle()->getTestSuiteStorage()->get(self::TEST_SUITE_UUID)->getTestCase(self::TEST_CASE_NAME);
+        $testCase = Allure::lifecycle()
+            ->getTestSuiteStorage()
+            ->get(self::TEST_SUITE_UUID)
+            ->getTestCase(self::TEST_CASE_NAME);
         $this->assertNotEmpty($testCase);
         $this->assertEquals(self::TEST_CASE_NAME, $testCase->getName());
     }
-    
+
     public function testTestCaseFinishedEvent()
     {
         Allure::lifecycle()->getStepStorage()->clear();
@@ -96,12 +95,16 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         Allure::lifecycle()->getTestCaseStorage()->clear();
         $step = new Step();
         $step->setName(self::STEP_NAME);
-        $attachment = new Attachment(self::STEP_ATTACHMENT_TITLE, self::STEP_ATTACHMENT_SOURCE, self::STEP_ATTACHMENT_TYPE);
+        $attachment = new Attachment(
+            self::STEP_ATTACHMENT_TITLE,
+            self::STEP_ATTACHMENT_SOURCE,
+            self::STEP_ATTACHMENT_TYPE
+        );
         Allure::lifecycle()->getStepStorage()->getLast()->addStep($step);
         Allure::lifecycle()->getStepStorage()->getLast()->addAttachment($attachment);
 
         $testCaseFromStorage = Allure::lifecycle()->getTestCaseStorage()->get();
-        
+
         Allure::lifecycle()->fire(new TestCaseFinishedEvent());
 
         //Checking that attachments were moved
@@ -134,7 +137,7 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         Allure::lifecycle()->fire(new GenericTestCaseEvent(self::TEST_CASE_NAME));
         $this->assertEquals(self::TEST_CASE_NAME, $testCase->getName());
     }
-    
+
     public function testGenericTestSuiteEvent()
     {
         Allure::lifecycle()->getTestSuiteStorage()->clear();
@@ -143,15 +146,15 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         Allure::lifecycle()->fire($event);
         $this->assertEquals(self::TEST_SUITE_NAME, $testSuite->getName());
     }
-    
+
     public function testTestSuiteFinishedEvent()
     {
         Allure::lifecycle()->getTestSuiteStorage()->clear();
         $testSuite = Allure::lifecycle()->getTestSuiteStorage()->get(self::TEST_SUITE_UUID);
         $testSuite->addTestCase(new TestCase());
-        
+
         $this->assertEquals(1, Allure::lifecycle()->getTestSuiteStorage()->size());
-        
+
         $outputDirectory = sys_get_temp_dir();
         AnnotationRegistry::registerAutoloadNamespace(
             'JMS\Serializer\Annotation',
@@ -165,67 +168,4 @@ class AllureTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue(Allure::lifecycle()->getTestSuiteStorage()->isEmpty());
         $this->assertTrue(file_exists($xmlFilePath));
     }
-} 
-
-class GenericStepEvent implements StepEvent {
-    
-    private $name;
-
-    function __construct($name)
-    {
-        $this->name = $name;
-    }
-
-
-    function process(Entity $context)
-    {
-        if ($context instanceof Step){
-            $context->setName($this->name);
-        }
-    }
-
-}
-
-class GenericTestCaseEvent implements TestCaseEvent {
-    
-    private $name;
-
-    function __construct($name)
-    {
-        $this->name = $name;
-    }
-
-
-    function process(Entity $context)
-    {
-        if ($context instanceof TestCase){
-            $context->setName($this->name);
-        }
-    }
-
-}
-
-class GenericTestSuiteEvent implements TestSuiteEvent {
-    
-    private $name;
-
-    function __construct($name)
-    {
-        $this->name = $name;
-    }
-
-
-    public function process(Entity $context)
-    {
-        if ($context instanceof TestSuite){
-            $context->setName($this->name);
-        }
-    }
-
-    public function getUuid()
-    {
-        return AllureTest::TEST_SUITE_UUID;
-    }
-
-
 }

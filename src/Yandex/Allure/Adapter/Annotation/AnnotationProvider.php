@@ -6,22 +6,8 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\IndexedReader;
 
-AnnotationRegistry::registerAutoloadNamespace(
-    'JMS\Serializer\Annotation',
-    array(
-        __DIR__ . "/../../../../../../../../vendor/jms/serializer/src",
-        __DIR__ . "/../../../../vendor/jms/serializer/src"
-    )
-);
-
-AnnotationRegistry::registerAutoloadNamespace(
-    'Yandex\Allure\Adapter\Annotation',
-    __DIR__ . "/../../../../../src"
-);
-
 class AnnotationProvider
 {
-
     /**
      * @var AnnotationReader
      */
@@ -40,6 +26,7 @@ class AnnotationProvider
     public static function getClassAnnotations($instance)
     {
         $ref = new \ReflectionClass($instance);
+
         return self::getIndexedReader()->getClassAnnotations($ref);
     }
 
@@ -52,6 +39,7 @@ class AnnotationProvider
     public static function getMethodAnnotations($instance, $methodName)
     {
         $ref = new \ReflectionMethod($instance, $methodName);
+
         return self::getIndexedReader()->getMethodAnnotations($ref);
     }
 
@@ -61,8 +49,10 @@ class AnnotationProvider
     private static function getIndexedReader()
     {
         if (!isset(self::$indexedReader)) {
+            self::registerAnnotationNamespaces();
             self::$indexedReader = new IndexedReader(self::getAnnotationReader());
         }
+
         return self::$indexedReader;
     }
 
@@ -72,9 +62,27 @@ class AnnotationProvider
     private static function getAnnotationReader()
     {
         if (!isset(self::$annotationReader)) {
+            self::registerAnnotationNamespaces();
             self::$annotationReader = new AnnotationReader();
         }
+
         return self::$annotationReader;
+    }
+
+    private static function registerAnnotationNamespaces()
+    {
+        AnnotationRegistry::registerAutoloadNamespace(
+            'JMS\Serializer\Annotation',
+            [
+                __DIR__ . "/../../../../../../../../vendor/jms/serializer/src",
+                __DIR__ . "/../../../../vendor/jms/serializer/src"
+            ]
+        );
+
+        AnnotationRegistry::registerAutoloadNamespace(
+            'Yandex\Allure\Adapter\Annotation',
+            __DIR__ . "/../../../../../src"
+        );
     }
 
     /**

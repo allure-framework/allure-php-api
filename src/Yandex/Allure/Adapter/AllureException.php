@@ -2,4 +2,6 @@
 
 namespace Yandex\Allure\Adapter;
 
-class AllureException extends \Exception {} 
+class AllureException extends \Exception
+{
+}

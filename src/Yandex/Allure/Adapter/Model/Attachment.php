@@ -32,13 +32,12 @@ class Attachment implements Entity
      */
     private $type;
 
-    function __construct($title, $source, $type)
+    public function __construct($title, $source, $type)
     {
         $this->source = $source;
         $this->title = $title;
         $this->type = ConstantChecker::validate('Yandex\Allure\Adapter\Model\AttachmentType', $type);
     }
-
 
     /**
      * @return string
@@ -63,5 +62,4 @@ class Attachment implements Entity
     {
         return $this->type;
     }
-
 }

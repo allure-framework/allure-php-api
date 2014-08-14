@@ -2,8 +2,6 @@
 
 namespace Yandex\Allure\Adapter;
 
-
-use DirectoryIterator;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use DOMDocument;
 use SebastianBergmann\Exporter\Exception;
@@ -39,9 +37,8 @@ const STEP_TITLE = 'test-step-title';
 const STEP_ATTACHMENT_TITLE = 'step-attachment-caption';
 const STEP_ATTACHMENT_SOURCE = 'step-attachment-source';
 
-
-class XMLValidationTest extends \PHPUnit_Framework_TestCase {
-    
+class XMLValidationTest extends \PHPUnit_Framework_TestCase
+{
     public function testGeneratedXMLIsValid()
     {
         $tmpDir = $this->prepareDirForXML();
@@ -51,7 +48,7 @@ class XMLValidationTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue(file_exists($fileName));
         $this->validateFileXML($fileName);
     }
-    
+
     private function prepareDirForXML()
     {
         $tmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('allure-xml-test');
@@ -60,9 +57,10 @@ class XMLValidationTest extends \PHPUnit_Framework_TestCase {
             file_exists($tmpDir) &&
             is_writable($tmpDir)
         );
+
         return $tmpDir;
     }
-    
+
     private function generateXML($tmpDir)
     {
         AnnotationRegistry::registerAutoloadNamespace(
@@ -93,22 +91,25 @@ class XMLValidationTest extends \PHPUnit_Framework_TestCase {
             new Parameter(PARAMETER_NAME, PARAMETER_VALUE, ParameterKind::SYSTEM_PROPERTY)
         ]);
         Allure::lifecycle()->fire($testCaseStartedEvent);
-        
+
         $testCaseFailureEvent = new TestCaseFailedEvent();
         $testCaseFailureEvent = $testCaseFailureEvent->withMessage(FAILURE_MESSAGE)->withException(new Exception());
         Allure::lifecycle()->fire($testCaseFailureEvent);
-        
+
         $stepStartedEvent = new StepStartedEvent(STEP_NAME);
         $stepStartedEvent = $stepStartedEvent->withTitle(STEP_TITLE);
         Allure::lifecycle()->fire($stepStartedEvent);
-        Allure::lifecycle()->fire(new AddAttachmentEvent(STEP_ATTACHMENT_SOURCE, STEP_ATTACHMENT_TITLE, AttachmentType::TXT));
+        Allure::lifecycle()->fire(
+            new AddAttachmentEvent(STEP_ATTACHMENT_SOURCE, STEP_ATTACHMENT_TITLE, AttachmentType::TXT)
+        );
         Allure::lifecycle()->fire(new StepFinishedEvent());
-        
+
         Allure::lifecycle()->fire(new TestCaseFinishedEvent());
         Allure::lifecycle()->fire(new TestSuiteFinishedEvent($uuid));
+
         return $uuid;
     }
-    
+
     private function validateFileXML($fileName)
     {
         libxml_use_internal_errors(true); //Comment this line to see DOMDocument XML validation errors
@@ -118,4 +119,4 @@ class XMLValidationTest extends \PHPUnit_Framework_TestCase {
         $isSchemaValid = $dom->schemaValidate($schemaFilename);
         $this->assertTrue($isSchemaValid, 'XML file should be valid');
     }
-} 
+}

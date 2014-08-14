@@ -9,15 +9,15 @@ use Yandex\Allure\Adapter\Model\Entity;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
 
-class AddAttachmentEvent implements StepEvent {
-
+class AddAttachmentEvent implements StepEvent
+{
     private $filePathOrContents;
-    
+
     private $caption;
-    
+
     private $type;
 
-    function __construct($filePathOrContents, $caption, $type)
+    public function __construct($filePathOrContents, $caption, $type)
     {
         $this->filePathOrContents = $filePathOrContents;
         $this->caption = $caption;
@@ -26,7 +26,7 @@ class AddAttachmentEvent implements StepEvent {
 
     public function process(Entity $context)
     {
-        if ($context instanceof Step){
+        if ($context instanceof Step) {
             $newFileName = $this->getAttachmentFileName($this->filePathOrContents, $this->type);
             $attachment = new Attachment($this->caption, $newFileName, $this->type);
             $context->addAttachment($attachment);
@@ -38,13 +38,14 @@ class AddAttachmentEvent implements StepEvent {
         if ($type === AttachmentType::OTHER) {
             //Type = other is mainly for attached URLs
             return $filePathOrContents;
-        } else if (file_exists($filePathOrContents)) {
+        } elseif (file_exists($filePathOrContents)) {
             //Trying to attach some file outputted by method
             $fileSha1 = sha1_file($filePathOrContents);
             $outputPath = $this->getOutputPath($fileSha1, $type);
             if (!file_exists($outputPath) && !copy($filePathOrContents, $outputPath)) {
                 throw new AllureException("Failed to copy attachment from $filePathOrContents to $outputPath.");
             }
+
             return $this->getOutputFileName($fileSha1, $type);
         } else {
             //Trying to attach string content outputted by method
@@ -53,6 +54,7 @@ class AddAttachmentEvent implements StepEvent {
             if (!file_exists($outputPath) && !file_put_contents($outputPath, $filePathOrContents)) {
                 throw new AllureException("Failed to save file data to $outputPath.");
             }
+
             return $this->getOutputFileName($contentsSha1, $type);
         }
     }
@@ -90,5 +92,4 @@ class AddAttachmentEvent implements StepEvent {
     {
         return $this->type;
     }
-    
-} 
+}

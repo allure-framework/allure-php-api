@@ -2,7 +2,6 @@
 
 namespace Yandex\Allure\Adapter\Support;
 
-
 use Yandex\Allure\Adapter\Allure;
 use Yandex\Allure\Adapter\Event\Event;
 
@@ -10,11 +9,11 @@ use Yandex\Allure\Adapter\Event\Event;
  * All events are collected to the array and returned
  * @package Yandex\Allure\Adapter\Support
  */
-class MockedLifecycle extends Allure {
-    
+class MockedLifecycle extends Allure
+{
     private $events;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
         $this->reset();
@@ -32,10 +31,9 @@ class MockedLifecycle extends Allure {
     {
         return $this->events;
     }
-    
+
     public function reset()
     {
         $this->events = array();
     }
-
-} 
+}
