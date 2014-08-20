@@ -13,7 +13,6 @@ use Yandex\Allure\Adapter\Event\TestCaseFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
-use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Model\Description;
 use Yandex\Allure\Adapter\Model\DescriptionType;
 use Yandex\Allure\Adapter\Model\Label;
@@ -100,7 +99,7 @@ class XMLValidationTest extends \PHPUnit_Framework_TestCase
         $stepStartedEvent = $stepStartedEvent->withTitle(STEP_TITLE);
         Allure::lifecycle()->fire($stepStartedEvent);
         Allure::lifecycle()->fire(
-            new AddAttachmentEvent(STEP_ATTACHMENT_SOURCE, STEP_ATTACHMENT_TITLE, AttachmentType::TXT)
+            new AddAttachmentEvent(STEP_ATTACHMENT_SOURCE, STEP_ATTACHMENT_TITLE, 'text/plain')
         );
         Allure::lifecycle()->fire(new StepFinishedEvent());
 

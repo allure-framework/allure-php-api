@@ -3,8 +3,9 @@
 namespace Yandex\Allure\Adapter\Event;
 
 use Yandex\Allure\Adapter\Model\Attachment;
-use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Model\Step;
+
+const ATTACHMENT_TYPE = 'text/plain';
 
 class RemoveAttachmentsEventTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,8 +21,8 @@ class RemoveAttachmentsEventTest extends \PHPUnit_Framework_TestCase
         $notMatchingFilename = tempnam($tmpDirectory, 'excluded');
 
         $step = new Step();
-        $step->addAttachment(new Attachment($attachmentTitle, $matchingFilename, AttachmentType::TXT));
-        $step->addAttachment(new Attachment($attachmentTitle, $notMatchingFilename, AttachmentType::TXT));
+        $step->addAttachment(new Attachment($attachmentTitle, $matchingFilename, ATTACHMENT_TYPE));
+        $step->addAttachment(new Attachment($attachmentTitle, $notMatchingFilename, ATTACHMENT_TYPE));
 
         $this->assertEquals(2, sizeof($step->getAttachments()));
 

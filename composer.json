@@ -20,7 +20,8 @@
         "jms/serializer": ">=0.16.0",
         "rhumsaa/uuid": ">=2.7.0",
         "moontoast/math": ">=1.1.0",
-        "phpunit/phpunit": ">=4.0.0"
+        "phpunit/phpunit": ">=4.0.0",
+        "symfony/http-foundation": "2.5.3"
     },
     "autoload": {
         "psr-0": {

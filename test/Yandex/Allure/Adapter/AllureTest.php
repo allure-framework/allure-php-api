@@ -11,7 +11,6 @@ use Yandex\Allure\Adapter\Event\TestCaseFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Model\Attachment;
-use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
 use Yandex\Allure\Adapter\Model\TestCase;
@@ -27,7 +26,7 @@ class AllureTest extends \PHPUnit_Framework_TestCase
     const TEST_SUITE_UUID = 'test-suite-uuid';
     const STEP_ATTACHMENT_TITLE = 'step-attachment-caption';
     const STEP_ATTACHMENT_SOURCE = 'step-attachment-source';
-    const STEP_ATTACHMENT_TYPE = AttachmentType::TXT;
+    const STEP_ATTACHMENT_TYPE = 'text/plain';
 
     public function testStepStorageClearEvent()
     {

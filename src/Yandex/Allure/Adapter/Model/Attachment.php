@@ -36,7 +36,7 @@ class Attachment implements Entity
     {
         $this->source = $source;
         $this->title = $title;
-        $this->type = ConstantChecker::validate('Yandex\Allure\Adapter\Model\AttachmentType', $type);
+        $this->type = $type;
     }
 
     /**

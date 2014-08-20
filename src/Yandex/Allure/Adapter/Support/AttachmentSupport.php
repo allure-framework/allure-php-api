@@ -5,7 +5,6 @@ namespace Yandex\Allure\Adapter\Support;
 use Yandex\Allure\Adapter\Allure;
 use Yandex\Allure\Adapter\Event\AddAttachmentEvent;
 use Yandex\Allure\Adapter\Model;
-use Yandex\Allure\Adapter\Model\AttachmentType;
 
 /**
  * Use this trait in order to add Allure attachments support in your tests
@@ -20,7 +19,7 @@ trait AttachmentSupport
      * @param $caption
      * @param $type
      */
-    public function addAttachment($filePathOrContents, $caption, $type = AttachmentType::OTHER)
+    public function addAttachment($filePathOrContents, $caption, $type = null)
     {
         Allure::lifecycle()->fire(new AddAttachmentEvent($filePathOrContents, $caption, $type));
     }
