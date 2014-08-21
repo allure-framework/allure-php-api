@@ -28,6 +28,7 @@ trait StepSupport
      * @param callable $logic anonymous function containing the entire step logic.
      * @param string $title an optional title for the step
      * @throws \Yandex\Allure\Adapter\AllureException
+     * @throws \Exception
      */
     public function executeStep($name, $logic, $title = null)
     {

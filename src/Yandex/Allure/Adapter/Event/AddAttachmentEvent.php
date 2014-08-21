@@ -2,12 +2,17 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
+use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Yandex\Allure\Adapter\AllureException;
 use Yandex\Allure\Adapter\Model\Attachment;
-use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Model\Entity;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
+use Yandex\Allure\Adapter\Support\Utils;
+
+const DEFAULT_FILE_EXTENSION = 'txt';
+const DEFAULT_MIME_TYPE = 'text/plain';
 
 class AddAttachmentEvent implements StepEvent
 {
@@ -17,7 +22,7 @@ class AddAttachmentEvent implements StepEvent
 
     private $type;
 
-    public function __construct($filePathOrContents, $caption, $type)
+    public function __construct($filePathOrContents, $caption, $type = null)
     {
         $this->filePathOrContents = $filePathOrContents;
         $this->caption = $caption;
@@ -35,38 +40,57 @@ class AddAttachmentEvent implements StepEvent
 
     public function getAttachmentFileName($filePathOrContents, $type)
     {
-        if ($type === AttachmentType::OTHER) {
-            //Type = other is mainly for attached URLs
-            return $filePathOrContents;
-        } elseif (file_exists($filePathOrContents)) {
-            //Trying to attach some file outputted by method
-            $fileSha1 = sha1_file($filePathOrContents);
-            $outputPath = $this->getOutputPath($fileSha1, $type);
-            if (!file_exists($outputPath) && !copy($filePathOrContents, $outputPath)) {
-                throw new AllureException("Failed to copy attachment from $filePathOrContents to $outputPath.");
+        $filePath = $filePathOrContents;
+        if (!file_exists($filePath) || !is_file($filePath)) {
+            //Save contents to temporary file
+            $filePath = tempnam(sys_get_temp_dir(), 'allure-attachment');
+            if (!file_put_contents($filePath, $filePathOrContents)){
+                throw new AllureException("Failed to save attachment contents to $filePath");
             }
-
-            return $this->getOutputFileName($fileSha1, $type);
-        } else {
-            //Trying to attach string content outputted by method
-            $contentsSha1 = sha1($filePathOrContents);
-            $outputPath = $this->getOutputPath($contentsSha1, $type);
-            if (!file_exists($outputPath) && !file_put_contents($outputPath, $filePathOrContents)) {
-                throw new AllureException("Failed to save file data to $outputPath.");
-            }
-
-            return $this->getOutputFileName($contentsSha1, $type);
         }
+        
+        if (!isset($type)){
+            $type = $this->guessFileMimeType($filePath);
+            $this->type = $type;
+        }
+        
+        $fileExtension = $this->guessFileExtension($type);
+
+        $fileSha1 = sha1_file($filePath);
+        $outputPath = $this->getOutputPath($fileSha1, $fileExtension);
+        if (!copy($filePath, $outputPath)) {
+            throw new AllureException("Failed to copy attachment from $filePath to $outputPath.");
+        }
+
+        return $this->getOutputFileName($fileSha1, $fileExtension);
+    }
+    
+    private function guessFileMimeType($filePath)
+    {
+        $type = MimeTypeGuesser::getInstance()->guess($filePath);
+        if (!isset($type)){
+            return DEFAULT_MIME_TYPE;
+        }
+        return $type;
+    }
+    
+    private function guessFileExtension($mimeType)
+    {
+        $candidate = ExtensionGuesser::getInstance()->guess($mimeType);
+        if (!isset($candidate)){
+            return DEFAULT_FILE_EXTENSION;
+        }
+        return $candidate;
+    }
+    
+    public function getOutputFileName($sha1, $extension)
+    {
+        return $sha1 . '-attachment.' . $extension;
     }
 
-    public function getOutputFileName($sha1, $type)
+    public function getOutputPath($sha1, $extension)
     {
-        return $sha1 . '-attachment.' . $type;
-    }
-
-    public function getOutputPath($sha1, $type)
-    {
-        return Provider::getOutputDirectory() . DIRECTORY_SEPARATOR . $this->getOutputFileName($sha1, $type);
+        return Provider::getOutputDirectory() . DIRECTORY_SEPARATOR . $this->getOutputFileName($sha1, $extension);
     }
 
     /**

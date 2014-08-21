@@ -2,8 +2,6 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
-use Yandex\Allure\Adapter\Model\Attachment;
-use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
 
@@ -14,65 +12,52 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase
     public function testEventWithFile()
     {
         $attachmentCaption = self::ATTACHMENT_CAPTION;
-        $attachmentType = AttachmentType::TXT;
+        $attachmentType = 'application/json';
+        $correctExtension = 'json';
         $tmpDirectory = sys_get_temp_dir();
         Provider::setOutputDirectory($tmpDirectory);
         $tmpFilename = tempnam($tmpDirectory, 'allure-test');
         file_put_contents($tmpFilename, $this->getTestContents());
-        $sha1_sum = sha1_file($tmpFilename);
+        $sha1Sum = sha1_file($tmpFilename);
 
         $event = new AddAttachmentEvent($tmpFilename, $attachmentCaption, $attachmentType);
         $step = new Step();
         $event->process($step);
 
-        $attachmentFileName = $event->getOutputFileName($sha1_sum, $attachmentType);
-        $attachmentOutputPath = $event->getOutputPath($sha1_sum, $attachmentType);
+        $attachmentFileName = $event->getOutputFileName($sha1Sum, $correctExtension);
+        $attachmentOutputPath = $event->getOutputPath($sha1Sum, $correctExtension);
         $this->checkAttachmentIsCorrect(
             $step,
             $attachmentOutputPath,
             $attachmentFileName,
             $attachmentCaption,
-            $attachmentType,
-            true
+            $attachmentType
         );
     }
 
     public function testEventWithStringContents()
     {
         $attachmentCaption = self::ATTACHMENT_CAPTION;
-        $attachmentType = AttachmentType::JSON;
+        $attachmentType = 'text/plain';
+        $correctExtension = 'txt';
         $tmpDirectory = sys_get_temp_dir();
         Provider::setOutputDirectory($tmpDirectory);
         $contents = $this->getTestContents();
-        $sha1_sum = sha1($contents);
+        $sha1Sum = sha1($contents);
 
-        $event = new AddAttachmentEvent($contents, $attachmentCaption, $attachmentType);
+        $event = new AddAttachmentEvent($contents, $attachmentCaption);
         $step = new Step();
         $event->process($step);
 
-        $attachmentFileName = $event->getOutputFileName($sha1_sum, $attachmentType);
-        $attachmentOutputPath = $event->getOutputPath($sha1_sum, $attachmentType);
+        $attachmentFileName = $event->getOutputFileName($sha1Sum, $correctExtension);
+        $attachmentOutputPath = $event->getOutputPath($sha1Sum, $correctExtension);
         $this->checkAttachmentIsCorrect(
             $step,
             $attachmentOutputPath,
             $attachmentFileName,
             $attachmentCaption,
-            $attachmentType,
-            true
+            $attachmentType
         );
-    }
-
-    public function testEventWithUrl()
-    {
-        $attachmentCaption = self::ATTACHMENT_CAPTION;
-        $attachmentType = AttachmentType::OTHER;
-        $attachmentUrl = 'some-url';
-
-        $event = new AddAttachmentEvent($attachmentUrl, $attachmentCaption, $attachmentType);
-        $step = new Step();
-        $event->process($step);
-
-        $this->checkAttachmentIsCorrect($step, '', $attachmentUrl, $attachmentCaption, $attachmentType);
     }
 
     private function checkAttachmentIsCorrect(
@@ -80,21 +65,16 @@ class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase
         $attachmentOutputPath,
         $attachmentFileName,
         $attachmentCaption,
-        $attachmentType,
-        $checkIfFileExists = false
+        $attachmentType
     ) {
-        if ($checkIfFileExists) {
-            $this->assertTrue(file_exists($attachmentOutputPath));
-        }
+        $this->assertTrue(file_exists($attachmentOutputPath));
         $attachments = $step->getAttachments();
         $this->assertEquals(1, sizeof($attachments));
         $attachment = array_pop($attachments);
-        $this->assertTrue(
-            ($attachment instanceof Attachment) &&
-            ($attachment->getSource() === $attachmentFileName) &&
-            ($attachment->getTitle() === $attachmentCaption) &&
-            ($attachment->getType() === $attachmentType)
-        );
+        $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Attachment', $attachment);
+        $this->assertEquals($attachmentFileName, $attachment->getSource());
+        $this->assertEquals($attachmentCaption, $attachment->getTitle());
+        $this->assertEquals($attachmentType, $attachment->getType());
     }
 
     private function getTestContents()
