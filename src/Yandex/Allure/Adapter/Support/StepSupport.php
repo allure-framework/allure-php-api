@@ -27,11 +27,14 @@ trait StepSupport
      * @param string $name step name
      * @param callable $logic anonymous function containing the entire step logic.
      * @param string $title an optional title for the step
+     * @return mixed
      * @throws \Yandex\Allure\Adapter\AllureException
      * @throws \Exception
      */
     public function executeStep($name, $logic, $title = null)
     {
+        $logicResult = null;
+
         if (isset($name) && is_callable($logic)) {
             $event = new StepStartedEvent($name);
             if (isset($title)) {
@@ -39,7 +42,7 @@ trait StepSupport
             }
             Allure::lifecycle()->fire($event);
             try {
-                $logic();
+                $logicResult = $logic();
                 Allure::lifecycle()->fire(new StepFinishedEvent());
             } catch (Exception $e) {
                 $stepFailedEvent = new StepFailedEvent();
@@ -50,5 +53,7 @@ trait StepSupport
         } else {
             throw new AllureException("Step name shouldn't be null and logic should be a callable.");
         }
+
+        return $logicResult;
     }
 }
