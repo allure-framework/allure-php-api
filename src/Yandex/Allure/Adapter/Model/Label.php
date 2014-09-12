@@ -75,4 +75,14 @@ class Label implements Entity
     {
         return new Label(LabelType::SEVERITY, $severityLevel);
     }
+    
+    /**
+     * @param $issueKey
+     * @return Label
+     */
+    public static function issue($issueKey)
+    {
+        return new Label(LabelType::ISSUE, $issueKey);
+    }
+    
 }

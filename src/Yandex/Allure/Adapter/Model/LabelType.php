@@ -7,4 +7,5 @@ class LabelType
     const FEATURE = 'feature';
     const STORY = 'story';
     const SEVERITY = 'severity';
+    const ISSUE = 'issue';
 }
