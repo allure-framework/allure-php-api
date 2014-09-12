@@ -69,7 +69,7 @@ class AnnotationProvider
         return self::$annotationReader;
     }
 
-    private static function registerAnnotationNamespaces()
+    public static function registerAnnotationNamespaces()
     {
         AnnotationRegistry::registerAutoloadNamespace(
             'JMS\Serializer\Annotation',
