@@ -23,9 +23,9 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test-suite-title', $event->getTitle());
         $this->assertEquals('test-suite-description', $event->getDescription()->getValue());
         $this->assertEquals(DescriptionType::MARKDOWN, $event->getDescription()->getType());
-        $this->assertEquals(4, sizeof($event->getLabels()));
+        $this->assertEquals(6, sizeof($event->getLabels()));
 
-        //Check feature presence
+        //Check features presence
         $features = $this->getLabelsByType($event->getLabels(), LabelType::FEATURE);
         $this->assertEquals(2, sizeof($features));
         $index = 1;
@@ -44,6 +44,17 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals("test-suite-story$index", $story->getValue());
             $index++;
         }
+
+        //Check issues presence
+        $issues = $this->getLabelsByType($event->getLabels(), LabelType::ISSUE);
+        $this->assertEquals(2, sizeof($issues));
+        $index = 1;
+        foreach ($issues as $issue) {
+            $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $issue);
+            $this->assertEquals("test-suite-issue$index", $issue->getValue());
+            $index++;
+        }
+
     }
 
     public function testUpdateTestCaseStartedEvent()
@@ -58,7 +69,7 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test-case-title', $event->getTitle());
         $this->assertEquals('test-case-description', $event->getDescription()->getValue());
         $this->assertEquals(DescriptionType::HTML, $event->getDescription()->getType());
-        $this->assertEquals(5, sizeof($event->getLabels()));
+        $this->assertEquals(7, sizeof($event->getLabels()));
 
         //Check feature presence
         $features = $this->getLabelsByType($event->getLabels(), LabelType::FEATURE);
@@ -77,6 +88,16 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
         foreach ($stories as $story) {
             $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $story);
             $this->assertEquals("test-case-story$index", $story->getValue());
+            $index++;
+        }
+        
+        //Check issues presence
+        $issues = $this->getLabelsByType($event->getLabels(), LabelType::ISSUE);
+        $this->assertEquals(2, sizeof($issues));
+        $index = 1;
+        foreach ($issues as $issue) {
+            $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $issue);
+            $this->assertEquals("test-case-issue$index", $issue->getValue());
             $index++;
         }
 

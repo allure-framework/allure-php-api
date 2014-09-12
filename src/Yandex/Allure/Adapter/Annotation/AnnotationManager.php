@@ -52,8 +52,12 @@ class AnnotationManager
                     $this->labels[] = Model\Label::feature($featureName);
                 }
             } elseif ($annotation instanceof Stories) {
-                foreach ($annotation->getStories() as $storyName) {
-                    $this->labels[] = Model\Label::story($storyName);
+                foreach ($annotation->getStories() as $issueKey) {
+                    $this->labels[] = Model\Label::story($issueKey);
+                }
+            } elseif ($annotation instanceof Issues) {
+                foreach ($annotation->getIssueKeys() as $issueKey) {
+                    $this->labels[] = Model\Label::issue($issueKey);
                 }
             } elseif ($annotation instanceof Severity) {
                 $this->labels[] = Model\Label::severity(
