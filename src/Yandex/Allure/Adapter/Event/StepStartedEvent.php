@@ -26,13 +26,13 @@ class StepStartedEvent implements StepEvent
             $context->setName($this->name);
             $context->setStatus(Status::PASSED);
             $context->setStart(self::getTimestamp());
-            $context->setTitle($this->title);
+            $context->setTitle($this->name);
         }
     }
 
     public function withTitle($title)
     {
-        $this->title = $title;
+        $this->title = $this->name;
 
         return $this;
     }

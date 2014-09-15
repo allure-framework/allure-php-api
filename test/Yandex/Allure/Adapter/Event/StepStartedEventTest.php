@@ -16,7 +16,7 @@ class StepStartedEventTest extends \PHPUnit_Framework_TestCase
         $event->withTitle($stepTitle);
         $event->process($step);
         $this->assertEquals(Status::PASSED, $step->getStatus());
-        $this->assertEquals($stepTitle, $step->getTitle());
+        $this->assertEquals($stepName, $step->getTitle());
         $this->assertNotEmpty($step->getStart());
         $this->assertEquals($stepName, $step->getName());
         $this->assertEmpty($step->getStop());
