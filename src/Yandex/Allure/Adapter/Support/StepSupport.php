@@ -39,6 +39,8 @@ trait StepSupport
             $event = new StepStartedEvent($name);
             if (isset($title)) {
                 $event->withTitle($title);
+            } else {
+                $event->withTitle($name);
             }
             Allure::lifecycle()->fire($event);
             try {
