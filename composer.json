@@ -8,7 +8,7 @@
         {
             "name": "Ivan Krutov",
             "email": "vania-pooh@yandex-team.ru",
-	        "role": "Developer"
+            "role": "Developer"
         }
     ],
     "support": {
@@ -16,12 +16,12 @@
         "source": "https://github.com/allure-framework/allure-php-api"
     },
     "require": {
-	    "php": ">=5.4.0",
+        "php": ">=5.4.0",
         "jms/serializer": ">=0.16.0",
         "rhumsaa/uuid": ">=2.7.0",
         "moontoast/math": ">=1.1.0",
         "phpunit/phpunit": ">=4.0.0",
-        "symfony/http-foundation": "~2.3.0"
+        "symfony/http-foundation": "~2.3"
     },
     "autoload": {
         "psr-0": {
