@@ -92,7 +92,7 @@ class XMLValidationTest extends \PHPUnit_Framework_TestCase
         Allure::lifecycle()->fire($testCaseStartedEvent);
 
         $testCaseFailureEvent = new TestCaseFailedEvent();
-        $testCaseFailureEvent = $testCaseFailureEvent->withMessage(FAILURE_MESSAGE)->withException(new Exception());
+        $testCaseFailureEvent = $testCaseFailureEvent->withMessage(FAILURE_MESSAGE)->withException(new \Exception());
         Allure::lifecycle()->fire($testCaseFailureEvent);
 
         $stepStartedEvent = new StepStartedEvent(STEP_NAME);
