@@ -21,7 +21,7 @@
         "rhumsaa/uuid": ">=2.7.0",
         "moontoast/math": ">=1.1.0",
         "phpunit/phpunit": ">=4.0.0",
-        "symfony/http-foundation": "~2.3"
+        "symfony/http-foundation": "2.6.*"
     },
     "autoload": {
         "psr-0": {
