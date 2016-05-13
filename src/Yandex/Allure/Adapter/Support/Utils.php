@@ -2,7 +2,7 @@
 
 namespace Yandex\Allure\Adapter\Support;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 trait Utils
 {
