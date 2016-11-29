@@ -13,4 +13,18 @@ final class SeverityLevel
     const NORMAL = 'normal';
     const MINOR = 'minor';
     const TRIVIAL = 'trivial';
+
+    /**
+     * @return array
+     */
+    public function getSupportedSeverityLevels()
+    {
+        return [
+            self::BLOCKER,
+            self::CRITICAL,
+            self::NORMAL,
+            self::MINOR,
+            self::TRIVIAL,
+        ];
+    }
 }
