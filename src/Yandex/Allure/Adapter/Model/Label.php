@@ -30,6 +30,10 @@ class Label implements Entity
     public function __construct($name, $value)
     {
         $this->name = $name;
+
+        if ($name == LabelType::SEVERITY) {
+            ConstantChecker::validate('Yandex\Allure\Adapter\Model\SeverityLevel', $value);
+        }
         $this->value = $value;
     }
 
