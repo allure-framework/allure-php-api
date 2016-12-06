@@ -8,4 +8,5 @@ class LabelType
     const STORY = 'story';
     const SEVERITY = 'severity';
     const ISSUE = 'issue';
+    const TEST_ID = 'testId';
 }
