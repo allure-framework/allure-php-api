@@ -84,5 +84,15 @@ class Label implements Entity
     {
         return new Label(LabelType::ISSUE, $issueKey);
     }
+
+    /**
+     * @param $testCaseId
+     *
+     * @return Label
+     */
+    public static function testId($testCaseId)
+    {
+        return new Label(LabelType::TEST_ID, $testCaseId);
+    }
     
 }

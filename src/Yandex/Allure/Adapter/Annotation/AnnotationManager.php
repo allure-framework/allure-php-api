@@ -59,6 +59,10 @@ class AnnotationManager
                 foreach ($annotation->getIssueKeys() as $issueKey) {
                     $this->labels[] = Model\Label::issue($issueKey);
                 }
+            } elseif ($annotation instanceof TestCaseId) {
+                foreach ($annotation->getTestCaseIds() as $testCaseId) {
+                    $this->labels[] = Model\Label::testId($testCaseId);
+                }
             } elseif ($annotation instanceof Severity) {
                 $this->labels[] = Model\Label::severity(
                     ConstantChecker::validate('Yandex\Allure\Adapter\Model\SeverityLevel', $annotation->level)
