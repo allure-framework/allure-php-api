@@ -7,7 +7,7 @@ use Yandex\Allure\Adapter\Model\ParameterKind;
 
 /**
  * @Annotation
- * @Target({"METHOD"})
+ * @Target({"METHOD", "ANNOTATION"})
  * @package Yandex\Allure\Adapter\Annotation
  */
 class Parameter
