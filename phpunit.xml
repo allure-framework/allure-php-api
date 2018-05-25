@@ -16,4 +16,9 @@
             <directory>test/Yandex/Allure/Adapter/</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist>
+            <directory>src/</directory>
+        </whitelist>
+    </filter>
 </phpunit>
