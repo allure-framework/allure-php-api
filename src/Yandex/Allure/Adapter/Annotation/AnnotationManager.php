@@ -67,6 +67,8 @@ class AnnotationManager
                 $this->labels[] = Model\Label::severity(
                     ConstantChecker::validate('Yandex\Allure\Adapter\Model\SeverityLevel', $annotation->level)
                 );
+            } elseif ($annotation instanceof TestType) {
+                $this->labels[] = Model\Label::testType($annotation->type);
             } elseif ($annotation instanceof Parameter) {
                 $this->parameters[] = new Model\Parameter(
                     $annotation->name,

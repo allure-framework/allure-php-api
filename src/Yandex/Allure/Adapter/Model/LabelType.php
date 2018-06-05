@@ -9,4 +9,5 @@ class LabelType
     const SEVERITY = 'severity';
     const ISSUE = 'issue';
     const TEST_ID = 'testId';
+    const TEST_TYPE = 'testType';
 }
