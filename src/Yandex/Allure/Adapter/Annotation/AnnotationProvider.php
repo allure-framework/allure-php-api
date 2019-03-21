@@ -71,6 +71,16 @@ class AnnotationProvider
 
     public static function registerAnnotationNamespaces()
     {
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/Exclude.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/ExclusionPolicy.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/SerializedName.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/Type.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/XmlAttribute.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/XmlElement.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/XmlList.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/XmlNamespace.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/XmlValue.php");
+        AnnotationRegistry::registerFile(__DIR__ . "/../../../../../../../../vendor/jms/serializer/src/Annotation/XmlRoot.php");
         AnnotationRegistry::registerAutoloadNamespace(
             'JMS\Serializer\Annotation',
             [
