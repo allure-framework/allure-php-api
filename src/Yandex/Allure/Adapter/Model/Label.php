@@ -50,6 +50,15 @@ class Label implements Entity
     }
 
     /**
+     * @param $epicName
+     * @return Label
+     */
+    public static function epic($epicName)
+    {
+        return new Label(LabelType::EPIC, $epicName);
+    }
+
+    /**
      * @param $featureName
      * @return Label
      */
@@ -75,7 +84,7 @@ class Label implements Entity
     {
         return new Label(LabelType::SEVERITY, $severityLevel);
     }
-
+    
     /**
      * @param $testType
      * @return Label
@@ -103,5 +112,5 @@ class Label implements Entity
     {
         return new Label(LabelType::TEST_ID, $testCaseId);
     }
-
+    
 }

@@ -75,6 +75,10 @@ class AnnotationManager
                     $annotation->value,
                     $annotation->kind
                 );
+            } elseif ($annotation instanceof Epics) {
+                foreach ($annotation->getEpicNames() as $epicName) {
+                    $this->labels[] = Model\Label::epic($epicName);
+                }
             }
         }
     }
