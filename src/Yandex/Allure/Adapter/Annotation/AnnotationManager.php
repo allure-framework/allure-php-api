@@ -75,6 +75,14 @@ class AnnotationManager
                     $annotation->value,
                     $annotation->kind
                 );
+            } elseif ($annotation instanceof Parameters) {
+                foreach ($annotation->parameters as $parameter) {
+                    $this->parameters[] = new Model\Parameter(
+                        $parameter->name,
+                        $parameter->value,
+                        $parameter->kind
+                    );
+                }
             }
         }
     }
