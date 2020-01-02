@@ -10,4 +10,5 @@ class LabelType
     const ISSUE = 'issue';
     const TEST_ID = 'testId';
     const TEST_TYPE = 'testType';
+    const GROUP = 'group';
 }

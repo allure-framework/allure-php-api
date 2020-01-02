@@ -83,6 +83,8 @@ class AnnotationManager
                         $parameter->kind
                     );
                 }
+            } elseif ($annotation instanceof Group) {
+                $this->labels[] = Model\Label::groupName($annotation->groupName);
             }
         }
     }

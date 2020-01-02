@@ -104,4 +104,14 @@ class Label implements Entity
         return new Label(LabelType::TEST_ID, $testCaseId);
     }
 
+    /**
+     * @param $group
+     *
+     * @return Label
+     */
+    public static function groupName($group)
+    {
+        return new Label(LabelType::GROUP, $group);
+    }
+
 }
