@@ -115,7 +115,7 @@ class AnnotationManager
         }
 
         if ($this->areLabelsPresent()) {
-            $event->setLabels($this->getLabels());
+            $event->setLabels(array_merge($event->getLabels(), $this->getLabels()));
         }
 
         if ($this->areParametersPresent()) {
