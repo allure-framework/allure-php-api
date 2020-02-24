@@ -44,16 +44,16 @@ class AddAttachmentEvent implements StepEvent
         if (!file_exists($filePath) || !is_file($filePath)) {
             //Save contents to temporary file
             $filePath = tempnam(sys_get_temp_dir(), 'allure-attachment');
-            if (!file_put_contents($filePath, $filePathOrContents)){
+            if (!file_put_contents($filePath, $filePathOrContents)) {
                 throw new AllureException("Failed to save attachment contents to $filePath");
             }
         }
-        
-        if (!isset($type)){
+
+        if (!isset($type)) {
             $type = $this->guessFileMimeType($filePath);
             $this->type = $type;
         }
-        
+
         $fileExtension = $this->guessFileExtension($type);
 
         $fileSha1 = sha1_file($filePath);
@@ -64,25 +64,42 @@ class AddAttachmentEvent implements StepEvent
 
         return $this->getOutputFileName($fileSha1, $fileExtension);
     }
-    
+
     private function guessFileMimeType($filePath)
     {
-        $type = MimeTypeGuesser::getInstance()->guess($filePath);
-        if (!isset($type)){
+        $mimeTypesClass = '\Symfony\Component\Mime\MimeTypes';
+        if (class_exists($mimeTypesClass)) {
+            /** @var \Symfony\Component\Mime\MimeTypes $mimeTypes */
+            $mimeTypes = call_user_func([$mimeTypesClass, 'getDefault']);
+            $type = $mimeTypes->guessMimeType($filePath);
+        } else {
+            $type = MimeTypeGuesser::getInstance()->guess($filePath);
+        }
+        if (!isset($type)) {
             return DEFAULT_MIME_TYPE;
         }
+
         return $type;
     }
-    
+
     private function guessFileExtension($mimeType)
     {
-        $candidate = ExtensionGuesser::getInstance()->guess($mimeType);
-        if (!isset($candidate)){
+        $mimeTypesClass = '\Symfony\Component\Mime\MimeTypes';
+        if (class_exists($mimeTypesClass)) {
+            /** @var \Symfony\Component\Mime\MimeTypes $mimeTypes */
+            $mimeTypes = call_user_func([$mimeTypesClass, 'getDefault']);
+            $extensions = $mimeTypes->getExtensions($mimeType);
+            $candidate = isset($extensions[0]) ? $extensions[0] : null;
+        } else {
+            $candidate = ExtensionGuesser::getInstance()->guess($mimeType);
+        }
+        if (!isset($candidate)) {
             return DEFAULT_FILE_EXTENSION;
         }
+
         return $candidate;
     }
-    
+
     public function getOutputFileName($sha1, $extension)
     {
         return $sha1 . '-attachment.' . $extension;
