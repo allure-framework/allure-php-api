@@ -4,6 +4,7 @@ namespace Yandex\Allure\Adapter;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use DOMDocument;
+use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Exporter\Exception;
 use Yandex\Allure\Adapter\Event\AddAttachmentEvent;
 use Yandex\Allure\Adapter\Event\StepFinishedEvent;
@@ -36,7 +37,7 @@ const STEP_TITLE = 'test-step-title';
 const STEP_ATTACHMENT_TITLE = 'step-attachment-caption';
 const STEP_ATTACHMENT_SOURCE = 'step-attachment-source';
 
-class XMLValidationTest extends \PHPUnit_Framework_TestCase
+class XMLValidationTest extends TestCase
 {
     public function testGeneratedXMLIsValid()
     {

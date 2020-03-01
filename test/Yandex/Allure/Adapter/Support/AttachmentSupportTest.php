@@ -2,11 +2,12 @@
 
 namespace Yandex\Allure\Adapter\Support;
 
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Allure;
 use Yandex\Allure\Adapter\Event\AddAttachmentEvent;
 use Yandex\Allure\Adapter\Model\Provider;
 
-class AttachmentSupportTest extends \PHPUnit_Framework_TestCase
+class AttachmentSupportTest extends TestCase
 {
     use AttachmentSupport;
 

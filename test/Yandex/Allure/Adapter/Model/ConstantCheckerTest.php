@@ -2,10 +2,11 @@
 
 namespace Yandex\Allure\Adapter\Model;
 
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\AllureException;
 use Yandex\Allure\Adapter\Model\Fixtures\TestConstants;
 
-class ConstantCheckerTest extends \PHPUnit_Framework_TestCase
+class ConstantCheckerTest extends TestCase
 {
     const CLASS_NAME = 'Yandex\Allure\Adapter\Model\Fixtures\TestConstants';
 

@@ -3,8 +3,9 @@
 namespace Yandex\Allure\Adapter\Annotation;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use PHPUnit\Framework\TestCase;
 
-class AnnotationProviderTest extends \PHPUnit_Framework_TestCase
+class AnnotationProviderTest extends TestCase
 {
     const TYPE_CLASS = 'class';
     const TYPE_METHOD = 'method';

@@ -2,10 +2,11 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Model\Provider;
 use Yandex\Allure\Adapter\Model\Step;
 
-class AddAttachmentEventTest extends \PHPUnit_Framework_TestCase
+class AddAttachmentEventTest extends TestCase
 {
     const ATTACHMENT_CAPTION = 'test-caption';
 

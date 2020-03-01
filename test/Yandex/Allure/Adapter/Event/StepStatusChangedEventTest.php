@@ -2,9 +2,10 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Model\Step;
 
-abstract class StepStatusChangedEventTest extends \PHPUnit_Framework_TestCase
+abstract class StepStatusChangedEventTest extends TestCase
 {
     /**
      * @return string

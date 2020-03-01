@@ -2,6 +2,7 @@
 
 namespace Yandex\Allure\Adapter\Annotation;
 
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model\DescriptionType;
@@ -10,7 +11,7 @@ use Yandex\Allure\Adapter\Model\SeverityLevel;
 use Yandex\Allure\Adapter\Model\Label;
 use Yandex\Allure\Adapter\Model\LabelType;
 
-class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
+class AnnotationManagerTest extends TestCase
 {
     public function testUpdateTestSuiteStartedEvent()
     {
