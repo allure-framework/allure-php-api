@@ -50,7 +50,7 @@ class StepSupportTest extends TestCase
     /**
      * @expectedException Exception
      */
-    public function te1stExecuteFailingStep()
+    public function testExecuteFailingStep()
     {
         $logicWithException = function () {
             throw new Exception();
@@ -66,7 +66,7 @@ class StepSupportTest extends TestCase
     /**
      * @expectedException \Yandex\Allure\Adapter\AllureException
      */
-    public function t1estExecuteStepWithMissingData()
+    public function testExecuteStepWithMissingData()
     {
         $this->executeStep(null, null, null);
     }
