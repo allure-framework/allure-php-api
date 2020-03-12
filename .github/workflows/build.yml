@@ -13,5 +13,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
-      - name: Composer Install
+      - name: Install
         run: composer install
+      - name: Test
+        run: composer test

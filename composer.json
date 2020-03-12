@@ -28,5 +28,10 @@
         "psr-0": {
             "Yandex": ["src/", "test/"]
         }
+    },
+    "scripts": {
+        "test": [
+            "phpunit test"
+        ]
     }
 }
