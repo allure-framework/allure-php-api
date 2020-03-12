@@ -1,0 +1,16 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    steps:
+      - uses: actions/checkout@v1
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Composer Install
+        run: composer install
