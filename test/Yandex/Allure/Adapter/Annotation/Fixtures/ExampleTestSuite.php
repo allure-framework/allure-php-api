@@ -2,12 +2,15 @@
 
 namespace Yandex\Allure\Adapter\Annotation\Fixtures;
 
+use Yandex\Allure\Adapter\Annotation\AllureId;
 use Yandex\Allure\Adapter\Annotation\Issues;
 use Yandex\Allure\Adapter\Annotation\Title;
 use Yandex\Allure\Adapter\Annotation\Description;
 use Yandex\Allure\Adapter\Annotation\Features;
 use Yandex\Allure\Adapter\Annotation\Stories;
 use Yandex\Allure\Adapter\Annotation\Severity;
+use Yandex\Allure\Adapter\Annotation\Label;
+use Yandex\Allure\Adapter\Annotation\Labels;
 use Yandex\Allure\Adapter\Annotation\Parameter;
 use Yandex\Allure\Adapter\Model\DescriptionType;
 use Yandex\Allure\Adapter\Model\SeverityLevel;
@@ -23,12 +26,17 @@ use Yandex\Allure\Adapter\Model\ParameterKind;
 class ExampleTestSuite
 {
     /**
+     * @AllureId("123")
      * @Title("test-case-title")
      * @Description(value="test-case-description", type=DescriptionType::HTML)
      * @Features({"test-case-feature1", "test-case-feature2"})
      * @Stories({"test-case-story1", "test-case-story2"})
      * @Severity(SeverityLevel::BLOCKER)
      * @Parameter(name = "test-case-param-name", value = "test-case-param-value", kind = ParameterKind::ARGUMENT)
+     * @Labels({
+     *     @Label(name = "custom-name", value = "custom-value-1"),
+     *     @Label(name = "custom-name", value = "custom-value-2")
+     * })
      * @Issues({"test-case-issue1", "test-case-issue2"})
      */
     public function exampleTestCase()
