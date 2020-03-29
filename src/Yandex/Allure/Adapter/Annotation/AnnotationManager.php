@@ -53,8 +53,8 @@ class AnnotationManager
                     $this->labels[] = Model\Label::epic($epicName);
                 }
             } elseif ($annotation instanceof Features) {
-                foreach ($annotation->getFeatureNames() as $epicName) {
-                    $this->labels[] = Model\Label::feature($epicName);
+                foreach ($annotation->getFeatureNames() as $featureName) {
+                    $this->labels[] = Model\Label::feature($featureName);
                 }
             } elseif ($annotation instanceof Stories) {
                 foreach ($annotation->getStories() as $issueKey) {
