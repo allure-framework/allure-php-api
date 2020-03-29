@@ -57,6 +57,16 @@ class Label implements Entity
     {
         return new Label(LabelType::ID, $id);
     }
+
+    /**
+     * @param $epicName
+     * @return Label
+     */
+    public static function epic($epicName)
+    {
+        return new Label(LabelType::EPIC, $epicName);
+    }
+
     /**
      * @param $featureName
      * @return Label
