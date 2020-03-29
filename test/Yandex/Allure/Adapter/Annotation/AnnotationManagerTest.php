@@ -79,7 +79,7 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test-case-title', $event->getTitle());
         $this->assertEquals('test-case-description', $event->getDescription()->getValue());
         $this->assertEquals(DescriptionType::HTML, $event->getDescription()->getType());
-        $this->assertEquals(12, sizeof($event->getLabels()));
+        $this->assertEquals(13, sizeof($event->getLabels()));
 
         //Check id presence
         $ids = $this->getLabelsByType($event->getLabels(), LabelType::ID);
@@ -130,7 +130,7 @@ class AnnotationManagerTest extends \PHPUnit_Framework_TestCase
 
         //Check custom labels presence
         $customs = $this->getLabelsByType($event->getLabels(), "custom-name");
-        $this->assertEquals(2, sizeof($customs));
+        $this->assertEquals(3, sizeof($customs));
         $index = 1;
         foreach ($customs as $custom) {
             $this->assertInstanceOf('Yandex\Allure\Adapter\Model\Label', $custom);

@@ -19,9 +19,9 @@ class Label
     public $name;
 
     /**
-     * @var string
+     * @var array
      * @Required
      */
-    public $value;
+    public $values;
 
 }

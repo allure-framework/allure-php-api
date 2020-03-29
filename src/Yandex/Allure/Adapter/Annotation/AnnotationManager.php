@@ -89,10 +89,14 @@ class AnnotationManager
                     );
                 }
             } elseif ($annotation instanceof Label) {
-                $this->labels[] = Model\Label::label($annotation->name, $annotation->value);
+                foreach ($annotation -> values as $value) {
+                    $this->labels[] = Model\Label::label($annotation->name, $value);
+                }
             } elseif ($annotation instanceof Labels) {
                 foreach ($annotation -> labels as $label) {
-                    $this->labels[] = Model\Label::label($label->name, $label->value);
+                    foreach ($label -> values as $value) {
+                        $this->labels[] = Model\Label::label($label->name, $value);
+                    }
                 }
             }
         }

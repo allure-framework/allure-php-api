@@ -37,8 +37,8 @@ class ExampleTestSuite
      * @Severity(SeverityLevel::BLOCKER)
      * @Parameter(name = "test-case-param-name", value = "test-case-param-value", kind = ParameterKind::ARGUMENT)
      * @Labels({
-     *     @Label(name = "custom-name", value = "custom-value-1"),
-     *     @Label(name = "custom-name", value = "custom-value-2")
+     *     @Label(name = "custom-name", values = "custom-value-1"),
+     *     @Label(name = "custom-name", values = {"custom-value-2", "custom-value-3"})
      * })
      * @Issues({"test-case-issue1", "test-case-issue2"})
      */
