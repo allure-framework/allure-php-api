@@ -48,9 +48,13 @@ class AnnotationManager
                     $annotation->type,
                     $annotation->value
                 );
+            } elseif ($annotation instanceof Epics) {
+                foreach ($annotation->getEpicNames() as $epicName) {
+                    $this->labels[] = Model\Label::epic($epicName);
+                }
             } elseif ($annotation instanceof Features) {
-                foreach ($annotation->getFeatureNames() as $featureName) {
-                    $this->labels[] = Model\Label::feature($featureName);
+                foreach ($annotation->getFeatureNames() as $epicName) {
+                    $this->labels[] = Model\Label::feature($epicName);
                 }
             } elseif ($annotation instanceof Stories) {
                 foreach ($annotation->getStories() as $issueKey) {
