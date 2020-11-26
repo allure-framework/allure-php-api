@@ -27,14 +27,14 @@ class Step implements Entity
     /**
      * @var string
      * @Type("string")
-     * @XmlElement(cdata=false)
+     * @XmlElement
      */
     private $name;
 
     /**
      * @var string
      * @Type("string")
-     * @XmlElement(cdata=false)
+     * @XmlElement
      */
     private $title;
 
