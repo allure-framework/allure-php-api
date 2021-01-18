@@ -46,7 +46,7 @@ class TestCase implements Entity
     /**
      * @var string
      * @Type("string")
-     * @XmlElement(cdata=false)
+     * @XmlElement
      */
     private $title;
 

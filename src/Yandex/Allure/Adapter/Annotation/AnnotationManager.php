@@ -2,7 +2,6 @@
 
 namespace Yandex\Allure\Adapter\Annotation;
 
-use Doctrine\Common\Annotations\Annotation;
 use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
@@ -40,13 +39,19 @@ class AnnotationManager
     private function processAnnotations(array $annotations)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Title) {
+            if ($annotation instanceof AllureId) {
+                $this->labels[] = Model\Label::id($annotation->value);
+            } elseif ($annotation instanceof Title) {
                 $this->title = $annotation->value;
             } elseif ($annotation instanceof Description) {
                 $this->description = new Model\Description(
                     $annotation->type,
                     $annotation->value
                 );
+            } elseif ($annotation instanceof Epics) {
+                foreach ($annotation->getEpicNames() as $epicName) {
+                    $this->labels[] = Model\Label::epic($epicName);
+                }
             } elseif ($annotation instanceof Features) {
                 foreach ($annotation->getFeatureNames() as $featureName) {
                     $this->labels[] = Model\Label::feature($featureName);
@@ -82,6 +87,16 @@ class AnnotationManager
                         $parameter->value,
                         $parameter->kind
                     );
+                }
+            } elseif ($annotation instanceof Label) {
+                foreach ($annotation -> values as $value) {
+                    $this->labels[] = Model\Label::label($annotation->name, $value);
+                }
+            } elseif ($annotation instanceof Labels) {
+                foreach ($annotation -> labels as $label) {
+                    foreach ($label -> values as $value) {
+                        $this->labels[] = Model\Label::label($label->name, $value);
+                    }
                 }
             }
         }
