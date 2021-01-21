@@ -71,18 +71,7 @@ class AnnotationProvider
 
     public static function registerAnnotationNamespaces()
     {
-        AnnotationRegistry::registerAutoloadNamespace(
-            'JMS\Serializer\Annotation',
-            [
-                __DIR__ . "/../../../../../../../../vendor/jms/serializer/src",
-                __DIR__ . "/../../../../vendor/jms/serializer/src"
-            ]
-        );
-
-        AnnotationRegistry::registerAutoloadNamespace(
-            'Yandex\Allure\Adapter\Annotation',
-            __DIR__ . "/../../../../../src"
-        );
+        AnnotationRegistry::registerUniqueLoader('class_exists');
     }
 
     /**

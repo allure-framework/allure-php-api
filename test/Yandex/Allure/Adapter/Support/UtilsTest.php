@@ -2,7 +2,9 @@
 
 namespace Yandex\Allure\Adapter\Support;
 
-class UtilsTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class UtilsTest extends TestCase
 {
     use Utils;
 

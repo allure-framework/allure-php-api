@@ -2,9 +2,10 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
+use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 use Yandex\Allure\Adapter\Model\TestCase;
 
-class TestCaseFinishedEventTest extends \PHPUnit_Framework_TestCase
+class TestCaseFinishedEventTest extends PhpUnitTestCase
 {
     public function testEvent()
     {

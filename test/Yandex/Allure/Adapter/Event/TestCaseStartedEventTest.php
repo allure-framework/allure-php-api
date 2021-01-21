@@ -10,8 +10,9 @@ use Yandex\Allure\Adapter\Model\Parameter;
 use Yandex\Allure\Adapter\Model\ParameterKind;
 use Yandex\Allure\Adapter\Model\Status;
 use Yandex\Allure\Adapter\Model\TestCase;
+use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
-class TestCaseStartedEventTest extends \PHPUnit_Framework_TestCase
+class TestCaseStartedEventTest extends PhpUnitTestCase
 {
     public function testEvent()
     {

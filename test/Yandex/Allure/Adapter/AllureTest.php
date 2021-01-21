@@ -17,8 +17,9 @@ use Yandex\Allure\Adapter\Model\TestCase;
 use Yandex\Allure\Adapter\Fixtures\GenericStepEvent;
 use Yandex\Allure\Adapter\Fixtures\GenericTestCaseEvent;
 use Yandex\Allure\Adapter\Fixtures\GenericTestSuiteEvent;
+use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
-class AllureTest extends \PHPUnit_Framework_TestCase
+class AllureTest extends PhpUnitTestCase
 {
     const STEP_NAME = 'step-name';
     const TEST_CASE_NAME = 'test-case-name';
