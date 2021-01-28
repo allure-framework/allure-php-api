@@ -17,7 +17,7 @@ jobs:
         with:
           php-version: '7.2.5'
       - name: Install
-        run: composer install
+        run: composer update
       - name: Test
         run: composer test
   build73:
@@ -28,7 +28,7 @@ jobs:
         with:
           php-version: '7.3'
       - name: Install
-        run: composer install
+        run: composer update
       - name: Test
         run: composer test
   build74:
@@ -39,7 +39,7 @@ jobs:
         with:
           php-version: '7.4'
       - name: Install
-        run: composer install
+        run: composer update
       - name: Test
         run: composer test
   build80:
@@ -50,6 +50,6 @@ jobs:
         with:
           php-version: '8.0'
       - name: Install
-        run: composer install
+        run: composer update
       - name: Test
         run: composer test
