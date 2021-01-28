@@ -6,18 +6,12 @@ use Yandex\Allure\Adapter\Model\Status;
 
 class StepFailedEventTest extends StepStatusChangedEventTest
 {
-    /**
-     * @return string
-     */
-    protected function getTestedStatus()
+    protected function getTestedStatus(): string
     {
         return Status::FAILED;
     }
 
-    /**
-     * @return StepEvent
-     */
-    protected function getStepEvent()
+    protected function getStepEvent(): StepEvent
     {
         return new StepFailedEvent();
     }

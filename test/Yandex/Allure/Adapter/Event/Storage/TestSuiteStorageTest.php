@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class TestSuiteStorageTest extends TestCase
 {
-    public function testLifecycle()
+    public function testLifecycle(): void
     {
         $storage = new TestSuiteStorage();
         $uuid = 'some-uuid';

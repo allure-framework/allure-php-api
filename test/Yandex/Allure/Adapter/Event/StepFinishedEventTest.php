@@ -7,7 +7,7 @@ use Yandex\Allure\Adapter\Model\Step;
 
 class StepFinishedEventTest extends TestCase
 {
-    public function testEvent()
+    public function testEvent(): void
     {
         $step = new Step();
         $event = new StepFinishedEvent();

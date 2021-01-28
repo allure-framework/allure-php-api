@@ -11,7 +11,7 @@ use Yandex\Allure\Adapter\Model\TestSuite;
 
 class TestSuiteStartedEventTest extends TestCase
 {
-    public function testEvent()
+    public function testEvent(): void
     {
         $testSuite = new TestSuite();
         $testSuiteName = 'test-suite-name';

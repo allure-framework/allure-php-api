@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
 class AddParameterEventTest extends PhpUnitTestCase
 {
-    public function testEvent()
+    public function testEvent(): void
     {
         $parameterName = 'test-name';
         $parameterValue = 'test-value';

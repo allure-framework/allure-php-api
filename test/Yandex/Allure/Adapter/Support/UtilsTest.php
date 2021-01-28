@@ -8,14 +8,14 @@ class UtilsTest extends TestCase
 {
     use Utils;
 
-    public function testGetTimestamp()
+    public function testGetTimestamp(): void
     {
         $timestamp = self::getTimestamp();
         $this->assertTrue(is_float($timestamp));
         $this->assertGreaterThan(0, $timestamp);
     }
 
-    public function testGenerateUUID()
+    public function testGenerateUUID(): void
     {
         $uuid1 = self::generateUUID();
         $uuid2 = self::generateUUID();

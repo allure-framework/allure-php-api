@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
 class TestCaseStorageTest extends PhpUnitTestCase
 {
-    public function testLifecycle()
+    public function testLifecycle(): void
     {
         $storage = new TestCaseStorage();
         $testCase = $storage->get();

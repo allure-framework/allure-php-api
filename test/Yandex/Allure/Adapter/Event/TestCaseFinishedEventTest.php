@@ -7,7 +7,7 @@ use Yandex\Allure\Adapter\Model\TestCase;
 
 class TestCaseFinishedEventTest extends PhpUnitTestCase
 {
-    public function testEvent()
+    public function testEvent(): void
     {
         $testCase = new TestCase();
         $event = new TestCaseFinishedEvent();

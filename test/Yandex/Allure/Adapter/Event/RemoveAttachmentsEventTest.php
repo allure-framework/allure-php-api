@@ -6,11 +6,12 @@ use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Model\Attachment;
 use Yandex\Allure\Adapter\Model\Step;
 
-const ATTACHMENT_TYPE = 'text/plain';
 
 class RemoveAttachmentsEventTest extends TestCase
 {
-    public function testLifecycle()
+    private const ATTACHMENT_TYPE = 'text/plain';
+
+    public function testLifecycle(): void
     {
         $attachmentTitle = 'some-title';
         $pattern = 'matching';
@@ -22,8 +23,8 @@ class RemoveAttachmentsEventTest extends TestCase
         $notMatchingFilename = tempnam($tmpDirectory, 'excluded');
 
         $step = new Step();
-        $step->addAttachment(new Attachment($attachmentTitle, $matchingFilename, ATTACHMENT_TYPE));
-        $step->addAttachment(new Attachment($attachmentTitle, $notMatchingFilename, ATTACHMENT_TYPE));
+        $step->addAttachment(new Attachment($attachmentTitle, $matchingFilename, self::ATTACHMENT_TYPE));
+        $step->addAttachment(new Attachment($attachmentTitle, $notMatchingFilename, self::ATTACHMENT_TYPE));
 
         $this->assertEquals(2, sizeof($step->getAttachments()));
 

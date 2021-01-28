@@ -7,9 +7,9 @@ use Yandex\Allure\Adapter\Model\Step;
 
 class StepStorageTest extends TestCase
 {
-    const TEST_STEP_NAME = 'test-step';
+    private const TEST_STEP_NAME = 'test-step';
 
-    public function testEmptyStorage()
+    public function testEmptyStorage(): void
     {
         $storage = new Fixtures\MockedRootStepStorage();
         $this->assertTrue($storage->isRootStep($storage->getLast()));
@@ -17,12 +17,12 @@ class StepStorageTest extends TestCase
         $this->assertTrue($storage->isEmpty());
     }
 
-    public function testNonEmptyStorage()
+    public function testNonEmptyStorage(): void
     {
         $storage = new Fixtures\MockedRootStepStorage();
         $step = new Step();
         $step->setName(self::TEST_STEP_NAME);
         $storage->put($step);
-        $this->assertEquals($storage->getLast()->getName(), self::TEST_STEP_NAME);
+        $this->assertEquals(self::TEST_STEP_NAME, $storage->getLast()->getName());
     }
 }
