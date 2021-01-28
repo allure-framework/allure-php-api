@@ -9,13 +9,46 @@ on:
       - 'master'
 
 jobs:
-  build:
+  build72:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.2.5'
+      - name: Install
+        run: composer install
+      - name: Test
+        run: composer test
+  build73:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '7.3'
+      - name: Install
+        run: composer install
+      - name: Test
+        run: composer test
+  build74:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Install
+        run: composer install
+      - name: Test
+        run: composer test
+  build80:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
       - name: Install
         run: composer install
       - name: Test
