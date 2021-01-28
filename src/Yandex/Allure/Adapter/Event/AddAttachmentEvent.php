@@ -2,8 +2,7 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
-use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+use Symfony\Component\Mime\MimeTypes;
 use Yandex\Allure\Adapter\AllureException;
 use Yandex\Allure\Adapter\Model\Attachment;
 use Yandex\Allure\Adapter\Model\Entity;
@@ -67,37 +66,14 @@ class AddAttachmentEvent implements StepEvent
 
     private function guessFileMimeType($filePath)
     {
-        $mimeTypesClass = '\Symfony\Component\Mime\MimeTypes';
-        if (class_exists($mimeTypesClass)) {
-            /** @var \Symfony\Component\Mime\MimeTypes $mimeTypes */
-            $mimeTypes = call_user_func([$mimeTypesClass, 'getDefault']);
-            $type = $mimeTypes->guessMimeType($filePath);
-        } else {
-            $type = MimeTypeGuesser::getInstance()->guess($filePath);
-        }
-        if (!isset($type)) {
-            return DEFAULT_MIME_TYPE;
-        }
-
-        return $type;
+        return MimeTypes::getDefault()->guessMimeType($filePath) ?? DEFAULT_MIME_TYPE;
     }
 
     private function guessFileExtension($mimeType)
     {
-        $mimeTypesClass = '\Symfony\Component\Mime\MimeTypes';
-        if (class_exists($mimeTypesClass)) {
-            /** @var \Symfony\Component\Mime\MimeTypes $mimeTypes */
-            $mimeTypes = call_user_func([$mimeTypesClass, 'getDefault']);
-            $extensions = $mimeTypes->getExtensions($mimeType);
-            $candidate = isset($extensions[0]) ? $extensions[0] : null;
-        } else {
-            $candidate = ExtensionGuesser::getInstance()->guess($mimeType);
-        }
-        if (!isset($candidate)) {
-            return DEFAULT_FILE_EXTENSION;
-        }
+        $extensions = MimeTypes::getDefault()->getExtensions($mimeType);
 
-        return $candidate;
+        return $extensions[0] ?? DEFAULT_FILE_EXTENSION;
     }
 
     public function getOutputFileName($sha1, $extension)

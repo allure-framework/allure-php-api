@@ -19,7 +19,6 @@
         "php": ">=7.2.5",
         "jms/serializer": "^1 | ^2 | ^3",
         "ramsey/uuid": "^3 | ^4",
-        "symfony/http-foundation": "^5.1",
         "symfony/mime": "^5.1"
     },
     "require-dev": {
