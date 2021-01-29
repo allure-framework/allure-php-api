@@ -30,8 +30,7 @@
         }
     },
     "scripts": {
-        "test": [
-            "vendor/bin/phpunit test"
-        ]
+        "test": "vendor/bin/phpunit",
+        "test-legacy": "vendor/bin/phpunit --configuration=phpunit.legacy.xml"
     }
 }

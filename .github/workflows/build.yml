@@ -19,7 +19,7 @@ jobs:
       - name: Install
         run: composer update
       - name: Test
-        run: composer test
+        run: composer test-legacy
   build72:
     runs-on: ubuntu-latest
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Install
         run: composer update
       - name: Test
-        run: composer test
+        run: composer test-legacy
   build73:
     runs-on: ubuntu-latest
     steps:
