@@ -13,7 +13,7 @@ use Yandex\Allure\Adapter\Model\LabelType;
 
 class AnnotationManagerTest extends TestCase
 {
-    public function testUpdateTestSuiteStartedEvent()
+    public function testUpdateTestSuiteStartedEvent(): void
     {
         $instance = new Fixtures\ExampleTestSuite();
         $testSuiteAnnotations = AnnotationProvider::getClassAnnotations($instance);
@@ -68,7 +68,7 @@ class AnnotationManagerTest extends TestCase
 
     }
 
-    public function testUpdateTestCaseStartedEvent()
+    public function testUpdateTestCaseStartedEvent(): void
     {
         $instance = new Fixtures\ExampleTestSuite();
         $testCaseAnnotations = AnnotationProvider::getMethodAnnotations($instance, 'exampleTestCase');
@@ -157,12 +157,7 @@ class AnnotationManagerTest extends TestCase
         $this->assertSame(ParameterKind::ARGUMENT, $parameter->getKind());
     }
 
-    /**
-     * @param array $labels
-     * @param string $labelType
-     * @return array
-     */
-    private function getLabelsByType(array $labels, $labelType)
+    private function getLabelsByType(array $labels, string $labelType): array
     {
         $filteredArray = array_filter(
             $labels,

@@ -8,7 +8,7 @@ use Yandex\Allure\Adapter\Model\Step;
 
 class StepStartedEventTest extends TestCase
 {
-    public function testEvent()
+    public function testEvent(): void
     {
         $step = new Step();
         $stepName = 'step-name';

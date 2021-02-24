@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
 class TestCaseStartedEventTest extends PhpUnitTestCase
 {
-    public function testEvent()
+    public function testEvent(): void
     {
         $testCase = new TestCase();
         $uuid = 'test-uuid';

@@ -11,7 +11,7 @@ class AttachmentSupportTest extends TestCase
 {
     use AttachmentSupport;
 
-    public function testAddAttachment()
+    public function testAddAttachment(): void
     {
         $attachmentContents = 'test-contents';
         $attachmentCaption = 'test-title';

@@ -6,18 +6,12 @@ use Yandex\Allure\Adapter\Model\Status;
 
 class TestCasePendingEventTest extends TestCaseStatusChangedEventTest
 {
-    /**
-     * @return string
-     */
-    protected function getTestedStatus()
+    protected function getTestedStatus(): string
     {
         return Status::PENDING;
     }
 
-    /**
-     * @return TestCaseStatusChangedEvent
-     */
-    protected function getTestCaseStatusChangedEvent()
+    protected function getTestCaseStatusChangedEvent(): TestCaseStatusChangedEvent
     {
         return new TestCasePendingEvent();
     }

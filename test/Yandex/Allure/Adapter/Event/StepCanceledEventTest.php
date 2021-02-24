@@ -6,18 +6,12 @@ use Yandex\Allure\Adapter\Model\Status;
 
 class StepCanceledEventTest extends StepStatusChangedEventTest
 {
-    /**
-     * @return string
-     */
-    protected function getTestedStatus()
+    protected function getTestedStatus(): string
     {
         return Status::CANCELED;
     }
 
-    /**
-     * @return StepEvent
-     */
-    protected function getStepEvent()
+    protected function getStepEvent(): StepEvent
     {
         return new StepCanceledEvent();
     }

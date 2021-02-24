@@ -8,17 +8,11 @@ use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
 abstract class TestCaseStatusChangedEventTest extends PhpUnitTestCase
 {
-    /**
-     * @return string
-     */
-    abstract protected function getTestedStatus();
+    abstract protected function getTestedStatus(): string;
 
-    /**
-     * @return TestCaseStatusChangedEvent
-     */
-    abstract protected function getTestCaseStatusChangedEvent();
+    abstract protected function getTestCaseStatusChangedEvent(): TestCaseStatusChangedEvent;
 
-    public function testEvent()
+    public function testEvent(): void
     {
         $testMessage = 'test-message';
         $testCase = new TestCase();

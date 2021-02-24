@@ -24,10 +24,7 @@ class MockedLifecycle extends Allure
         $this->events[] = $event;
     }
 
-    /**
-     * @return array
-     */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->events;
     }

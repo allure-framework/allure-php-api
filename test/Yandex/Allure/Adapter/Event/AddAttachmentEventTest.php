@@ -8,9 +8,9 @@ use Yandex\Allure\Adapter\Model\Step;
 
 class AddAttachmentEventTest extends TestCase
 {
-    const ATTACHMENT_CAPTION = 'test-caption';
+    private const ATTACHMENT_CAPTION = 'test-caption';
 
-    public function testEventWithFile()
+    public function testEventWithFile(): void
     {
         $attachmentCaption = self::ATTACHMENT_CAPTION;
         $attachmentType = 'application/json';
@@ -36,7 +36,7 @@ class AddAttachmentEventTest extends TestCase
         );
     }
 
-    public function testEventWithStringContents()
+    public function testEventWithStringContents(): void
     {
         $attachmentCaption = self::ATTACHMENT_CAPTION;
         $attachmentType = 'text/plain';
@@ -67,7 +67,7 @@ class AddAttachmentEventTest extends TestCase
         $attachmentFileName,
         $attachmentCaption,
         $attachmentType
-    ) {
+    ): void {
         $this->assertTrue(file_exists($attachmentOutputPath));
         $attachments = $step->getAttachments();
         $this->assertEquals(1, sizeof($attachments));
@@ -78,7 +78,7 @@ class AddAttachmentEventTest extends TestCase
         $this->assertEquals($attachmentType, $attachment->getType());
     }
 
-    private function getTestContents()
+    private function getTestContents(): string
     {
         return str_shuffle('test-contents');
     }
