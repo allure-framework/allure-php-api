@@ -1,32 +1,41 @@
 {
-    "name": "allure-framework/allure-php-api",
-    "keywords":["php", "report", "allure", "api"],
-    "description": "PHP API for Allure adapter",
-    "homepage": "http://allure.qatools.ru/",
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "Ivan Krutov",
-            "email": "vania-pooh@yandex-team.ru",
-            "role": "Developer"
-        }
-    ],
-    "support": {
-        "email": "allure@yandex-team.ru",
-        "source": "https://github.com/allure-framework/allure-php-api"
-    },
-    "require": {
-        "php": ">=5.4.0",
-        "jms/serializer": "^0.16.0",
-        "ramsey/uuid": "^3.0.0",
-        "symfony/http-foundation": "^2.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^4.0.0"
-    },
-    "autoload": {
-        "psr-0": {
-            "Yandex": ["src/", "test/"]
-        }
+  "name": "allure-framework/allure-php-commons",
+  "keywords": [
+    "php",
+    "report",
+    "testing",
+    "allure",
+    "commons"
+  ],
+  "description": "Allure PHP commons",
+  "homepage": "http://allure.qatools.ru/",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Dmitry Baev",
+      "email": "baev.dm@gmail.com",
+      "role": "Developer"
     }
+  ],
+  "support": {
+    "email": "allure@qameta.io",
+    "source": "https://github.com/allure-framework/allure-php-commons"
+  },
+  "require": {
+    "php": "^7.3",
+    "ramsey/uuid": "^3.9.2",
+    "symfony/http-foundation": "^2.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "\\": [
+        "src/",
+        "test/"
+      ]
+    }
+  }
 }
