@@ -11,10 +11,14 @@ class AnnotationProviderTest extends TestCase
     private const TYPE_CLASS = 'class';
     private const TYPE_METHOD = 'method';
     private const METHOD_NAME = 'methodWithAnnotations';
+    private const ALL_ANNOTATIONS_METHOD_NAME = 'methodWithAllAnnotations';
+    private static $allAnnotations;
 
     public static function setUpBeforeClass(): void
     {
         AnnotationRegistry::registerFile(__DIR__ . '/Fixtures/TestAnnotation.php');
+        $instance = new Fixtures\ClassWithAnnotations();
+        self::$allAnnotations = AnnotationProvider::getMethodAnnotations($instance, self::ALL_ANNOTATIONS_METHOD_NAME);
     }
 
     protected function tearDown(): void
@@ -56,5 +60,34 @@ class AnnotationProviderTest extends TestCase
 
         $this->assertEmpty(AnnotationProvider::getClassAnnotations($instance));
         $this->assertEmpty(AnnotationProvider::getMethodAnnotations($instance, 'methodWithIgnoredAnnotation'));
+    }
+
+    public function annotationsDataProvider(): array
+    {
+        return [
+            ['Yandex\Allure\Adapter\Annotation\AllureId', 'e7a8ff6cdd2908d4f50bee573708727085778061', 'value'],
+            ['Yandex\Allure\Adapter\Annotation\Description', 'Use this page to register account', 'value'],
+            ['Yandex\Allure\Adapter\Annotation\Epics', ['Make app more stable'], 'epicNames'],
+            ['Yandex\Allure\Adapter\Annotation\Features', ['Multi-factor authentication'], 'featureNames'],
+            ['Yandex\Allure\Adapter\Annotation\Issues', ['Can`t create user with numbers in login'], 'issueKeys'],
+            ['Yandex\Allure\Adapter\Annotation\Label', ['master'], 'values'],
+            ['Yandex\Allure\Adapter\Annotation\Parameter', 'John', 'value'],
+            ['Yandex\Allure\Adapter\Annotation\Severity', 'Highest', 'level'],
+            ['Yandex\Allure\Adapter\Annotation\Step', 'Open sign up page', 'value'],
+            ['Yandex\Allure\Adapter\Annotation\Stories', ['User authentication'], 'stories'],
+            ['Yandex\Allure\Adapter\Annotation\TestCaseId', ['testUserSignUp'], 'testCaseIds'],
+            ['Yandex\Allure\Adapter\Annotation\TestType', 'screenshotDiff', 'type'],
+            ['Yandex\Allure\Adapter\Annotation\Title', 'Sign Up', 'value'],
+        ];
+    }
+
+    /**
+     * @dataProvider annotationsDataProvider
+     */
+    public function testGetAllAnnotations(string $expectedClassName, $value, string $propertyName): void
+    {
+        $annotation = array_shift(self::$allAnnotations);
+        $this->assertInstanceOf($expectedClassName, $annotation);
+        $this->assertEquals($value, $annotation->$propertyName);
     }
 }
