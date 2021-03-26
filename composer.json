@@ -1,7 +1,7 @@
 {
     "name": "allure-framework/allure-php-api",
     "keywords":["php", "report", "allure", "api"],
-    "description": "PHP API for Allure adapter",
+    "description": "Allure PHP commons",
     "homepage": "http://allure.qatools.ru/",
     "license": "Apache-2.0",
     "authors": [
@@ -12,7 +12,7 @@
         }
     ],
     "support": {
-        "email": "allure@yandex-team.ru",
+        "email": "allure@qameta.io",
         "source": "https://github.com/allure-framework/allure-php-api"
     },
     "require": {
