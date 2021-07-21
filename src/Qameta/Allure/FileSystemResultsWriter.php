@@ -107,6 +107,9 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
 
     public function cleanOutputDirectory(): void
     {
+        if ($this->shouldCreateOutputDirectory()) {
+            return;
+        }
         \error_clear_last();
         $files = @\scandir($this->outputDirectory);
         if (false === $files) {
