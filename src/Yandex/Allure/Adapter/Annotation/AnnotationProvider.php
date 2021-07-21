@@ -71,7 +71,7 @@ class AnnotationProvider
 
     public static function registerAnnotationNamespaces()
     {
-        AnnotationRegistry::registerUniqueLoader('class_exists');
+        //AnnotationRegistry::registerUniqueLoader('class_exists');
     }
 
     /**

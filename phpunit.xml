@@ -6,6 +6,7 @@
         defaultTestSuite="Allure PHP API Tests">
     <testsuites>
         <testsuite name="Allure PHP API Tests">
+            <directory>test/Legacy/</directory>
             <directory>test/Qameta/Allure/</directory>
             <directory>test/Yandex/Allure/Adapter/</directory>
         </testsuite>

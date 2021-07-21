@@ -4,7 +4,6 @@ namespace Yandex\Allure\Adapter\Model;
 
 /**
  * Severity level
- * @package Yandex\Allure\Adapter\Model
  */
 final class SeverityLevel
 {
