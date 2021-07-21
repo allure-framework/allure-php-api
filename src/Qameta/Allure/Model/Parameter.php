@@ -1,78 +1,47 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
+use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
+use Qameta\Allure\Internal\JsonSerializableTrait;
 
-/**
- * Class Parameter
- * @package Qameta\Allure\Model
- */
-class Parameter implements JsonSerializable
+final class Parameter implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $name;
+    use JsonSerializableTrait;
 
-    /**
-     * @var string
-     */
-    private $value;
-
-    /**
-     * Parameter constructor.
-     * @param string $name
-     * @param string $value
-     */
-    public function __construct(string $name = null, string $value = null)
-    {
-        $this->name = $name;
-        $this->value = $value;
+    #[Pure]
+    public function __construct(
+        private string $name,
+        private ?string $value = null,
+    ) {
     }
 
-    /**
-     * @return string
-     */
+    #[Pure]
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Parameter
-     */
-    public function setName(string $name): Parameter
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getValue(): string
+    #[Pure]
+    public function getValue(): ?string
     {
         return $this->value;
     }
 
-    /**
-     * @param string $value
-     * @return Parameter
-     */
-    public function setValue(string $value): Parameter
+    public function setValue(?string $value): self
     {
         $this->value = $value;
-        return $this;
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize()
-    {
-        return get_object_vars($this);
+        return $this;
     }
 }

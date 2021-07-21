@@ -156,10 +156,10 @@ class AllureTest extends PhpUnitTestCase
         $this->assertEquals(1, Allure::lifecycle()->getTestSuiteStorage()->size());
 
         $outputDirectory = sys_get_temp_dir();
-        AnnotationRegistry::registerAutoloadNamespace(
+        /**  AnnotationRegistry::registerAutoloadNamespace(
             'JMS\Serializer\Annotation',
             __DIR__ . "/../../../../vendor/jms/serializer/src"
-        );
+        );*/
 
         Provider::setOutputDirectory($outputDirectory);
         $xmlFilePath = $outputDirectory . DIRECTORY_SEPARATOR . self::TEST_SUITE_UUID . '-testsuite.xml';

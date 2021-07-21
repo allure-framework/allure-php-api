@@ -2,14 +2,22 @@
 
 namespace Qameta\Allure\Model;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Interface StepsAware
+ *
  * @package Qameta\Allure\Model
  */
 interface StepsAware
 {
     /**
-     * @return array<StepResult>
+     * @return list<StepResult>
      */
-    public function getSteps();
+    #[Pure]
+    public function getSteps(): array;
+
+    public function addSteps(StepResult ...$steps);
+
+    public function setSteps(StepResult ...$steps);
 }

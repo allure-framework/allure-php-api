@@ -6,6 +6,9 @@ use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \Yandex\Allure\Adapter\Annotation\AnnotationProvider
+ */
 class AnnotationProviderTest extends TestCase
 {
     private const TYPE_CLASS = 'class';
@@ -14,7 +17,7 @@ class AnnotationProviderTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        AnnotationRegistry::registerFile(__DIR__ . '/Fixtures/TestAnnotation.php');
+        //AnnotationRegistry::registerFile(__DIR__ . '/Fixtures/TestAnnotation.php');
     }
 
     protected function tearDown(): void

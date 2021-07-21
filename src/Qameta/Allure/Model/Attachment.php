@@ -1,102 +1,65 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Qameta\Allure\Model;
 
+use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
+use Qameta\Allure\Internal\JsonSerializableTrait;
 
-/**
- * Class Attachment
- * @package Qameta\Allure\Model
- */
-class Attachment implements JsonSerializable
+final class Attachment implements JsonSerializable, Result
 {
-    /**
-     * @var string
-     */
-    private $name;
+    use JsonSerializableTrait;
 
-    /**
-     * @var string
-     */
-    private $source;
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * Attachment constructor.
-     * @param string $name
-     * @param string $source
-     * @param string $type
-     */
-    public function __construct($name = null, $source = null, $type = null)
-    {
-        $this->name = $name;
-        $this->source = $source;
-        $this->type = $type;
+    #[Pure]
+    public function __construct(
+        private string $name,
+        private string $source,
+        private ?string $type = null,
+    ) {
     }
 
-    /**
-     * @return string
-     */
+    public function getResultType(): ResultType
+    {
+        return ResultType::attachment();
+    }
+
+    #[Pure]
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Attachment
-     */
-    public function setName(string $name): Attachment
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
+    #[Pure]
     public function getSource(): string
     {
         return $this->source;
     }
 
-    /**
-     * @param string $source
-     * @return Attachment
-     */
-    public function setSource(string $source): Attachment
+    public function setSource(string $source): self
     {
         $this->source = $source;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getType(): string
+    #[Pure]
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     * @return Attachment
-     */
-    public function setType(string $type): Attachment
+    public function setType(?string $type): self
     {
         $this->type = $type;
         return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize()
-    {
-        return get_object_vars($this);
     }
 }

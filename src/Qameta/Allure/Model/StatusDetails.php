@@ -1,78 +1,89 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
+use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
+use Qameta\Allure\Internal\JsonSerializableTrait;
 
-/**
- * Class StatusDetails
- * @package Qameta\Allure\Model
- */
-class StatusDetails implements JsonSerializable
+final class StatusDetails implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $message;
+    use JsonSerializableTrait;
 
-    /**
-     * @var string
-     */
-    private $trace;
-
-    /**
-     * StatusDetails constructor.
-     * @param string $message
-     * @param string $trace
-     */
-    public function __construct(string $message = null, string $trace = null)
-    {
-        $this->message = $message;
-        $this->trace = $trace;
+    #[Pure]
+    public function __construct(
+        private ?bool $known = null,
+        private ?bool $muted = null,
+        private ?bool $flaky = null,
+        private ?string $message = null,
+        private ?string $trace = null,
+    ) {
     }
 
-    /**
-     * @return string
-     */
-    public function getMessage(): string
+    #[Pure]
+    public function isKnown(): ?bool
+    {
+        return $this->known;
+    }
+
+    public function makeKnown(?bool $known): self
+    {
+        $this->known = $known;
+
+        return $this;
+    }
+
+    #[Pure]
+    public function isMuted(): ?bool
+    {
+        return $this->muted;
+    }
+
+    public function makeMuted(?bool $muted): self
+    {
+        $this->muted = $muted;
+
+        return $this;
+    }
+
+    #[Pure]
+    public function getFlaky(): ?bool
+    {
+        return $this->flaky;
+    }
+
+    public function makeFlaky(?bool $flaky): self
+    {
+        $this->flaky = $flaky;
+
+        return $this;
+    }
+
+    #[Pure]
+    public function getMessage(): ?string
     {
         return $this->message;
     }
 
-    /**
-     * @param string $message
-     * @return StatusDetails
-     */
-    public function setMessage(string $message): StatusDetails
+    public function setMessage(?string $message): self
     {
         $this->message = $message;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTrace(): string
+    #[Pure]
+    public function getTrace(): ?string
     {
         return $this->trace;
     }
 
-    /**
-     * @param string $trace
-     * @return StatusDetails
-     */
-    public function setTrace(string $trace): StatusDetails
+    public function setTrace(?string $trace): self
     {
         $this->trace = $trace;
-        return $this;
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize()
-    {
-        return get_object_vars($this);
+        return $this;
     }
 }

@@ -1,69 +1,93 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Qameta\Allure\Internal;
 
+use JetBrains\PhpStorm\Pure;
+use Qameta\Allure\Internal\Exception\AttachmentsAwareNotFoundException;
+use Qameta\Allure\Internal\Exception\ContainerNotFoundException;
+use Qameta\Allure\Internal\Exception\FixtureNotFoundException;
+use Qameta\Allure\Internal\Exception\StepNotFoundException;
+use Qameta\Allure\Internal\Exception\StepsAwareNotFoundException;
+use Qameta\Allure\Internal\Exception\TestCaseNotScheduledException;
+use Qameta\Allure\Model\AttachmentsAware;
 use Qameta\Allure\Model\FixtureResult;
+use Qameta\Allure\Model\StepResult;
+use Qameta\Allure\Model\StepsAware;
+use Qameta\Allure\Model\Storable;
 use Qameta\Allure\Model\TestResult;
-use Qameta\Allure\Model\TestResultContainer;
+use Qameta\Allure\Model\ResultContainer;
+use Qameta\Allure\Model\UuidAware;
 
 /**
  * Class AllureStorage
  * @package Qameta\Allure\Internal
  */
-class AllureStorage
+class AllureStorage implements AllureStorageInterface
 {
-    /**
-     * @var array<string, mixed>
-     */
-    private $storage = array();
 
     /**
-     * @param string $uuid
-     * @return TestResult by given uuid if present, null otherwise.
+     * @var array<string, Storable>
      */
-    public function getTestResult(string $uuid): TestResult
+    private array $storage = [];
+
+    public function set(UuidAware $object): void
     {
-        $res = $this->storage[$uuid];
-        return isset($res) && $res instanceof TestResult ? $res : null;
+        $this->setByUuid($object->getUuid(), $object);
     }
 
-    /**
-     * @param string $uuid
-     * @return TestResultContainer by given uuid if present, null otherwise.
-     */
-    public function getTestResultContainer(string $uuid): TestResultContainer
+    public function setByUuid(string $uuid, Storable $object): void
     {
-        $res = $this->storage[$uuid];
-        return isset($res) && $res instanceof TestResultContainer ? $res : null;
+        $this->storage[$uuid] = $object;
     }
 
-    /**
-     * @param string $uuid
-     * @return FixtureResult
-     */
-    public function getFixtureResult(string $uuid): FixtureResult
+    public function unset(string $uuid): void
     {
-        $res = $this->storage[$uuid];
-        return isset($res) && $res instanceof FixtureResult ? $res : null;
+        unset($this->storage[$uuid]);
     }
 
-    /**
-     * @param string $uuid
-     * @return mixed
-     */
-    public function get(string $uuid)
+    public function getContainer(string $uuid): ResultContainer
     {
-        return $this->storage[$uuid];
+        return $this->findObject(ResultContainer::class, $uuid)
+            ?? throw new ContainerNotFoundException($uuid);
     }
 
-    /**
-     * @param string $uuid
-     * @param $object
-     */
-    public function set(string $uuid, $object): void
+    public function getFixture(string $uuid): FixtureResult
     {
-        return $this->storage[$uuid] = $object;
+        return $this->findObject(FixtureResult::class, $uuid)
+            ?? throw new FixtureNotFoundException($uuid);
     }
 
+    public function getTest(string $uuid): TestResult
+    {
+        return $this->findObject(TestResult::class, $uuid)
+            ?? throw new TestCaseNotScheduledException($uuid);
+    }
+
+    public function getStep(string $uuid): StepResult
+    {
+        return $this->findObject(StepResult::class, $uuid)
+            ?? throw new StepNotFoundException($uuid);
+    }
+
+    public function getStepsAware(string $uuid): StepsAware
+    {
+        return $this->findObject(StepsAware::class, $uuid)
+            ?? throw new StepsAwareNotFoundException($uuid);
+    }
+
+    public function getAttachmentsAware(string $uuid): AttachmentsAware
+    {
+        return $this->findObject(AttachmentsAware::class, $uuid)
+            ?? throw new AttachmentsAwareNotFoundException($uuid);
+    }
+
+    #[Pure]
+    private function findObject(string $class, string $uuid): ?Storable
+    {
+        $object = $this->storage[$uuid] ?? null;
+
+        return $object instanceof $class ? $object : null;
+    }
 }

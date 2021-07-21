@@ -1,77 +1,229 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Qameta\Allure\Model;
 
+use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
+use Qameta\Allure\Internal\JsonSerializableTrait;
 
-/**
- * Class Label
- * @package Qameta\Allure\Model
- */
-class Label implements JsonSerializable
+final class Label implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $name;
+    use JsonSerializableTrait;
 
-    /**
-     * @var string
-     */
-    private $value;
+    public const ALLURE_ID = "AS_ID";
+    public const SUITE = "suite";
+    public const PARENT_SUITE = "parentSuite";
+    public const SUB_SUITE = "subSuite";
+    public const EPIC = "epic";
+    public const FEATURE = "feature";
+    public const STORY = "story";
+    public const SEVERITY = "severity";
+    public const TAG = "tag";
+    public const OWNER = "owner";
+    public const LEAD = "lead";
+    public const HOST = "host";
+    public const THREAD = "thread";
+    public const TEST_ID = "testId";
+    public const TEST_METHOD = "testMethod";
+    public const TEST_CLASS = "testClass";
+    public const PACKAGE = "package";
+    public const FRAMEWORK = "framework";
+    public const LANGUAGE = "language";
 
-    /**
-     * Label constructor.
-     * @param string $name
-     * @param string $value
-     */
-    public function __construct($name = null, $value = null)
-    {
-        $this->name = $name;
-        $this->value = $value;
+    #[Pure]
+    public function __construct(
+        private ?string $name = null,
+        private ?string $value = null,
+    ) {
     }
 
-    /**
-     * @return string
-     */
-    public function getName(): string
+    #[Pure]
+    public static function id(?string $value): self
+    {
+        return new self(
+            name: self::ALLURE_ID,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function suite(?string $value): self
+    {
+        return new self(
+            name: self::SUITE,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function parentSuite(?string $value): self
+    {
+        return new self(
+            name: self::PARENT_SUITE,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function subSuite(?string $value): self
+    {
+        return new self(
+            name: self::SUB_SUITE,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function epic(?string $value): self
+    {
+        return new self(
+            name: self::EPIC,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function feature(?string $value): self
+    {
+        return new self(
+            name: self::FEATURE,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function story(?string $value): self
+    {
+        return new self(
+            name: self::STORY,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function severity(Severity $value): self
+    {
+        return new self(
+            name: self::SEVERITY,
+            value: (string) $value,
+        );
+    }
+
+    #[Pure]
+    public static function tag(?string $value): self
+    {
+        return new self(
+            name: self::TAG,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function owner(?string $value): self
+    {
+        return new self(
+            name: self::OWNER,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function lead(?string $value): self
+    {
+        return new self(
+            name: self::LEAD,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function host(?string $value): self
+    {
+        return new self(
+            name: self::HOST,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function thread(?string $value): self
+    {
+        return new self(
+            name: self::THREAD,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function testMethod(?string $value): self
+    {
+        return new self(
+            name: self::TEST_METHOD,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function testClass(?string $value): self
+    {
+        return new self(
+            name: self::TEST_CLASS,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function package(?string $value): self
+    {
+        return new self(
+            name: self::PACKAGE,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function framework(?string $value): self
+    {
+        return new self(
+            name: self::FRAMEWORK,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public static function language(?string $value): self
+    {
+        return new self(
+            name: self::LANGUAGE,
+            value: $value,
+        );
+    }
+
+    #[Pure]
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Label
-     */
-    public function setName(string $name): Label
+    public function setName(?string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getValue(): string
+    #[Pure]
+    public function getValue(): ?string
     {
         return $this->value;
     }
 
-    /**
-     * @param string $value
-     * @return Label
-     */
-    public function setValue(string $value): Label
+    public function setValue(?string $value): self
     {
         $this->value = $value;
-        return $this;
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize()
-    {
-        return get_object_vars($this);
+        return $this;
     }
 }
