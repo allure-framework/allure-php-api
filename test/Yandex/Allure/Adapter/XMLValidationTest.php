@@ -63,10 +63,10 @@ class XMLValidationTest extends TestCase
 
     private function generateXML($tmpDir)
     {
-        AnnotationRegistry::registerAutoloadNamespace(
+        /*AnnotationRegistry::registerAutoloadNamespace(
             'JMS\Serializer\Annotation',
             __DIR__ . "/../../../../vendor/jms/serializer/src"
-        );
+        );*/
         Model\Provider::setOutputDirectory($tmpDir);
         Allure::setDefaultLifecycle();
         $testSuiteStartedEvent = new TestSuiteStartedEvent(TEST_SUITE_NAME);

@@ -11,6 +11,9 @@ use Yandex\Allure\Adapter\Model\SeverityLevel;
 use Yandex\Allure\Adapter\Model\Label;
 use Yandex\Allure\Adapter\Model\LabelType;
 
+/**
+ * @covers \Yandex\Allure\Adapter\Annotation\AnnotationManager
+ */
 class AnnotationManagerTest extends TestCase
 {
     public function testUpdateTestSuiteStartedEvent(): void

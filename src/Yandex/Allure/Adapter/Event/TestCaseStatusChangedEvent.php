@@ -2,6 +2,7 @@
 
 namespace Yandex\Allure\Adapter\Event;
 
+use Throwable;
 use Yandex\Allure\Adapter\Model\Entity;
 use Yandex\Allure\Adapter\Model\Failure;
 use Yandex\Allure\Adapter\Model\TestCase;
@@ -9,7 +10,7 @@ use Yandex\Allure\Adapter\Model\TestCase;
 abstract class TestCaseStatusChangedEvent implements TestCaseEvent
 {
     /**
-     * @var \Exception
+     * @var Throwable
      */
     private $exception;
 
@@ -48,10 +49,10 @@ abstract class TestCaseStatusChangedEvent implements TestCaseEvent
     }
 
     /**
-     * @param \Exception $exception
+     * @param Throwable $exception
      * @return $this
      */
-    public function withException($exception)
+    public function withException(Throwable $exception)
     {
         $this->exception = $exception;
 
