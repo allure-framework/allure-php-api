@@ -7,7 +7,7 @@ namespace Qameta\Allure\Annotation;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Qameta\Allure\Annotation\Title
+ * @covers \Qameta\Allure\Annotation\Title<extended>
  */
 class TitleTest extends TestCase
 {

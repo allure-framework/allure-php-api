@@ -14,6 +14,7 @@ use ReflectionProperty;
 
 use function array_map;
 use function array_pop;
+use function array_values;
 
 final class AnnotationReader implements Reader
 {
@@ -21,9 +22,8 @@ final class AnnotationReader implements Reader
     private Reader $delegate;
 
     #[Pure]
-    public function __construct(
-        Reader $reader,
-    ) {
+    public function __construct(Reader $reader)
+    {
         $this->delegate = new IndexedReader($reader);
     }
 
@@ -38,54 +38,63 @@ final class AnnotationReader implements Reader
     public function getClassAnnotations(ReflectionClass $class): array
     {
         return [
-            ...$this->delegate->getClassAnnotations($class),
+            ...array_values($this->delegate->getClassAnnotations($class)),
             ...$this->getAttributeInstances(...$class->getAttributes()),
         ];
     }
 
     public function getClassAnnotation(ReflectionClass $class, $annotationName): ?object
     {
-        $annotations = [
-            ...(array) $this->delegate->getClassAnnotation($class, $annotationName),
-            ...$this->getAttributeInstances(...$class->getAttributes($annotationName)),
-        ];
+        $annotations = $this->getAttributeInstances(...$class->getAttributes($annotationName));
+        $legacyAnnotation = $this->delegate->getClassAnnotation($class, $annotationName);
+        if (isset($legacyAnnotation)) {
+            $annotations = [$legacyAnnotation, ...$annotations];
+        }
 
-        return array_pop($annotations);
+        return empty($annotations)
+            ? null
+            : array_pop($annotations);
     }
 
     public function getMethodAnnotations(ReflectionMethod $method): array
     {
         return [
-            ...$this->delegate->getMethodAnnotations($method),
+            ...array_values($this->delegate->getMethodAnnotations($method)),
             ...$this->getAttributeInstances(...$method->getAttributes()),
         ];
     }
 
     public function getMethodAnnotation(ReflectionMethod $method, $annotationName)
     {
-        $annotations = [
-            ...(array) $this->delegate->getMethodAnnotation($method, $annotationName),
-            ...$this->getAttributeInstances(...$method->getAttributes($annotationName)),
-        ];
+        $annotations = $this->getAttributeInstances(...$method->getAttributes($annotationName));
+        $legacyAnnotation = $this->delegate->getMethodAnnotation($method, $annotationName);
+        if (isset($legacyAnnotation)) {
+            $annotations = [$legacyAnnotation, ...$annotations];
+        }
 
-        return array_pop($annotations);
+        return empty($annotations)
+            ? null
+            : array_pop($annotations);
     }
 
     public function getPropertyAnnotations(ReflectionProperty $property): array
     {
         return [
-            ...$this->delegate->getPropertyAnnotations($property),
+            ...array_values($this->delegate->getPropertyAnnotations($property)),
             ...$this->getAttributeInstances(...$property->getAttributes()),
         ];
     }
 
-    public function getPropertyAnnotation(ReflectionProperty $property, $annotationName)
+    public function getPropertyAnnotation(ReflectionProperty $property, $annotationName): ?object
     {
-        $annotations = [
-            ...(array) $this->delegate->getPropertyAnnotation($property, $annotationName),
-            ...$this->getAttributeInstances(...$property->getAttributes($annotationName)),
-        ];
+        $annotations = $this->getAttributeInstances(...$property->getAttributes($annotationName));
+        $legacyAnnotation = $this->delegate->getPropertyAnnotation($property, $annotationName);
+        if (isset($legacyAnnotation)) {
+            $annotations = [$legacyAnnotation, ...$annotations];
+        }
 
-        return array_pop($annotations);
+        return empty($annotations)
+            ? null
+            : array_pop($annotations);
     }
 }

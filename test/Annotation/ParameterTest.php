@@ -7,7 +7,7 @@ namespace Qameta\Allure\Annotation;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Qameta\Allure\Annotation\Parameter
+ * @covers \Qameta\Allure\Annotation\Parameter<extended>
  */
 class ParameterTest extends TestCase
 {

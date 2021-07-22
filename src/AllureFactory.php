@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Qameta\Allure;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Qameta\Allure\Internal\AllureStorage;
 use Qameta\Allure\Internal\ClockInterface;
-use Qameta\Allure\DefaultStatusDetector;
 use Qameta\Allure\Internal\ResultFactory;
 use Qameta\Allure\Internal\ResultFactoryInterface;
-use Qameta\Allure\Internal\NullLogger;
 use Qameta\Allure\Internal\SystemClock;
 use Qameta\Allure\Listener\LifecycleListener;
 use Qameta\Allure\Listener\ListenersNotifier;

@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Qameta\Allure\Allure;
 use Qameta\Allure\AllureFactory;
+use Qameta\Allure\Annotation\Title;
 use Qameta\Allure\Internal\ClockInterface;
 use Qameta\Allure\StepContextInterface;
 use RuntimeException;
@@ -107,6 +108,7 @@ class TemporaryTest extends TestCase
         Allure::attachmentFile('Attachment2 name', __FILE__, 'text/plain', 'txt');
 
         Allure::runStep(
+            #[Title("xxx")]
             function (StepContextInterface $step): void {
                 $step->parameter('Step 1 param', 'xxx');
                 Allure::descriptionHtml('<a href="#">Step HTML description</a>');

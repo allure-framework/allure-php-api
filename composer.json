@@ -31,7 +31,7 @@
     "ext-json": "*",
     "doctrine/annotations": "^1.10.4",
     "jms/serializer": "^3",
-    "psr/log": "^1",
+    "psr/log": "^1 || ^2 || ^3",
     "ramsey/uuid": "^3 || ^4",
     "symfony/mime": "^4.3 || ^5"
   },

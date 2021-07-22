@@ -7,7 +7,7 @@ namespace Qameta\Allure\Annotation;
 use Qameta\Allure\Legacy\Annotation\LegacyAnnotationInterface;
 use Qameta\Allure\Model;
 
-class AnnotationManager
+class AnnotationParser
 {
 
     private ?string $title = null;
@@ -73,9 +73,9 @@ class AnnotationManager
     private function convertLegacyAnnotations(object ...$annotations): iterable
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof LegacyAnnotationInterface) {
-                yield from (array) $annotation->convert();
-            }
+            yield from $annotation instanceof LegacyAnnotationInterface
+                ? (array) $annotation->convert()
+                : [$annotation];
         }
     }
 

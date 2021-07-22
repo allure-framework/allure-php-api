@@ -7,7 +7,7 @@ namespace Qameta\Allure\Annotation;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Qameta\Allure\Annotation\Link
+ * @covers \Qameta\Allure\Annotation\Link<extended>
  */
 class LinkTest extends TestCase
 {
