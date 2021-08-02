@@ -319,7 +319,7 @@ final class ListenersNotifier implements LifecycleNotifier
     private function runNotification(ResultType $resultType, callable $callable, LifecycleListener $listener): void
     {
         try {
-            $callable();
+            $callable($listener);
         } catch (Throwable $e) {
             $this->processException(
                 new ResultNotListenedException($resultType, $listener, $e),
