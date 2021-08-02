@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure;
 
+use JetBrains\PhpStorm\Pure;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Qameta\Allure\Internal\AllureStorage;
@@ -12,6 +13,7 @@ use Qameta\Allure\Internal\ResultFactory;
 use Qameta\Allure\Internal\ResultFactoryInterface;
 use Qameta\Allure\Internal\SystemClock;
 use Qameta\Allure\Listener\LifecycleListener;
+use Qameta\Allure\Listener\LifecycleNotifier;
 use Qameta\Allure\Listener\ListenersNotifier;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
@@ -50,9 +52,17 @@ final class AllureFactory implements AllureFactoryInterface
         );
     }
 
+    public function addListeners(LifecycleNotifier ...$listeners): self
+    {
+        $this->lifecycleListeners = [...$this->lifecycleListeners, ...$listeners];
+
+        return $this;
+    }
+
+    #[Pure]
     public function createResultsWriter(string $outputDirectory): AllureResultsWriterInterface
     {
-        return new FileSystemResultsWriter($this->getUuidFactory(), $outputDirectory);
+        return new FileSystemResultsWriter($outputDirectory);
     }
 
     public function setStatusDetector(StatusDetectorInterface $statusDetector): self

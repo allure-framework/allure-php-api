@@ -79,10 +79,14 @@ final class Allure
         ?string $type = null,
         ?string $fileExtension = null
     ): void {
+        $attachment = self::getInstance()
+            ->getResultFactory()
+            ->createAttachment()
+            ->setName($name)
+            ->setType($type)
+            ->setFileExtension($fileExtension);
         self::getLifecycle()->addAttachment(
-            $name,
-            $type,
-            $fileExtension,
+            $attachment,
             AttachmentFactory::fromString($content),
         );
     }
@@ -93,10 +97,14 @@ final class Allure
         ?string $type = null,
         ?string $fileExtension = null
     ): void {
+        $attachment = self::getInstance()
+            ->getResultFactory()
+            ->createAttachment()
+            ->setName($name)
+            ->setType($type)
+            ->setFileExtension($fileExtension);
         self::getLifecycle()->addAttachment(
-            $name,
-            $type,
-            $fileExtension,
+            $attachment,
             AttachmentFactory::fromFile($file),
         );
     }

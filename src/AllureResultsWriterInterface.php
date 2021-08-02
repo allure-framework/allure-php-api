@@ -13,13 +13,11 @@ interface AllureResultsWriterInterface
 
     public function writeContainer(ResultContainer $container): void;
 
-    public function writeTest(TestResult $result): void;
+    public function writeTest(TestResult $test): void;
 
     public function writeAttachment(Attachment $attachment, StreamFactory $data): void;
 
     public function write(string $target, StreamFactory $source);
 
     public function cleanOutputDirectory(): void;
-
-    public function createAttachmentSource(?string $fileExtension = null): string;
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Internal;
 
+use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\Model\TestResult;
@@ -35,6 +36,11 @@ final class ResultFactory implements ResultFactoryInterface
     public function createFixture(): FixtureResult
     {
         return new FixtureResult($this->createUuid());
+    }
+
+    public function createAttachment(): Attachment
+    {
+        return new Attachment($this->createUuid());
     }
 
     private function createUuid(): string

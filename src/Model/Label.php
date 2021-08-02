@@ -157,6 +157,15 @@ final class Label implements JsonSerializable
     }
 
     #[Pure]
+    public static function testId(?string $value): self
+    {
+        return new self(
+            name: self::TEST_ID,
+            value: $value,
+        );
+    }
+
+    #[Pure]
     public static function testMethod(?string $value): self
     {
         return new self(

@@ -4,21 +4,36 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Exception;
 
+use JetBrains\PhpStorm\Pure;
+use Qameta\Allure\Model\Attachment;
 use RuntimeException;
 use Throwable;
 
 final class AttachmentNotAddedException extends RuntimeException
 {
 
+    #[Pure]
     public function __construct(
-        private string $name,
+        private Attachment $attachment,
         ?Throwable $previous = null,
     ) {
-        parent::__construct("Attachment {$this->name} was not written", 0, $previous);
+        parent::__construct("Attachment {$this->buildAttachmentName()} was not written", 0, $previous);
     }
 
-    public function getName(): string
+    #[Pure]
+    private function buildAttachmentName(): string
     {
-        return $this->name;
+        $result = $this->attachment->getUuid();
+        $name = $this->attachment->getName();
+        if (isset($name)) {
+            $result .= " ({$name})";
+        }
+
+        return $result;
+    }
+
+    public function getAttachment(): Attachment
+    {
+        return $this->attachment;
     }
 }

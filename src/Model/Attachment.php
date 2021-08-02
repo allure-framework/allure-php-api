@@ -8,16 +8,25 @@ use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Qameta\Allure\Internal\JsonSerializableTrait;
 
-final class Attachment implements JsonSerializable, Result
+final class Attachment implements JsonSerializable, Result, UuidAware
 {
     use JsonSerializableTrait;
 
+    private ?string $name = null;
+
+    private ?string $source = null;
+
+    private ?string $type = null;
+
+    private ?string $fileExtension = null;
+
     #[Pure]
-    public function __construct(
-        private string $name,
-        private string $source,
-        private ?string $type = null,
-    ) {
+    public function __construct(private string $uuid) {
+    }
+
+    public function getUuid(): string
+    {
+        return $this->uuid;
     }
 
     public function getResultType(): ResultType
@@ -26,12 +35,12 @@ final class Attachment implements JsonSerializable, Result
     }
 
     #[Pure]
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -39,12 +48,12 @@ final class Attachment implements JsonSerializable, Result
     }
 
     #[Pure]
-    public function getSource(): string
+    public function getSource(): ?string
     {
         return $this->source;
     }
 
-    public function setSource(string $source): self
+    public function setSource(?string $source): self
     {
         $this->source = $source;
 
@@ -61,5 +70,22 @@ final class Attachment implements JsonSerializable, Result
     {
         $this->type = $type;
         return $this;
+    }
+
+    public function getFileExtension(): ?string
+    {
+        return $this->fileExtension;
+    }
+
+    public function setFileExtension(?string $fileExtension): self
+    {
+        $this->fileExtension = $fileExtension;
+
+        return $this;
+    }
+
+    protected function excludeFromSerialization(): array
+    {
+        return ['uuid', 'fileExtension'];
     }
 }

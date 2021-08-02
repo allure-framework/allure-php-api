@@ -59,7 +59,6 @@
   },
   "scripts": {
     "test-cs": "vendor/bin/phpcs -sp",
-    "test": "vendor/bin/phpunit",
-    "test-legacy": "vendor/bin/phpunit --configuration=phpunit.legacy.xml"
+    "test": "vendor/bin/phpunit"
   }
 }

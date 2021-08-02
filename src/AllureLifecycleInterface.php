@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure;
 
+use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\Model\TestResult;
@@ -46,9 +47,9 @@ interface AllureLifecycleInterface
 
     public function startStep(StepResult $step, ?string $parentUuid = null): AllureLifecycleInterface;
 
-    public function updateStep(callable $update, ?string $uuid): void;
+    public function updateStep(callable $update, ?string $uuid = null): void;
 
-    public function stopStep(?string $uuid): void;
+    public function stopStep(?string $uuid = null): void;
 
-    public function addAttachment(string $name, ?string $type, ?string $fileExtension, StreamFactory $data): void;
+    public function addAttachment(Attachment $attachment, StreamFactory $data): void;
 }

@@ -7,7 +7,10 @@ namespace Qameta\Allure\Annotation;
 use Doctrine\Common\Annotations\AnnotationReader as DoctrineReader;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
+use ReflectionMethod;
 use ReflectionProperty;
+use Yandex\Allure\Adapter\Annotation\Description;
+use Yandex\Allure\Adapter\Annotation\Title;
 
 use function array_map;
 
@@ -134,6 +137,45 @@ class AnnotationReaderTest extends TestCase
         self::assertSame($expectedList, $this->exportAnnotation($annotation));
     }
 
+    /**
+     * @throws ReflectionException
+     */
+    public function testGetMethodAnnotations_NoAnnotations_ReturnsEmptyArray(): void
+    {
+        $reader = new AnnotationReader(new DoctrineReader());
+        $annotations = $reader->getMethodAnnotations(new ReflectionMethod($this, 'demoNoAnnotations'));
+        self::assertEmpty($annotations);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testGetMethodAnnotations_OnlyNativeAnnotations_ReturnsMatchingList(): void
+    {
+        $reader = new AnnotationReader(new DoctrineReader());
+        $annotations = $reader->getMethodAnnotations(new ReflectionMethod($this, 'demoOnlyNativeAnnotations'));
+        $expectedList = [
+            ['class' => Story::class, 'name' => 'story', 'value' => 'a'],
+            ['class' => Story::class, 'name' => 'story', 'value' => 'b'],
+            ['class' => Feature::class, 'name' => 'feature', 'value' => 'c'],
+        ];
+        self::assertSame($expectedList, $this->exportAnnotations(...$annotations));
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testGetMethodAnnotations_OnlyLegacyAnnotations_ReturnsMatchingList(): void
+    {
+        $reader = new AnnotationReader(new DoctrineReader());
+        $annotations = $reader->getMethodAnnotations(new ReflectionMethod($this, 'demoOnlyLegacyAnnotations'));
+        $expectedList = [
+            ['class' => Title::class, 'value' => 'b'],
+            ['class' => Description::class, 'value' => 'c'],
+        ];
+        self::assertSame($expectedList, $this->exportAnnotations(...$annotations));
+    }
+
     private function exportAnnotations(object ...$annotations): array
     {
         return array_map(
@@ -156,7 +198,49 @@ class AnnotationReaderTest extends TestCase
         if ($annotation instanceof ConvertableLegacyPropertyAnnotation) {
             $data['value'] = $annotation->value;
         }
+        if ($annotation instanceof Title) {
+            $data['value'] = $annotation->value;
+        }
+        if ($annotation instanceof Description) {
+            $data['value'] = $annotation->value;
+        }
+        if ($annotation instanceof LabelInterface) {
+            $data['name'] = $annotation->getName();
+            $data['value'] = $annotation->getValue();
+        }
 
         return $data;
+    }
+
+    protected function demoNoAnnotations(): void
+    {
+    }
+
+    #[Story("a")]
+    #[Story("b")]
+    #[Feature("c")]
+    protected function demoOnlyNativeAnnotations(): void
+    {
+    }
+
+    /**
+     * @Title("a")
+     * @Title("b")
+     * @Description("c")
+     */
+    protected function demoOnlyLegacyAnnotations(): void
+    {
+    }
+
+    /**
+     * @Title("a")
+     * @Title("b")
+     * @Description("c")
+     */
+    #[Story("d")]
+    #[Story("e")]
+    #[Feature("f")]
+    protected function demoMixedAnnotations(): void
+    {
     }
 }

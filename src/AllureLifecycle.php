@@ -275,7 +275,10 @@ final class AllureLifecycle implements AllureLifecycleInterface
             }
             $this
                 ->storage
-                ->set($test->setStage(Stage::scheduled()));
+                ->set(
+                    $test
+                        ->setStage(Stage::scheduled()),
+                );
         } catch (Throwable $e) {
             $this->processException(new TestNotScheduledException($test->getUuid(), $e));
         }
@@ -398,7 +401,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
         return $this;
     }
 
-    public function updateStep(callable $update, ?string $uuid): void
+    public function updateStep(callable $update, ?string $uuid = null): void
     {
         try {
             $step = $this
@@ -418,7 +421,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
         $this->notifier->afterStepUpdate($step);
     }
 
-    public function stopStep(?string $uuid): void
+    public function stopStep(?string $uuid = null): void
     {
         try {
             $step = $this
@@ -442,12 +445,12 @@ final class AllureLifecycle implements AllureLifecycleInterface
         $this->notifier->afterStepStop($step);
     }
 
-    public function addAttachment(string $name, ?string $type, ?string $fileExtension, StreamFactory $data): void
+    public function addAttachment(Attachment $attachment, StreamFactory $data): void
     {
         try {
-            $attachment = $this->prepareAttachment($name, $type, $fileExtension);
+            $this->prepareAttachment($attachment);
         } catch (Throwable $e) {
-            $this->processException(new AttachmentNotAddedException($name, $e));
+            $this->processException(new AttachmentNotAddedException($attachment, $e));
 
             return;
         }
@@ -455,7 +458,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
         try {
             $this->resultsWriter->writeAttachment($attachment, $data);
         } catch (Throwable $e) {
-            $this->processException(new AttachmentNotAddedException($name, $e));
+            $this->processException(new AttachmentNotAddedException($attachment, $e));
         }
         $this->notifier->afterAttachmentWrite($attachment);
     }
@@ -502,13 +505,8 @@ final class AllureLifecycle implements AllureLifecycleInterface
              : $currentContext;
     }
 
-    private function prepareAttachment(string $name, ?string $type, ?string $fileExtension): Attachment
+    private function prepareAttachment(Attachment $attachment): Attachment
     {
-        $attachment = new Attachment(
-            name: $name,
-            source: $this->resultsWriter->createAttachmentSource($fileExtension),
-            type: $type,
-        );
         $this
             ->storage
             ->getAttachmentsAware(

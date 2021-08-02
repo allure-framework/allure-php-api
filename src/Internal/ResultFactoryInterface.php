@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Internal;
 
+use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\Model\TestResult;
@@ -19,4 +20,6 @@ interface ResultFactoryInterface
     public function createStep(): StepResult;
 
     public function createFixture(): FixtureResult;
+
+    public function createAttachment(): Attachment;
 }

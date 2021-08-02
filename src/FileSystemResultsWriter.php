@@ -6,7 +6,6 @@ namespace Qameta\Allure;
 use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\TestResult;
 use Qameta\Allure\Model\ResultContainer;
-use Ramsey\Uuid\UuidFactoryInterface;
 
 use function file_exists;
 use function rtrim;
@@ -22,25 +21,10 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
 
     private const ATTACHMENT_FILE_SUFFIX = '-attachment';
 
-    /**
-     * @var UuidFactoryInterface
-     */
-    private $uuidFactory;
+    private string $outputDirectory;
 
-    /**
-     * @var string
-     */
-    private $outputDirectory;
-
-    /**
-     * FileSystemResultsWriter constructor.
-     *
-     * @param UuidFactoryInterface $uuidFactory
-     * @param string               $outputDirectory
-     */
-    public function __construct(UuidFactoryInterface $uuidFactory, string $outputDirectory)
+    public function __construct(string $outputDirectory)
     {
-        $this->uuidFactory = $uuidFactory;
         $this->outputDirectory = rtrim($outputDirectory, '\\/');
     }
 
@@ -63,7 +47,7 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
     public function writeAttachment(Attachment $attachment, StreamFactory $data): void
     {
         $this->write(
-            $attachment->getSource(),
+            $this->createAttachmentSource($attachment),
             $data,
         );
     }
@@ -147,12 +131,14 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
         );
     }
 
-    public function createAttachmentSource(?string $fileExtension = null): string
+    private function createAttachmentSource(Attachment $attachment): string
     {
-        $source = $this->uuidFactory->uuid4()->toString() . self::ATTACHMENT_FILE_SUFFIX;
+        $source = $attachment->getUuid() . self::ATTACHMENT_FILE_SUFFIX;
+        $fileExtension = $attachment->getFileExtension();
         if (isset($fileExtension) && '' != $fileExtension) {
             $source .= '.' == $fileExtension[0] ? $fileExtension : '.' . $fileExtension;
         }
+        $attachment->setSource($source);
 
         return $source;
     }
