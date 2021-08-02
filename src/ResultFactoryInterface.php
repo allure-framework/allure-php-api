@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Qameta\Allure\Internal;
+namespace Qameta\Allure;
 
 use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\FixtureResult;

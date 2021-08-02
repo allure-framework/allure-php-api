@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Qameta\Allure\Model;
 
 use JetBrains\PhpStorm\Pure;

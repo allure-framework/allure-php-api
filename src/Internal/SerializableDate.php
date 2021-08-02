@@ -7,6 +7,9 @@ namespace Qameta\Allure\Internal;
 use DateTimeImmutable;
 use JsonSerializable;
 
+/**
+ * @internal
+ */
 final class SerializableDate implements JsonSerializable
 {
 

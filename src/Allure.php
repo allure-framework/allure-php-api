@@ -7,7 +7,6 @@ namespace Qameta\Allure;
 use Exception as SystemException;
 use Qameta\Allure\Exception\OutputDirectorySetFailureException;
 use Qameta\Allure\Internal\DefaultStepContext;
-use Qameta\Allure\Internal\ResultFactoryInterface;
 use Qameta\Allure\Model\Label;
 use Qameta\Allure\Model\Link;
 use Qameta\Allure\Model\LinkType;
@@ -300,7 +299,7 @@ final class Allure
     {
         return $this->resultFactory ??= $this
             ->getFactory()
-            ->createResultFactory();
+            ->getResultFactory();
     }
 
     private function doAddStep(string $name, ?Status $status = null): void
@@ -344,7 +343,6 @@ final class Allure
         } finally {
             $this->doGetLifecycle()->stopStep($step->getUuid());
         }
-
     }
 
     private function doLabel(Label $label): void

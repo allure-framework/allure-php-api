@@ -9,6 +9,9 @@ use RuntimeException;
 
 use function fopen;
 
+/**
+ * @internal
+ */
 final class StreamAttachment implements StreamFactory
 {
 

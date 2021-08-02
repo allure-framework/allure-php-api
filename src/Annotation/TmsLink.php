@@ -10,7 +10,8 @@ use Attribute;
 final class TmsLink extends AbstractLink
 {
 
-    public function __construct(?string $name = null, ?string $url = null) {
+    public function __construct(?string $name = null, ?string $url = null)
+    {
         parent::__construct($name, $url, Link::TMS);
     }
 }

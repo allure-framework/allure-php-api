@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
 use JetBrains\PhpStorm\Pure;
 use Qameta\Allure\Annotation\TestCaseId as QametaTestCaseId;
 use Qameta\Allure\Legacy\Annotation\LegacyAnnotationInterface;
+
 use function array_map;
 
 /**

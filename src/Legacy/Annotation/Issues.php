@@ -7,6 +7,7 @@ namespace Yandex\Allure\Adapter\Annotation;
 use Doctrine\Common\Annotations\Annotation\Required;
 use Qameta\Allure\Annotation\Issue;
 use Qameta\Allure\Legacy\Annotation\LegacyAnnotationInterface;
+
 use function array_map;
 
 /**

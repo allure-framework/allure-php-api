@@ -40,7 +40,8 @@ final class TestResult implements
      */
     private array $links = [];
 
-    public function __construct(private string $uuid) {
+    public function __construct(private string $uuid)
+    {
     }
 
     public function getResultType(): ResultType

@@ -2,11 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Qameta\Allure\Listener;
+namespace Qameta\Allure\Internal;
 
 use Psr\Log\LoggerInterface;
 use Qameta\Allure\Exception\ResultNotListenedException;
-use Qameta\Allure\Internal\ProcessExceptionTrait;
+use Qameta\Allure\Listener\AttachmentListener;
+use Qameta\Allure\Listener\ContainerListener;
+use Qameta\Allure\Listener\FixtureListener;
+use Qameta\Allure\Listener\LifecycleListener;
+use Qameta\Allure\Listener\StepListener;
+use Qameta\Allure\Listener\TestListener;
 use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\ResultType;

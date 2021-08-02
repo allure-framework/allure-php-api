@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use Qameta\Allure\Allure;
 use Qameta\Allure\AllureFactory;
 use Qameta\Allure\Annotation\Title;
-use Qameta\Allure\Internal\ClockInterface;
+use Qameta\Allure\ClockInterface;
 use Qameta\Allure\StepContextInterface;
 use RuntimeException;
 
@@ -44,7 +44,7 @@ class TemporaryTest extends TestCase
                 ),
             );
         $factory->setClock($clock);
-        $resultFactory = $factory->createResultFactory();
+        $resultFactory = $factory->getResultFactory();
 
         Allure::setFactory($factory);
         Allure::cleanOutputDirectory();

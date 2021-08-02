@@ -77,7 +77,7 @@ final class Link implements JsonSerializable
     #[Pure]
     public function getType(): ?LinkType
     {
-        return new $this->type;
+        return new $this->type();
     }
 
     public function setType(?LinkType $type): self

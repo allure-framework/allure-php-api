@@ -21,7 +21,7 @@ class AllureId implements LegacyAnnotationInterface
      * @Required
      */
     public string $value;
-    
+
     #[Pure]
     public function convert(): QametaAllureId
     {

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Qameta\Allure;
 
 use Qameta\Allure\Model\Attachment;

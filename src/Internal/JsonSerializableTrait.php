@@ -12,6 +12,9 @@ use function in_array;
 
 use const ARRAY_FILTER_USE_KEY;
 
+/**
+ * @internal
+ */
 trait JsonSerializableTrait
 {
 

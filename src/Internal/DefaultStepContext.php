@@ -9,6 +9,9 @@ use Qameta\Allure\Model\Parameter;
 use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\StepContextInterface;
 
+/**
+ * @internal
+ */
 final class DefaultStepContext implements StepContextInterface
 {
 

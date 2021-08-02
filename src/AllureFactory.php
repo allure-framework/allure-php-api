@@ -8,12 +8,10 @@ use JetBrains\PhpStorm\Pure;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Qameta\Allure\Internal\AllureStorage;
-use Qameta\Allure\Internal\ClockInterface;
-use Qameta\Allure\Internal\ResultFactory;
-use Qameta\Allure\Internal\ResultFactoryInterface;
+use Qameta\Allure\Internal\DefaultStatusDetector;
 use Qameta\Allure\Internal\SystemClock;
 use Qameta\Allure\Listener\LifecycleListener;
-use Qameta\Allure\Listener\ListenersNotifier;
+use Qameta\Allure\Internal\ListenersNotifier;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
 
@@ -25,6 +23,8 @@ final class AllureFactory implements AllureFactoryInterface
     private ?LoggerInterface $logger = null;
 
     private ?ClockInterface $clock = null;
+
+    private ?ResultFactoryInterface $resultFactory = null;
 
     /**
      * @var list<LifecycleListener>
@@ -44,9 +44,16 @@ final class AllureFactory implements AllureFactoryInterface
         );
     }
 
-    public function createResultFactory(): ResultFactoryInterface
+    public function setResultFactory(ResultFactoryInterface $resultFactory): self
     {
-        return new ResultFactory(
+        $this->resultFactory = $resultFactory;
+
+        return $this;
+    }
+
+    public function getResultFactory(): ResultFactoryInterface
+    {
+        return $this->resultFactory ??= new ResultFactory(
             $this->getUuidFactory(),
         );
     }

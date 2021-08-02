@@ -34,7 +34,8 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
     private array $links = [];
 
     #[Pure]
-    public function __construct(private string $uuid) {
+    public function __construct(private string $uuid)
+    {
     }
 
     public function getResultType(): ResultType
@@ -102,7 +103,7 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
         return $this->afters;
     }
 
-    public function addTearDowns(FixtureResult  ...$afters): self
+    public function addTearDowns(FixtureResult ...$afters): self
     {
         return $this->setAfters(...$this->afters, ...$afters);
     }

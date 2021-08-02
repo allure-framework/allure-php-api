@@ -21,8 +21,7 @@ use Qameta\Allure\Model\ResultContainer;
 use Qameta\Allure\Model\UuidAware;
 
 /**
- * Class AllureStorage
- * @package Qameta\Allure\Internal
+ * @internal
  */
 class AllureStorage implements AllureStorageInterface
 {

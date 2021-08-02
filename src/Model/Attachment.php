@@ -21,7 +21,8 @@ final class Attachment implements JsonSerializable, Result, UuidAware
     private ?string $fileExtension = null;
 
     #[Pure]
-    public function __construct(private string $uuid) {
+    public function __construct(private string $uuid)
+    {
     }
 
     public function getUuid(): string

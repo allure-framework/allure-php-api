@@ -19,7 +19,6 @@ const STEP_CHILD_STEPS_KEY = 'childSteps';
  */
 trait StepSupport
 {
-
     use Utils;
 
     /**

@@ -116,7 +116,6 @@ class AnnotationManager
         if ($this->areLabelsPresent()) {
             $event->setLabels($this->getLabels());
         }
-
     }
 
     public function updateTestCaseEvent(TestCaseStartedEvent $event)
@@ -136,7 +135,6 @@ class AnnotationManager
         if ($this->areParametersPresent()) {
             $event->setParameters($this->getParameters());
         }
-
     }
 
     /**

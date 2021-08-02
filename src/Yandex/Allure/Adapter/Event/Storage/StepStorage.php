@@ -4,7 +4,7 @@ namespace Yandex\Allure\Adapter\Event\Storage;
 
 use Yandex\Allure\Adapter\Model\Status;
 use Yandex\Allure\Adapter\Model\Step;
-use \SplStack;
+use SplStack;
 use Yandex\Allure\Adapter\Support\Utils;
 
 class StepStorage

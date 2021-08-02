@@ -6,13 +6,16 @@ namespace Qameta\Allure\Internal;
 
 use Qameta\Allure\StreamFactory;
 use RuntimeException;
-
 use Throwable;
+
 use function fclose;
 use function fopen;
 use function fwrite;
 use function rewind;
 
+/**
+ * @internal
+ */
 final class StringAttachment implements StreamFactory
 {
 

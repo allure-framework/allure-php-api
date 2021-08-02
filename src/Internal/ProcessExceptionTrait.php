@@ -7,6 +7,9 @@ namespace Qameta\Allure\Internal;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+/**
+ * @internal
+ */
 trait ProcessExceptionTrait
 {
 

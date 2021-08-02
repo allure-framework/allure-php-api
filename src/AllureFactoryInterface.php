@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Qameta\Allure;
 
-use Qameta\Allure\Internal\ResultFactoryInterface;
+use Qameta\Allure\ResultFactoryInterface;
 
 interface AllureFactoryInterface
 {
 
     public function createLifecycle(AllureResultsWriterInterface $resultsWriter): AllureLifecycleInterface;
 
-    public function createResultFactory(): ResultFactoryInterface;
+    public function getResultFactory(): ResultFactoryInterface;
 
     public function createResultsWriter(string $outputDirectory): AllureResultsWriterInterface;
 

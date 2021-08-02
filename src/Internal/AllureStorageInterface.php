@@ -13,6 +13,9 @@ use Qameta\Allure\Model\TestResult;
 use Qameta\Allure\Model\ResultContainer;
 use Qameta\Allure\Model\UuidAware;
 
+/**
+ * @internal
+ */
 interface AllureStorageInterface
 {
 
