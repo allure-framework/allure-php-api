@@ -13,7 +13,6 @@ use Qameta\Allure\Internal\ResultFactory;
 use Qameta\Allure\Internal\ResultFactoryInterface;
 use Qameta\Allure\Internal\SystemClock;
 use Qameta\Allure\Listener\LifecycleListener;
-use Qameta\Allure\Listener\LifecycleNotifier;
 use Qameta\Allure\Listener\ListenersNotifier;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
@@ -52,9 +51,9 @@ final class AllureFactory implements AllureFactoryInterface
         );
     }
 
-    public function addListeners(LifecycleNotifier ...$listeners): self
+    public function addListeners(LifecycleListener $listener, LifecycleListener ...$moreListeners): self
     {
-        $this->lifecycleListeners = [...$this->lifecycleListeners, ...$listeners];
+        $this->lifecycleListeners = [...$this->lifecycleListeners, $listener, ...$moreListeners];
 
         return $this;
     }
