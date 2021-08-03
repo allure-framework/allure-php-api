@@ -15,9 +15,9 @@ interface AllureResultsWriterInterface
 
     public function writeTest(TestResult $test): void;
 
-    public function writeAttachment(Attachment $attachment, StreamFactory $data): void;
+    public function writeAttachment(Attachment $attachment, StreamFactoryInterface $data): void;
 
-    public function write(string $target, StreamFactory $source);
+    public function write(string $target, StreamFactoryInterface $source): void;
 
     public function cleanOutputDirectory(): void;
 }

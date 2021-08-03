@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Internal;
 
-use Qameta\Allure\StreamFactory;
+use Qameta\Allure\StreamFactoryInterface;
 use RuntimeException;
 use Throwable;
 
@@ -16,7 +16,7 @@ use function rewind;
 /**
  * @internal
  */
-final class StringAttachment implements StreamFactory
+final class StringAttachment implements StreamFactoryInterface
 {
 
     public function __construct(private string $data)

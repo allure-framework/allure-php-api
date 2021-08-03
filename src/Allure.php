@@ -24,7 +24,7 @@ final class Allure
 
     private static ?self $instance = null;
 
-    private ?AllureFactory $factory = null;
+    private ?AllureFactoryInterface $factory = null;
 
     private ?string $outputDirectory = null;
 
@@ -62,7 +62,7 @@ final class Allure
      * Runs provided callable as step with given name, if any, or default name that can be modified
      * using {@see setDefaultStepName()} method. On success returns callable result, or null on failure.
      *
-     * @param callable    $callable
+     * @param callable(StepContextInterface):mixed $callable
      * @param string|null $name
      * @return mixed
      * @throws SystemException
@@ -315,7 +315,12 @@ final class Allure
             ->stopStep($step->getUuid());
     }
 
-    public function doRunStep(callable $callable, ?string $name = null): mixed
+    /**
+     * @param callable(StepContextInterface):mixed $callable
+     * @param string|null $name
+     * @return mixed
+     */
+    private function doRunStep(callable $callable, ?string $name = null): mixed
     {
         $step = $this
             ->getResultFactory()
@@ -323,6 +328,7 @@ final class Allure
             ->setName($name ?? $this->defaultStepName);
         $this->doGetLifecycle()->startStep($step);
         try {
+            /** @var mixed $result */
             $result = $callable(new DefaultStepContext($this->doGetLifecycle(), $step->getUuid()));
             $this->doGetLifecycle()->updateStep(
                 fn (StepResult $step) => $step->setStatus(Status::passed()),

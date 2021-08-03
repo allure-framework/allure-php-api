@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Exception;
 
-use Qameta\Allure\Listener\LifecycleListener;
+use Qameta\Allure\Listener\LifecycleListenerInterface;
 use Qameta\Allure\Model\ResultType;
 use Throwable;
 
@@ -13,7 +13,7 @@ final class ResultNotListenedException extends ResultException
 
     public function __construct(
         ResultType $resultType,
-        private LifecycleListener $listener,
+        private LifecycleListenerInterface $listener,
         ?Throwable $previous = null,
     ) {
         parent::__construct($resultType, $previous);
@@ -26,7 +26,7 @@ final class ResultNotListenedException extends ResultException
         return "{$this->buildResultName()} was not listened by {$listenerClass}";
     }
 
-    public function getListener(): LifecycleListener
+    public function getListener(): LifecycleListenerInterface
     {
         return $this->listener;
     }

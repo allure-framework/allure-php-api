@@ -34,6 +34,9 @@ class TitleTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getTitleInstance(string $methodName): Title
     {
         return $this->getLegacyAttributeInstance(Title::class, $methodName);

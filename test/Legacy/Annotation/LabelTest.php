@@ -79,6 +79,9 @@ class LabelTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     public function getLabelInstance(string $methodName): Label
     {
         return $this->getLegacyAttributeInstance(Label::class, $methodName);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Internal;
 
-use Qameta\Allure\StreamFactory;
+use Qameta\Allure\StreamFactoryInterface;
 use RuntimeException;
 
 use function fopen;
@@ -12,7 +12,7 @@ use function fopen;
 /**
  * @internal
  */
-final class StreamAttachment implements StreamFactory
+final class StreamAttachment implements StreamFactoryInterface
 {
 
     public function __construct(private string $link)

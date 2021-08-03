@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Annotation;
 
-use JetBrains\PhpStorm\Pure;
-
 abstract class AbstractLabel implements LabelInterface
 {
 
-    #[Pure]
     public function __construct(
         private string $name,
         private ?string $value = null,

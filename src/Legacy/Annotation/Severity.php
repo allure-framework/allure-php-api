@@ -15,6 +15,10 @@ use Yandex\Allure\Adapter\Model\SeverityLevel;
  */
 class Severity implements LegacyAnnotationInterface
 {
+
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     public string $level = SeverityLevel::NORMAL;
 
     public function convert(): QametaSeverity

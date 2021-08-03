@@ -2,19 +2,19 @@
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
+use Qameta\Allure\Internal\AttachmentsAwareStorableInterface;
 use Qameta\Allure\Internal\JsonSerializableTrait;
+use Qameta\Allure\Internal\StepsAwareStorableInterface;
 
 final class StepResult implements
-    AttachmentsAware,
-    ParametersAware,
-    StatusDetailsAware,
-    StepsAware,
-    Storable,
+    AttachmentsAwareStorableInterface,
+    ParametersAwareInterface,
+    StatusDetailsAwareInterface,
+    StepsAwareStorableInterface,
     JsonSerializable,
-    UuidAware,
-    Result
+    UuidAwareInterface,
+    ResultInterface
 {
     use ExecutableTrait;
     use JsonSerializableTrait;
@@ -28,7 +28,6 @@ final class StepResult implements
         return ResultType::step();
     }
 
-    #[Pure]
     public function getUuid(): string
     {
         return $this->uuid;
@@ -37,7 +36,6 @@ final class StepResult implements
     /**
      * @return list<string>
      */
-    #[Pure]
     protected function excludeFromSerialization(): array
     {
         return ['uuid'];

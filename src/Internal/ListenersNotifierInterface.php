@@ -6,12 +6,12 @@ namespace Qameta\Allure\Internal;
 
 use Psr\Log\LoggerInterface;
 use Qameta\Allure\Exception\ResultNotListenedException;
-use Qameta\Allure\Listener\AttachmentListener;
-use Qameta\Allure\Listener\ContainerListener;
-use Qameta\Allure\Listener\FixtureListener;
-use Qameta\Allure\Listener\LifecycleListener;
-use Qameta\Allure\Listener\StepListener;
-use Qameta\Allure\Listener\TestListener;
+use Qameta\Allure\Listener\AttachmentListenerInterface;
+use Qameta\Allure\Listener\ContainerListenerInterface;
+use Qameta\Allure\Listener\FixtureListenerInterface;
+use Qameta\Allure\Listener\LifecycleListenerInterface;
+use Qameta\Allure\Listener\StepListenerInterface;
+use Qameta\Allure\Listener\TestListenerInterface;
 use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\ResultType;
@@ -20,266 +20,268 @@ use Qameta\Allure\Model\TestResult;
 use Qameta\Allure\Model\ResultContainer;
 use Throwable;
 
-final class ListenersNotifier implements LifecycleNotifier
+use function array_values;
+
+final class ListenersNotifierInterface implements ListenerInterfaceInterfaceInterfaceNotifierInterface
 {
     use ProcessExceptionTrait;
 
     /**
-     * @var list<LifecycleListener>
+     * @var list<LifecycleListenerInterface>
      */
     private array $listeners;
 
     /**
-     * @var list<ContainerListener>
+     * @var list<ContainerListenerInterface>
      */
     private array $containerListeners = [];
 
     /**
-     * @var list<FixtureListener>
+     * @var list<FixtureListenerInterface>
      */
     private array $fixtureListeners = [];
 
     /**
-     * @var list<TestListener>
+     * @var list<TestListenerInterface>
      */
     private array $testListeners = [];
 
     public function __construct(
         LoggerInterface $logger,
-        LifecycleListener ...$listeners,
+        LifecycleListenerInterface ...$listeners,
     ) {
         $this->logger = $logger;
-        $this->listeners = $listeners;
+        $this->listeners = array_values($listeners);
     }
 
     public function beforeContainerStart(ResultContainer $container): void
     {
         $this->forEachContainerListener(
-            fn (ContainerListener $listener) => $listener->beforeContainerStart($container),
+            fn (ContainerListenerInterface $listener) => $listener->beforeContainerStart($container),
         );
     }
 
     public function afterContainerStart(ResultContainer $container): void
     {
         $this->forEachContainerListener(
-            fn (ContainerListener $listener) => $listener->afterContainerStart($container),
+            fn (ContainerListenerInterface $listener) => $listener->afterContainerStart($container),
         );
     }
 
     public function beforeContainerUpdate(ResultContainer $container): void
     {
         $this->forEachContainerListener(
-            fn (ContainerListener $listener) => $listener->beforeContainerUpdate($container),
+            fn (ContainerListenerInterface $listener) => $listener->beforeContainerUpdate($container),
         );
     }
 
     public function afterContainerUpdate(ResultContainer $container): void
     {
         $this->forEachContainerListener(
-            fn (ContainerListener $listener) => $listener->afterContainerUpdate($container),
+            fn (ContainerListenerInterface $listener) => $listener->afterContainerUpdate($container),
         );
     }
 
     public function beforeContainerStop(ResultContainer $container): void
     {
         $this->forEachContainerListener(
-            fn (ContainerListener $listener) => $listener->beforeContainerStop($container),
+            fn (ContainerListenerInterface $listener) => $listener->beforeContainerStop($container),
         );
     }
 
     public function afterContainerStop(ResultContainer $container): void
     {
         $this->forEachContainerListener(
-            fn (ContainerListener $listener) => $listener->afterContainerStop($container),
+            fn (ContainerListenerInterface $listener) => $listener->afterContainerStop($container),
         );
     }
 
     public function beforeContainerWrite(ResultContainer $container): void
     {
         $this->forEachContainerListener(
-            fn (ContainerListener $listener) => $listener->beforeContainerWrite($container),
+            fn (ContainerListenerInterface $listener) => $listener->beforeContainerWrite($container),
         );
     }
 
     public function afterContainerWrite(ResultContainer $container): void
     {
         $this->forEachContainerListener(
-            fn (ContainerListener $listener) => $listener->afterContainerWrite($container),
+            fn (ContainerListenerInterface $listener) => $listener->afterContainerWrite($container),
         );
     }
 
     public function beforeFixtureStart(FixtureResult $fixture): void
     {
         $this->forEachFixtureListener(
-            fn (FixtureListener $listener) => $listener->beforeFixtureStart($fixture),
+            fn (FixtureListenerInterface $listener) => $listener->beforeFixtureStart($fixture),
         );
     }
 
     public function afterFixtureStart(FixtureResult $fixture): void
     {
         $this->forEachFixtureListener(
-            fn (FixtureListener $listener) => $listener->afterFixtureStart($fixture),
+            fn (FixtureListenerInterface $listener) => $listener->afterFixtureStart($fixture),
         );
     }
 
     public function beforeFixtureUpdate(FixtureResult $fixture): void
     {
         $this->forEachFixtureListener(
-            fn (FixtureListener $listener) => $listener->beforeFixtureUpdate($fixture),
+            fn (FixtureListenerInterface $listener) => $listener->beforeFixtureUpdate($fixture),
         );
     }
 
     public function afterFixtureUpdate(FixtureResult $fixture): void
     {
         $this->forEachFixtureListener(
-            fn (FixtureListener $listener) => $listener->afterFixtureUpdate($fixture),
+            fn (FixtureListenerInterface $listener) => $listener->afterFixtureUpdate($fixture),
         );
     }
 
     public function beforeFixtureStop(FixtureResult $fixture): void
     {
         $this->forEachFixtureListener(
-            fn (FixtureListener $listener) => $listener->beforeFixtureStop($fixture),
+            fn (FixtureListenerInterface $listener) => $listener->beforeFixtureStop($fixture),
         );
     }
 
     public function afterFixtureStop(FixtureResult $fixture): void
     {
         $this->forEachFixtureListener(
-            fn (FixtureListener $listener) => $listener->afterFixtureStop($fixture),
+            fn (FixtureListenerInterface $listener) => $listener->afterFixtureStop($fixture),
         );
     }
 
     public function beforeTestSchedule(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->beforeTestSchedule($test),
+            fn (TestListenerInterface $listener) => $listener->beforeTestSchedule($test),
         );
     }
 
     public function afterTestSchedule(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->afterTestSchedule($test),
+            fn (TestListenerInterface $listener) => $listener->afterTestSchedule($test),
         );
     }
 
     public function beforeTestStart(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->beforeTestStart($test),
+            fn (TestListenerInterface $listener) => $listener->beforeTestStart($test),
         );
     }
 
     public function afterTestStart(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->afterTestStart($test),
+            fn (TestListenerInterface $listener) => $listener->afterTestStart($test),
         );
     }
 
     public function beforeTestUpdate(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->beforeTestUpdate($test),
+            fn (TestListenerInterface $listener) => $listener->beforeTestUpdate($test),
         );
     }
 
     public function afterTestUpdate(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->afterTestUpdate($test),
+            fn (TestListenerInterface $listener) => $listener->afterTestUpdate($test),
         );
     }
 
     public function beforeTestStop(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->beforeTestStop($test),
+            fn (TestListenerInterface $listener) => $listener->beforeTestStop($test),
         );
     }
 
     public function afterTestStop(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->afterTestStop($test),
+            fn (TestListenerInterface $listener) => $listener->afterTestStop($test),
         );
     }
 
     public function beforeTestWrite(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->beforeTestWrite($test),
+            fn (TestListenerInterface $listener) => $listener->beforeTestWrite($test),
         );
     }
 
     public function afterTestWrite(TestResult $test): void
     {
         $this->forEachTestListener(
-            fn (TestListener $listener) => $listener->afterTestWrite($test),
+            fn (TestListenerInterface $listener) => $listener->afterTestWrite($test),
         );
     }
 
     public function beforeStepStart(StepResult $step): void
     {
         $this->forEachStepListener(
-            fn (StepListener $listener) => $listener->beforeStepStart($step),
+            fn (StepListenerInterface $listener) => $listener->beforeStepStart($step),
         );
     }
 
     public function afterStepStart(StepResult $step): void
     {
         $this->forEachStepListener(
-            fn (StepListener $listener) => $listener->afterStepStart($step),
+            fn (StepListenerInterface $listener) => $listener->afterStepStart($step),
         );
     }
 
     public function beforeStepUpdate(StepResult $step): void
     {
         $this->forEachStepListener(
-            fn (StepListener $listener) => $listener->beforeStepUpdate($step),
+            fn (StepListenerInterface $listener) => $listener->beforeStepUpdate($step),
         );
     }
 
     public function afterStepUpdate(StepResult $step): void
     {
         $this->forEachStepListener(
-            fn (StepListener $listener) => $listener->afterStepUpdate($step),
+            fn (StepListenerInterface $listener) => $listener->afterStepUpdate($step),
         );
     }
 
     public function beforeStepStop(StepResult $step): void
     {
         $this->forEachStepListener(
-            fn (StepListener $listener) => $listener->beforeStepStop($step),
+            fn (StepListenerInterface $listener) => $listener->beforeStepStop($step),
         );
     }
 
     public function afterStepStop(StepResult $step): void
     {
         $this->forEachStepListener(
-            fn (StepListener $listener) => $listener->afterStepStop($step),
+            fn (StepListenerInterface $listener) => $listener->afterStepStop($step),
         );
     }
 
     public function beforeAttachmentWrite(Attachment $attachment): void
     {
         $this->forEachAttachmentListener(
-            fn (AttachmentListener $listener) => $listener->beforeAttachmentWrite($attachment),
+            fn (AttachmentListenerInterface $listener) => $listener->beforeAttachmentWrite($attachment),
         );
     }
 
     public function afterAttachmentWrite(Attachment $attachment): void
     {
         $this->forEachAttachmentListener(
-            fn (AttachmentListener $listener) => $listener->afterAttachmentWrite($attachment),
+            fn (AttachmentListenerInterface $listener) => $listener->afterAttachmentWrite($attachment),
         );
     }
 
     private function forEachContainerListener(callable $callable): void
     {
         foreach ($this->listeners as $listener) {
-            if ($listener instanceof ContainerListener) {
+            if ($listener instanceof ContainerListenerInterface) {
                 $this->runNotification(ResultType::container(), $callable, $listener);
             }
         }
@@ -288,7 +290,7 @@ final class ListenersNotifier implements LifecycleNotifier
     private function forEachFixtureListener(callable $callable): void
     {
         foreach ($this->listeners as $listener) {
-            if ($listener instanceof FixtureListener) {
+            if ($listener instanceof FixtureListenerInterface) {
                 $this->runNotification(ResultType::fixture(), $callable, $listener);
             }
         }
@@ -297,7 +299,7 @@ final class ListenersNotifier implements LifecycleNotifier
     private function forEachTestListener(callable $callable): void
     {
         foreach ($this->listeners as $listener) {
-            if ($listener instanceof TestListener) {
+            if ($listener instanceof TestListenerInterface) {
                 $this->runNotification(ResultType::test(), $callable, $listener);
             }
         }
@@ -306,7 +308,7 @@ final class ListenersNotifier implements LifecycleNotifier
     private function forEachStepListener(callable $callable): void
     {
         foreach ($this->listeners as $listener) {
-            if ($listener instanceof StepListener) {
+            if ($listener instanceof StepListenerInterface) {
                 $this->runNotification(ResultType::step(), $callable, $listener);
             }
         }
@@ -315,13 +317,13 @@ final class ListenersNotifier implements LifecycleNotifier
     private function forEachAttachmentListener(callable $callable): void
     {
         foreach ($this->listeners as $listener) {
-            if ($listener instanceof AttachmentListener) {
+            if ($listener instanceof AttachmentListenerInterface) {
                 $this->runNotification(ResultType::attachment(), $callable, $listener);
             }
         }
     }
 
-    private function runNotification(ResultType $resultType, callable $callable, LifecycleListener $listener): void
+    private function runNotification(ResultType $resultType, callable $callable, LifecycleListenerInterface $listener): void
     {
         try {
             $callable($listener);

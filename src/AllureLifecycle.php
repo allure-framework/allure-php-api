@@ -15,7 +15,7 @@ use Qameta\Allure\Exception\TestNotScheduledException;
 use Qameta\Allure\Exception\ResultNotWrittenException;
 use Qameta\Allure\Internal\AllureStorageInterface;
 use Qameta\Allure\Internal\ProcessExceptionTrait;
-use Qameta\Allure\Internal\LifecycleNotifier;
+use Qameta\Allure\Internal\ListenerInterfaceInterfaceInterfaceNotifierInterface;
 use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\ResultType;
@@ -42,7 +42,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
         LoggerInterface $logger,
         private ClockInterface $clock,
         private AllureResultsWriterInterface $resultsWriter,
-        private LifecycleNotifier $notifier,
+        private ListenerInterfaceInterfaceInterfaceNotifierInterface $notifier,
         private AllureStorageInterface $storage,
     ) {
         $this->logger = $logger;
@@ -430,7 +430,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
         $this->notifier->afterStepStop($step);
     }
 
-    public function addAttachment(Attachment $attachment, StreamFactory $data): void
+    public function addAttachment(Attachment $attachment, StreamFactoryInterface $data): void
     {
         try {
             $this->prepareAttachment($attachment);

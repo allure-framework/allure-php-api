@@ -14,6 +14,12 @@ use function array_map;
 trait AnnotationTestTrait
 {
 
+    /**
+     * @template T
+     * @param class-string<T> $attributeClass
+     * @param string $demoMethodName
+     * @return T
+     */
     protected function getLegacyAttributeInstance(string $attributeClass, string $demoMethodName): object
     {
         try {
@@ -30,6 +36,12 @@ trait AnnotationTestTrait
             : throw new RuntimeException("Attribute is not {$attributeClass} instance");
     }
 
+    /**
+     * @template T
+     * @param class-string<T> $attributeClass
+     * @param string $demoMethodName
+     * @return T
+     */
     protected function getAttributeInstance(string $attributeClass, string $demoMethodName): object
     {
         try {

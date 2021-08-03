@@ -6,7 +6,7 @@ namespace Qameta\Allure\Listener;
 
 use Qameta\Allure\Model\StepResult;
 
-interface StepListener
+interface StepListenerInterface
 {
 
     public function beforeStepStart(StepResult $step): void;

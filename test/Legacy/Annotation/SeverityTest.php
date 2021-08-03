@@ -186,6 +186,9 @@ class SeverityTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getSeverityInstance(string $methodName): Severity
     {
         return $this->getLegacyAttributeInstance(Severity::class, $methodName);

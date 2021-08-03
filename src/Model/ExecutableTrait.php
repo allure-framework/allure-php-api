@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
+use function array_values;
 
 trait ExecutableTrait
 {
@@ -16,15 +16,23 @@ trait ExecutableTrait
 
     protected ?Stage $stage = null;
 
+    /**
+     * @var list<StepResult>
+     */
     protected array $steps = [];
 
+    /**
+     * @var list<Attachment>
+     */
     protected array $attachments = [];
 
+    /**
+     * @var list<Parameter>
+     */
     protected array $parameters = [];
 
     abstract public function getResultType(): ResultType;
 
-    #[Pure]
     public function getStatus(): ?Status
     {
         return $this->status;
@@ -37,7 +45,6 @@ trait ExecutableTrait
         return $this;
     }
 
-    #[Pure]
     public function getStatusDetails(): ?StatusDetails
     {
         return $this->statusDetails;
@@ -50,7 +57,6 @@ trait ExecutableTrait
         return $this;
     }
 
-    #[Pure]
     public function getStage(): ?Stage
     {
         return $this->stage;
@@ -66,7 +72,6 @@ trait ExecutableTrait
     /**
      * @return list<StepResult>
      */
-    #[Pure]
     public function getSteps(): array
     {
         return $this->steps;
@@ -74,12 +79,12 @@ trait ExecutableTrait
 
     public function addSteps(StepResult ...$steps): static
     {
-        return $this->setSteps(...$this->steps, ...$steps);
+        return $this->setSteps(...$this->steps, ...array_values($steps));
     }
 
     public function setSteps(StepResult ...$steps): static
     {
-        $this->steps = $steps;
+        $this->steps = array_values($steps);
 
         return $this;
     }
@@ -87,7 +92,6 @@ trait ExecutableTrait
     /**
      * @return list<Attachment>
      */
-    #[Pure]
     public function getAttachments(): array
     {
         return $this->attachments;
@@ -95,12 +99,12 @@ trait ExecutableTrait
 
     public function addAttachments(Attachment ...$attachments): static
     {
-        return $this->setAttachments(...$this->attachments, ...$attachments);
+        return $this->setAttachments(...$this->attachments, ...array_values($attachments));
     }
 
     public function setAttachments(Attachment ...$attachments): static
     {
-        $this->attachments = $attachments;
+        $this->attachments = array_values($attachments);
 
         return $this;
     }
@@ -108,7 +112,6 @@ trait ExecutableTrait
     /**
      * @return list<Parameter>
      */
-    #[Pure]
     public function getParameters(): array
     {
         return $this->parameters;
@@ -116,12 +119,12 @@ trait ExecutableTrait
 
     public function addParameters(Parameter ...$parameters): static
     {
-        return $this->setParameters(...$this->parameters, ...$parameters);
+        return $this->setParameters(...$this->parameters, ...array_values($parameters));
     }
 
     public function setParameters(Parameter ...$parameters): static
     {
-        $this->parameters = $parameters;
+        $this->parameters = array_values($parameters);
 
         return $this;
     }

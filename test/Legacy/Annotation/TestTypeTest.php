@@ -41,6 +41,9 @@ class TestTypeTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getTitleInstance(string $methodName): TestType
     {
         return $this->getLegacyAttributeInstance(TestType::class, $methodName);

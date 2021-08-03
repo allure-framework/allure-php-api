@@ -2,14 +2,29 @@
 
 namespace Qameta\Allure;
 
+use Psr\Log\LoggerInterface;
 use Qameta\Allure\Model\Attachment;
 use Qameta\Allure\Model\TestResult;
 use Qameta\Allure\Model\ResultContainer;
 
+use RuntimeException;
+use function error_clear_last;
+use function error_get_last;
+use function fclose;
 use function file_exists;
+use function fopen;
+use function implode;
+use function is_dir;
+use function is_file;
+use function mkdir;
+use function realpath;
 use function rtrim;
+use function scandir;
+use function stream_copy_to_stream;
+use function unlink;
 
 use const DIRECTORY_SEPARATOR;
+use const PHP_EOL;
 
 /**
  * Class FileSystemResultsWriter
@@ -22,9 +37,12 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
 
     private string $outputDirectory;
 
-    public function __construct(string $outputDirectory)
+    private LoggerInterface $logger;
+
+    public function __construct(string $outputDirectory, LoggerInterface $logger)
     {
         $this->outputDirectory = rtrim($outputDirectory, '\\/');
+        $this->logger = $logger;
     }
 
     public function writeTest(TestResult $test): void
@@ -43,7 +61,7 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
         );
     }
 
-    public function writeAttachment(Attachment $attachment, StreamFactory $data): void
+    public function writeAttachment(Attachment $attachment, StreamFactoryInterface $data): void
     {
         $this->write(
             $this->createAttachmentSource($attachment),
@@ -51,9 +69,8 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
         );
     }
 
-    public function write(string $target, StreamFactory $source)
+    public function write(string $target, StreamFactoryInterface $source): void
     {
-        $closeResults = [];
         $sourceStream = $source->createStream();
         try {
             if ($this->shouldCreateOutputDirectory()) {
@@ -64,28 +81,27 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
             try {
                 $this->copyStream($sourceStream, $targetStream);
             } finally {
-                \error_clear_last();
-                $closeResult = @\fclose($targetStream);
+                error_clear_last();
+                $closeResult = @fclose($targetStream);
                 if (!$closeResult) {
-                    $closeResults[] = \error_get_last();
+                    $this->logLastError('Target stream not closed', error_get_last());
                 }
             }
         } finally {
-            \error_clear_last();
-            $closeResult = @\fclose($sourceStream);
+            error_clear_last();
+            $closeResult = @fclose($sourceStream);
             if (!$closeResult) {
-                $closeResults[] = \error_get_last();
+                $this->logLastError('Source stream not closed', error_get_last());
             }
         }
-        $closeMessages = [];
-        foreach ($closeResults as $closeResult) {
-            if (isset($closeResult)) {
-                $closeMessages[] = $closeResult['message'];
-            }
+    }
+
+    private function logLastError(string $message, ?array $context): void
+    {
+        if (isset($context)) {
+            $message .= ': {$message}';
         }
-        if (!empty($closeMessages)) {
-            $message = \implode(\PHP_EOL, $closeMessages);
-        }
+        $this->logger->error($message, $context ?? []);
     }
 
     public function cleanOutputDirectory(): void
@@ -93,25 +109,25 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
         if ($this->shouldCreateOutputDirectory()) {
             return;
         }
-        \error_clear_last();
-        $files = @\scandir($this->outputDirectory);
+        error_clear_last();
+        $files = @scandir($this->outputDirectory);
         if (false === $files) {
-            $error = \error_get_last();
-            throw new \RuntimeException(
+            $error = error_get_last();
+            throw new RuntimeException(
                 "Failed to copy stream",
                 0,
-                isset($error) ? new \RuntimeException($error['message']) : null
+                isset($error) ? new RuntimeException($error['message']) : null
             );
         }
 
         $deleteErrors = [];
         foreach ($files as $file) {
             $filePath = $this->outputDirectory . DIRECTORY_SEPARATOR . $file;
-            if (\is_file($filePath)) {
-                \error_clear_last();
-                $isDeleted = @\unlink($filePath);
+            if (is_file($filePath)) {
+                error_clear_last();
+                $isDeleted = @unlink($filePath);
                 if (!$isDeleted) {
-                    $error = \error_get_last();
+                    $error = error_get_last();
                     $deleteErrors[$filePath] = $error['message'] ?? null;
                 }
             }
@@ -125,8 +141,8 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
             $messages[] = "#{$index}: {$filePath}: {$errorMessage}";
             $index++;
         }
-        throw new \RuntimeException(
-            \implode(\PHP_EOL, $messages)
+        throw new RuntimeException(
+            implode(PHP_EOL, $messages)
         );
     }
 
@@ -142,21 +158,25 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
         return $source;
     }
 
+    /**
+     * @param resource $sourceStream
+     * @param resource $targetStream
+     */
     private function copyStream($sourceStream, $targetStream): void
     {
-        \error_clear_last();
-        $result = @\stream_copy_to_stream($sourceStream, $targetStream);
-        $error = \error_get_last();
+        error_clear_last();
+        $result = @stream_copy_to_stream($sourceStream, $targetStream);
+        $error = error_get_last();
         if (isset($error)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Failed to copy stream",
                 0,
-                new \RuntimeException($error['message'])
+                new RuntimeException($error['message'])
             );
         }
 
         if (false === $result) {
-            throw new \RuntimeException("Failed to copy stream");
+            throw new RuntimeException("Failed to copy stream");
         }
     }
 
@@ -166,21 +186,21 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
      */
     private function createTargetStream(string $file)
     {
-        \error_clear_last();
-        $targetStream = @\fopen($file, 'w+b');
-        $error = \error_get_last();
+        error_clear_last();
+        $targetStream = @fopen($file, 'w+b');
+        $error = error_get_last();
         if (isset($error)) {
             if (false !== $targetStream) {
-                @\fclose($targetStream);
+                @fclose($targetStream);
             }
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Failed to create target stream for {$file}",
                 0,
-                new \RuntimeException($error['message'])
+                new RuntimeException($error['message'])
             );
         }
         if (false === $targetStream) {
-            throw new \RuntimeException("Failed to create target stream for {$file}");
+            throw new RuntimeException("Failed to create target stream for {$file}");
         }
 
         return $targetStream;
@@ -188,18 +208,18 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
 
     private function getRealOutputDirectory(): string
     {
-        \error_clear_last();
-        $realDirectory = \realpath($this->outputDirectory);
-        $error = \error_get_last();
+        error_clear_last();
+        $realDirectory = realpath($this->outputDirectory);
+        $error = error_get_last();
         if (isset($error)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Failed to resolve real path to {$this->outputDirectory}",
                 0,
-                new \RuntimeException($error['message'])
+                new RuntimeException($error['message'])
             );
         }
         if (false === $realDirectory) {
-            throw new \RuntimeException("Failed to resolve real path to {$this->outputDirectory}");
+            throw new RuntimeException("Failed to resolve real path to {$this->outputDirectory}");
         }
 
         return $realDirectory;
@@ -207,43 +227,43 @@ class FileSystemResultsWriter implements AllureResultsWriterInterface
 
     private function shouldCreateOutputDirectory(): bool
     {
-        \error_clear_last();
+        error_clear_last();
         $dirExists = @file_exists($this->outputDirectory);
-        $error = \error_get_last();
+        $error = error_get_last();
         if (isset($error)) {
-            throw new \RuntimeException("Output failure: {$error['message']}");
+            throw new RuntimeException("Output failure: {$error['message']}");
         }
         if (!$dirExists) {
             return true;
         }
 
-        \error_clear_last();
-        $isDir = @\is_dir($this->outputDirectory);
-        $error = \error_get_last();
+        error_clear_last();
+        $isDir = @is_dir($this->outputDirectory);
+        $error = error_get_last();
         if (isset($error)) {
-            throw new \RuntimeException("Output failure: {$error['message']}");
+            throw new RuntimeException("Output failure: {$error['message']}");
         }
         if ($isDir) {
             return false;
         }
 
-        throw new \RuntimeException("Output failure: {$this->outputDirectory} is not a directory");
+        throw new RuntimeException("Output failure: {$this->outputDirectory} is not a directory");
     }
 
     private function createOutputDirectory(): void
     {
-        \error_clear_last();
-        $isCreated = @\mkdir($this->outputDirectory, 0777, true);
-        $error = \error_get_last();
+        error_clear_last();
+        $isCreated = @mkdir($this->outputDirectory, 0777, true);
+        $error = error_get_last();
         if (isset($error)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Output failure: directory {$this->outputDirectory} is not created",
                 0,
-                new \RuntimeException($error['message'])
+                new RuntimeException($error['message'])
             );
         }
         if (!$isCreated) {
-            throw new \RuntimeException("Output failure: directory {$this->outputDirectory} is not created");
+            throw new RuntimeException("Output failure: directory {$this->outputDirectory} is not created");
         }
     }
 }

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Qameta\Allure\Internal\JsonSerializableTrait;
 
-final class Attachment implements JsonSerializable, Result, UuidAware
+final class Attachment implements JsonSerializable, ResultInterface, UuidAwareInterface
 {
     use JsonSerializableTrait;
 
@@ -20,7 +19,6 @@ final class Attachment implements JsonSerializable, Result, UuidAware
 
     private ?string $fileExtension = null;
 
-    #[Pure]
     public function __construct(private string $uuid)
     {
     }
@@ -35,7 +33,6 @@ final class Attachment implements JsonSerializable, Result, UuidAware
         return ResultType::attachment();
     }
 
-    #[Pure]
     public function getName(): ?string
     {
         return $this->name;
@@ -48,7 +45,6 @@ final class Attachment implements JsonSerializable, Result, UuidAware
         return $this;
     }
 
-    #[Pure]
     public function getSource(): ?string
     {
         return $this->source;
@@ -61,7 +57,6 @@ final class Attachment implements JsonSerializable, Result, UuidAware
         return $this;
     }
 
-    #[Pure]
     public function getType(): ?string
     {
         return $this->type;

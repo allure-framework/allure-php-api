@@ -93,6 +93,9 @@ class LabelsTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function exportLegacyLabel(Label $label): array
     {
         return [
@@ -101,6 +104,9 @@ class LabelsTest extends TestCase
         ];
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function exportLegacyLabels(Label ...$labels): array
     {
         return array_map(
@@ -109,6 +115,9 @@ class LabelsTest extends TestCase
         );
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getLabelsInstance(string $methodName): Labels
     {
         return $this->getLegacyAttributeInstance(Labels::class, $methodName);

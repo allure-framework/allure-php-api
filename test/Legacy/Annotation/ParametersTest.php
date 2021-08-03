@@ -76,6 +76,9 @@ class ParametersTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function exportLegacyParameter(Parameter $label): array
     {
         return [
@@ -84,6 +87,9 @@ class ParametersTest extends TestCase
         ];
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function exportLegacyParameters(Parameter ...$parameters): array
     {
         return array_map(
@@ -108,6 +114,9 @@ class ParametersTest extends TestCase
         );
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getParametersInstance(string $methodName): Parameters
     {
         return $this->getLegacyAttributeInstance(Parameters::class, $methodName);

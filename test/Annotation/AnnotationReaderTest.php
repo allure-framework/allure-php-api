@@ -120,6 +120,7 @@ class AnnotationReaderTest extends TestCase
             NativePropertyAnnotation::class,
         );
         $expectedData = ['class' => NativePropertyAnnotation::class, 'value' => 'b'];
+        self::assertNotNull($annotation);
         self::assertSame($expectedData, $this->exportAnnotation($annotation));
     }
 
@@ -134,6 +135,7 @@ class AnnotationReaderTest extends TestCase
             ConvertableLegacyPropertyAnnotation::class,
         );
         $expectedList = ['class' => ConvertableLegacyPropertyAnnotation::class, 'value' => 'a'];
+        self::assertNotNull($annotation);
         self::assertSame($expectedList, $this->exportAnnotation($annotation));
     }
 
@@ -169,6 +171,7 @@ class AnnotationReaderTest extends TestCase
     {
         $reader = new AnnotationReader(new DoctrineReader());
         $annotations = $reader->getMethodAnnotations(new ReflectionMethod($this, 'demoOnlyLegacyAnnotations'));
+        /** @psalm-suppress DeprecatedClass */
         $expectedList = [
             ['class' => Title::class, 'value' => 'b'],
             ['class' => Description::class, 'value' => 'c'],

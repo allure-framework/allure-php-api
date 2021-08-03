@@ -40,6 +40,9 @@ class ParameterTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getParameterInstance(string $methodName): Parameter
     {
         return $this->getLegacyAttributeInstance(Parameter::class, $methodName);

@@ -108,7 +108,6 @@ class TemporaryTest extends TestCase
         Allure::attachmentFile('Attachment2 name', __FILE__, 'text/plain', 'txt');
 
         Allure::runStep(
-            #[Title("xxx")]
             function (StepContextInterface $step): void {
                 $step->parameter('Step 1 param', 'xxx');
                 Allure::descriptionHtml('<a href="#">Step HTML description</a>');

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Exception;
 
-use JetBrains\PhpStorm\Pure;
 use LogicException;
 use Qameta\Allure\Allure;
 use Throwable;
@@ -12,7 +11,6 @@ use Throwable;
 final class OutputDirectoryUndefinedException extends LogicException
 {
 
-    #[Pure]
     public function __construct(?Throwable $previous = null)
     {
         $class = Allure::class;

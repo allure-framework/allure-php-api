@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-interface Result
+interface ResultInterface
 {
 
     public function getResultType(): ResultType;

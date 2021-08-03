@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Qameta\Allure\Internal\JsonSerializableTrait;
 
@@ -32,14 +31,12 @@ final class Label implements JsonSerializable
     public const FRAMEWORK = "framework";
     public const LANGUAGE = "language";
 
-    #[Pure]
     public function __construct(
         private ?string $name = null,
         private ?string $value = null,
     ) {
     }
 
-    #[Pure]
     public static function id(?string $value): self
     {
         return new self(
@@ -48,7 +45,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function suite(?string $value): self
     {
         return new self(
@@ -57,7 +53,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function parentSuite(?string $value): self
     {
         return new self(
@@ -66,7 +61,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function subSuite(?string $value): self
     {
         return new self(
@@ -75,7 +69,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function epic(?string $value): self
     {
         return new self(
@@ -84,7 +77,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function feature(?string $value): self
     {
         return new self(
@@ -93,7 +85,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function story(?string $value): self
     {
         return new self(
@@ -102,7 +93,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function severity(Severity $value): self
     {
         return new self(
@@ -111,7 +101,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function tag(?string $value): self
     {
         return new self(
@@ -120,7 +109,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function owner(?string $value): self
     {
         return new self(
@@ -129,7 +117,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function lead(?string $value): self
     {
         return new self(
@@ -138,7 +125,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function host(?string $value): self
     {
         return new self(
@@ -147,7 +133,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function thread(?string $value): self
     {
         return new self(
@@ -156,7 +141,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function testId(?string $value): self
     {
         return new self(
@@ -165,7 +149,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function testMethod(?string $value): self
     {
         return new self(
@@ -174,7 +157,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function testClass(?string $value): self
     {
         return new self(
@@ -183,7 +165,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function package(?string $value): self
     {
         return new self(
@@ -192,7 +173,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function framework(?string $value): self
     {
         return new self(
@@ -201,7 +181,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function language(?string $value): self
     {
         return new self(
@@ -210,7 +189,6 @@ final class Label implements JsonSerializable
         );
     }
 
-    #[Pure]
     public function getName(): ?string
     {
         return $this->name;
@@ -223,7 +201,6 @@ final class Label implements JsonSerializable
         return $this;
     }
 
-    #[Pure]
     public function getValue(): ?string
     {
         return $this->value;

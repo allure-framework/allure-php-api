@@ -73,6 +73,9 @@ class IssuesTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getIssuesInstance(string $methodName): Issues
     {
         return $this->getLegacyAttributeInstance(Issues::class, $methodName);

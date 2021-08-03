@@ -2,19 +2,11 @@
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
-
-/**
- * Interface ParametersAware
- *
- * @package Qameta\Allure\Model
- */
-interface ParametersAware
+interface ParametersAwareInterface
 {
     /**
      * @return list<Parameter>
      */
-    #[Pure]
     public function getParameters(): array;
 
     public function addParameters(Parameter ...$parameters): static;

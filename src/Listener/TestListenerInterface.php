@@ -6,7 +6,7 @@ namespace Qameta\Allure\Listener;
 
 use Qameta\Allure\Model\TestResult;
 
-interface TestListener extends LifecycleListener
+interface TestListenerInterface extends LifecycleListenerInterface
 {
 
     public function beforeTestSchedule(TestResult $test): void;

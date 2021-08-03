@@ -14,11 +14,12 @@ use function array_map;
  * @Annotation
  * @Target({"CLASS", "METHOD"})
  * @deprecated Use native PHP attribute {@see \Qameta\Allure\Annotation\Issues}
+ * @psalm-suppress MissingConstructor
  */
 class Issues implements LegacyAnnotationInterface
 {
     /**
-     * @var array<string>
+     * @var list<string>
      * @Required
      */
     public array $issueKeys;

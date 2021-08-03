@@ -4,24 +4,23 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
+use Qameta\Allure\Internal\AttachmentsAwareStorableInterface;
 use Qameta\Allure\Internal\JsonSerializableTrait;
+use Qameta\Allure\Internal\StepsAwareStorableInterface;
 
 final class FixtureResult implements
-    AttachmentsAware,
-    ParametersAware,
-    StatusDetailsAware,
-    StepsAware,
-    Storable,
+    AttachmentsAwareStorableInterface,
+    ParametersAwareInterface,
+    StatusDetailsAwareInterface,
+    StepsAwareStorableInterface,
     JsonSerializable,
-    UuidAware,
-    Result
+    UuidAwareInterface,
+    ResultInterface
 {
     use ExecutableTrait;
     use JsonSerializableTrait;
 
-    #[Pure]
     public function __construct(private string $uuid)
     {
     }
@@ -31,7 +30,6 @@ final class FixtureResult implements
         return ResultType::fixture();
     }
 
-    #[Pure]
     public function getUuid(): string
     {
         return $this->uuid;

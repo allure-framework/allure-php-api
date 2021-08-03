@@ -6,7 +6,6 @@ namespace Qameta\Allure\Annotation;
 
 use Doctrine\Common\Annotations\IndexedReader;
 use Doctrine\Common\Annotations\Reader;
-use JetBrains\PhpStorm\Pure;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
@@ -21,20 +20,26 @@ final class AnnotationReader implements Reader
 
     private Reader $delegate;
 
-    #[Pure]
     public function __construct(Reader $reader)
     {
         $this->delegate = new IndexedReader($reader);
     }
 
+    /**
+     * @param ReflectionAttribute ...$attributes
+     * @return list<object>
+     */
     private function getAttributeInstances(ReflectionAttribute ...$attributes): array
     {
         return array_map(
             fn (ReflectionAttribute $attribute) => $attribute->newInstance(),
-            $attributes,
+            array_values($attributes),
         );
     }
 
+    /**
+     * @return list<object>
+     */
     public function getClassAnnotations(ReflectionClass $class): array
     {
         return [
@@ -43,7 +48,13 @@ final class AnnotationReader implements Reader
         ];
     }
 
-    public function getClassAnnotation(ReflectionClass $class, $annotationName): ?object
+    /**
+     * @template T
+     * @param ReflectionClass $class
+     * @param class-string<T>    $annotationName
+     * @return T|null
+     */
+    public function getClassAnnotation(ReflectionClass $class, $annotationName)
     {
         $annotations = $this->getAttributeInstances(...$class->getAttributes($annotationName));
         $legacyAnnotation = $this->delegate->getClassAnnotation($class, $annotationName);
@@ -51,11 +62,18 @@ final class AnnotationReader implements Reader
             $annotations = [$legacyAnnotation, ...$annotations];
         }
 
-        return empty($annotations)
+        $annotation = empty($annotations)
             ? null
             : array_pop($annotations);
+
+        return $annotation instanceof $annotationName
+            ? $annotation
+            : null;
     }
 
+    /**
+     * @return list<object>
+     */
     public function getMethodAnnotations(ReflectionMethod $method): array
     {
         return [
@@ -64,6 +82,12 @@ final class AnnotationReader implements Reader
         ];
     }
 
+    /**
+     * @template T
+     * @param ReflectionMethod $method
+     * @param class-string<T> $annotationName
+     * @return T|null
+     */
     public function getMethodAnnotation(ReflectionMethod $method, $annotationName)
     {
         $annotations = $this->getAttributeInstances(...$method->getAttributes($annotationName));
@@ -72,11 +96,18 @@ final class AnnotationReader implements Reader
             $annotations = [$legacyAnnotation, ...$annotations];
         }
 
-        return empty($annotations)
+        $annotation = empty($annotations)
             ? null
             : array_pop($annotations);
+
+        return $annotation instanceof $annotationName
+            ? $annotation
+            : null;
     }
 
+    /**
+     * @return list<object>
+     */
     public function getPropertyAnnotations(ReflectionProperty $property): array
     {
         return [
@@ -85,7 +116,13 @@ final class AnnotationReader implements Reader
         ];
     }
 
-    public function getPropertyAnnotation(ReflectionProperty $property, $annotationName): ?object
+    /**
+     * @template T
+     * @param ReflectionProperty $property
+     * @param class-string<T>  $annotationName
+     * @return T|null
+     */
+    public function getPropertyAnnotation(ReflectionProperty $property, $annotationName)
     {
         $annotations = $this->getAttributeInstances(...$property->getAttributes($annotationName));
         $legacyAnnotation = $this->delegate->getPropertyAnnotation($property, $annotationName);
@@ -93,8 +130,12 @@ final class AnnotationReader implements Reader
             $annotations = [$legacyAnnotation, ...$annotations];
         }
 
-        return empty($annotations)
+        $annotation = empty($annotations)
             ? null
             : array_pop($annotations);
+
+        return $annotation instanceof $annotationName
+            ? $annotation
+            : null;
     }
 }

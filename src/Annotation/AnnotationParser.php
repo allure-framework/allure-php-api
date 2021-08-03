@@ -6,6 +6,7 @@ namespace Qameta\Allure\Annotation;
 
 use Qameta\Allure\Legacy\Annotation\LegacyAnnotationInterface;
 use Qameta\Allure\Model;
+use function is_array;
 
 class AnnotationParser
 {
@@ -42,7 +43,7 @@ class AnnotationParser
         $this->processAnnotations(...$annotations);
     }
 
-    private function processAnnotations(object ...$annotations)
+    private function processAnnotations(object ...$annotations): void
     {
         foreach ($this->convertLegacyAnnotations(...$annotations) as $annotation) {
             if ($annotation instanceof TitleInterface) {
@@ -73,24 +74,33 @@ class AnnotationParser
     private function convertLegacyAnnotations(object ...$annotations): iterable
     {
         foreach ($annotations as $annotation) {
-            yield from $annotation instanceof LegacyAnnotationInterface
-                ? (array) $annotation->convert()
-                : [$annotation];
+            $converted = $annotation instanceof LegacyAnnotationInterface
+                ? $annotation->convert()
+                : $annotation;
+            if (!is_array($converted)) {
+                $converted = [$converted];
+            }
+
+            yield from $converted;
         }
     }
 
     private function createLink(LinkInterface $link): Model\Link
     {
+        $linkType = $link->getType();
+
         return new Model\Link(
             name: $link->getName(),
-            url: $link->getUrl() ?? $this->getLinkUrl($link->getName(), $link->getType()),
-            type: new Model\LinkType($link->getType()),
+            url: $link->getUrl() ?? $this->getLinkUrl($link->getName(), $linkType),
+            type: isset($linkType)
+                ? new Model\LinkType($linkType)
+                : null,
         );
     }
 
-    private function getLinkUrl(?string $name, string $type): ?string
+    private function getLinkUrl(?string $name, ?string $type): ?string
     {
-        return isset($this->linkTemplates[$type])
+        return isset($type, $this->linkTemplates[$type])
             ? $this->linkTemplates[$type]->buildUrl($name)
             : $name;
     }

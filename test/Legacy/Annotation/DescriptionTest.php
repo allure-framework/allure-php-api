@@ -104,6 +104,9 @@ class DescriptionTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getDescriptionInstance(string $methodName): Description
     {
         return $this->getLegacyAttributeInstance(Description::class, $methodName);

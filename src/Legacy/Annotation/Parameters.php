@@ -14,11 +14,14 @@ use function array_map;
  * @Annotation
  * @Target({"METHOD"})
  * @deprecated Use native PHP attribute {@see \Qameta\Allure\Annotation\Parameter} (repeatable).
+ * @psalm-suppress MissingConstructor
+ * @psalm-suppress DeprecatedClass
  */
 class Parameters implements LegacyAnnotationInterface
 {
     /**
      * @var array<\Yandex\Allure\Adapter\Annotation\Parameter>
+     * @psalm-var list<\Yandex\Allure\Adapter\Annotation\Parameter>
      * @Required
      */
     public array $parameters;

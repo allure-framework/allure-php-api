@@ -6,7 +6,7 @@ namespace Qameta\Allure\Listener;
 
 use Qameta\Allure\Model\FixtureResult;
 
-interface FixtureListener extends LifecycleListener
+interface FixtureListenerInterface extends LifecycleListenerInterface
 {
 
     public function beforeFixtureStart(FixtureResult $fixture): void;

@@ -29,7 +29,7 @@ final class DefaultStepContext implements StepContextInterface
         );
     }
 
-    public function parameter(string $name, ?string $value): string
+    public function parameter(string $name, ?string $value): ?string
     {
         $param = new Parameter($name, $value);
         $this->lifecycle->updateStep(

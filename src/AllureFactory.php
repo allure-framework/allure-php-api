@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Qameta\Allure;
 
-use JetBrains\PhpStorm\Pure;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Qameta\Allure\Internal\AllureStorage;
 use Qameta\Allure\Internal\DefaultStatusDetector;
 use Qameta\Allure\Internal\SystemClock;
-use Qameta\Allure\Listener\LifecycleListener;
-use Qameta\Allure\Internal\ListenersNotifier;
+use Qameta\Allure\Listener\LifecycleListenerInterface;
+use Qameta\Allure\Internal\ListenersNotifierInterface;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
+use function array_values;
 
 final class AllureFactory implements AllureFactoryInterface
 {
@@ -27,7 +27,7 @@ final class AllureFactory implements AllureFactoryInterface
     private ?ResultFactoryInterface $resultFactory = null;
 
     /**
-     * @var list<LifecycleListener>
+     * @var list<LifecycleListenerInterface>
      */
     private array $lifecycleListeners = [];
 
@@ -39,7 +39,7 @@ final class AllureFactory implements AllureFactoryInterface
             $this->getLogger(),
             $this->getClock(),
             $resultsWriter,
-            new ListenersNotifier($this->getLogger(), ...$this->lifecycleListeners),
+            new ListenersNotifierInterface($this->getLogger(), ...$this->lifecycleListeners),
             new AllureStorage(),
         );
     }
@@ -58,17 +58,16 @@ final class AllureFactory implements AllureFactoryInterface
         );
     }
 
-    public function addListeners(LifecycleListener $listener, LifecycleListener ...$moreListeners): self
+    public function addListeners(LifecycleListenerInterface $listener, LifecycleListenerInterface ...$moreListeners): self
     {
-        $this->lifecycleListeners = [...$this->lifecycleListeners, $listener, ...$moreListeners];
+        $this->lifecycleListeners = [...$this->lifecycleListeners, $listener, ...array_values($moreListeners)];
 
         return $this;
     }
 
-    #[Pure]
     public function createResultsWriter(string $outputDirectory): AllureResultsWriterInterface
     {
-        return new FileSystemResultsWriter($outputDirectory);
+        return new FileSystemResultsWriter($outputDirectory, $this->getLogger());
     }
 
     public function setStatusDetector(StatusDetectorInterface $statusDetector): self

@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Internal;
 
-use JetBrains\PhpStorm\Pure;
 use Qameta\Allure\Internal\Exception\AttachmentsAwareNotFoundException;
 use Qameta\Allure\Internal\Exception\ContainerNotFoundException;
 use Qameta\Allure\Internal\Exception\FixtureNotFoundException;
 use Qameta\Allure\Internal\Exception\StepNotFoundException;
 use Qameta\Allure\Internal\Exception\StepsAwareNotFoundException;
 use Qameta\Allure\Internal\Exception\TestCaseNotScheduledException;
-use Qameta\Allure\Model\AttachmentsAware;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\StepResult;
-use Qameta\Allure\Model\StepsAware;
-use Qameta\Allure\Model\Storable;
+use Qameta\Allure\Model\StorableInterface;
 use Qameta\Allure\Model\TestResult;
 use Qameta\Allure\Model\ResultContainer;
-use Qameta\Allure\Model\UuidAware;
+use Qameta\Allure\Model\UuidAwareInterface;
 
 /**
  * @internal
@@ -27,16 +24,16 @@ class AllureStorage implements AllureStorageInterface
 {
 
     /**
-     * @var array<string, Storable>
+     * @var array<string, StorableInterface>
      */
     private array $storage = [];
 
-    public function set(UuidAware $object): void
+    public function set(UuidAwareInterface $object): void
     {
         $this->setByUuid($object->getUuid(), $object);
     }
 
-    public function setByUuid(string $uuid, Storable $object): void
+    public function setByUuid(string $uuid, StorableInterface $object): void
     {
         $this->storage[$uuid] = $object;
     }
@@ -70,20 +67,26 @@ class AllureStorage implements AllureStorageInterface
             ?? throw new StepNotFoundException($uuid);
     }
 
-    public function getStepsAware(string $uuid): StepsAware
+    public function getStepsAware(string $uuid): StepsAwareStorableInterface
     {
-        return $this->findObject(StepsAware::class, $uuid)
+        return $this->findObject(StepsAwareStorableInterface::class, $uuid)
             ?? throw new StepsAwareNotFoundException($uuid);
     }
 
-    public function getAttachmentsAware(string $uuid): AttachmentsAware
+    public function getAttachmentsAware(string $uuid): AttachmentsAwareStorableInterface
     {
-        return $this->findObject(AttachmentsAware::class, $uuid)
+        return $this->findObject(AttachmentsAwareStorableInterface::class, $uuid)
             ?? throw new AttachmentsAwareNotFoundException($uuid);
     }
 
-    #[Pure]
-    private function findObject(string $class, string $uuid): ?Storable
+    /**
+     * @template T of StorableInterface
+     * @param class-string<T> $class
+     * @param string $uuid
+     * @return StorableInterface|null
+     * @psalm-return T|null
+     */
+    private function findObject(string $class, string $uuid): ?StorableInterface
     {
         $object = $this->storage[$uuid] ?? null;
 

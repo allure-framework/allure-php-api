@@ -9,6 +9,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
 /**
  * @Annotation
  * @Target({"PROPERTY"})
+ * @psalm-suppress MissingConstructor
  */
 final class LegacyPropertyAnnotation
 {

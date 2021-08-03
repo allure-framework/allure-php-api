@@ -6,13 +6,18 @@ namespace Qameta\Allure\Internal;
 
 use PHPUnit\Framework\TestCase;
 
+use Throwable;
+
 use function fclose;
 use function stream_get_contents;
 
 class StringAttachmentTest extends TestCase
 {
 
-    private $streams = [];
+    /**
+     * @var list<resource>
+     */
+    private array $streams = [];
 
     public function tearDown(): void
     {
@@ -21,6 +26,9 @@ class StringAttachmentTest extends TestCase
         }
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testGetStream_ConstructedWithGivenData_ReturnsResourceWithSameData(): void
     {
         $attachment = new StringAttachment('a');

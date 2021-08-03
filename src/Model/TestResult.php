@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
+use Qameta\Allure\Internal\AttachmentsAwareStorableInterface;
 use Qameta\Allure\Internal\JsonSerializableTrait;
+use Qameta\Allure\Internal\StepsAwareStorableInterface;
+
+use function array_values;
 
 final class TestResult implements
-    AttachmentsAware,
-    ParametersAware,
-    StatusDetailsAware,
-    StepsAware,
-    Storable,
+    AttachmentsAwareStorableInterface,
+    ParametersAwareInterface,
+    StatusDetailsAwareInterface,
+    StepsAwareStorableInterface,
     JsonSerializable,
-    UuidAware,
-    LabelsAware,
-    Result
+    UuidAwareInterface,
+    LabelsAwareInterface,
+    ResultInterface
 {
     use ExecutableTrait;
     use JsonSerializableTrait;
@@ -31,12 +33,12 @@ final class TestResult implements
     private ?string $fullName = null;
 
     /**
-     * @var array list<Label>
+     * @var list<Label>
      */
     private array $labels = [];
 
     /**
-     * @var array list<Label>
+     * @var list<Link>
      */
     private array $links = [];
 
@@ -49,13 +51,11 @@ final class TestResult implements
         return ResultType::test();
     }
 
-    #[Pure]
     public function getUuid(): string
     {
         return $this->uuid;
     }
 
-    #[Pure]
     public function getHistoryId(): ?string
     {
         return $this->historyId;
@@ -68,7 +68,6 @@ final class TestResult implements
         return $this;
     }
 
-    #[Pure]
     public function getTestCaseId(): ?string
     {
         return $this->testCaseId;
@@ -81,7 +80,6 @@ final class TestResult implements
         return $this;
     }
 
-    #[Pure]
     public function getRerunOf(): ?string
     {
         return $this->rerunOf;
@@ -94,7 +92,6 @@ final class TestResult implements
         return $this;
     }
 
-    #[Pure]
     public function getFullName(): ?string
     {
         return $this->fullName;
@@ -110,20 +107,19 @@ final class TestResult implements
     /**
      * @return list<Label>
      */
-    #[Pure]
     public function getLabels(): array
     {
         return $this->labels;
     }
 
-    public function addLabels(Label ...$labels): self
+    public function addLabels(Label ...$labels): static
     {
-        return $this->setLabels(...$this->labels, ...$labels);
+        return $this->setLabels(...$this->labels, ...\array_values($labels));
     }
 
-    public function setLabels(Label ...$labels): self
+    public function setLabels(Label ...$labels): static
     {
-        $this->labels = $labels;
+        $this->labels = array_values($labels);
 
         return $this;
     }
@@ -131,7 +127,6 @@ final class TestResult implements
     /**
      * @return list<Link>
      */
-    #[Pure]
     public function getLinks(): array
     {
         return $this->links;
@@ -139,12 +134,12 @@ final class TestResult implements
 
     public function addLinks(Link ...$links): self
     {
-        return $this->setLinks(...$this->links, ...$links);
+        return $this->setLinks(...$this->links, ...array_values($links));
     }
 
     public function setLinks(Link ...$links): self
     {
-        $this->links = $links;
+        $this->links = array_values($links);
 
         return $this;
     }

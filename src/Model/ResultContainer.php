@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Qameta\Allure\Internal\JsonSerializableTrait;
+use function array_values;
 
-final class ResultContainer implements JsonSerializable, UuidAware, Result
+final class ResultContainer implements JsonSerializable, UuidAwareInterface, ResultInterface
 {
     use JsonSerializableTrait;
     use TimeAwareTrait;
@@ -33,7 +33,6 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
      */
     private array $links = [];
 
-    #[Pure]
     public function __construct(private string $uuid)
     {
     }
@@ -46,7 +45,6 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
     /**
      * @return string
      */
-    #[Pure]
     public function getUuid(): string
     {
         return $this->uuid;
@@ -55,7 +53,6 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
     /**
      * @return list<string>
      */
-    #[Pure]
     public function getChildren(): array
     {
         return $this->children;
@@ -63,12 +60,12 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
 
     public function addChildren(string ...$children): self
     {
-        return $this->setChildren(...$this->children, ...$children);
+        return $this->setChildren(...$this->children, ...array_values($children));
     }
 
     public function setChildren(string ...$children): self
     {
-        $this->children = $children;
+        $this->children = array_values($children);
 
         return $this;
     }
@@ -76,7 +73,6 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
     /**
      * @return list<FixtureResult>
      */
-    #[Pure]
     public function getBefores(): array
     {
         return $this->befores;
@@ -84,12 +80,12 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
 
     public function addSetUps(FixtureResult ...$befores): self
     {
-        return $this->setBefores(...$this->befores, ...$befores);
+        return $this->setBefores(...$this->befores, ...array_values($befores));
     }
 
     public function setBefores(FixtureResult ...$befores): self
     {
-        $this->befores = $befores;
+        $this->befores = array_values($befores);
 
         return $this;
     }
@@ -97,7 +93,6 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
     /**
      * @return list<FixtureResult>
      */
-    #[Pure]
     public function getAfters(): array
     {
         return $this->afters;
@@ -105,12 +100,12 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
 
     public function addTearDowns(FixtureResult ...$afters): self
     {
-        return $this->setAfters(...$this->afters, ...$afters);
+        return $this->setAfters(...$this->afters, ...array_values($afters));
     }
 
     public function setAfters(FixtureResult ...$afters): self
     {
-        $this->afters = $afters;
+        $this->afters = array_values($afters);
 
         return $this;
     }
@@ -118,7 +113,6 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
     /**
      * @return list<Link>
      */
-    #[Pure]
     public function getLinks(): array
     {
         return $this->links;
@@ -126,12 +120,12 @@ final class ResultContainer implements JsonSerializable, UuidAware, Result
 
     public function addLinks(Link ...$links): self
     {
-        return $this->setLinks(...$this->links, ...$links);
+        return $this->setLinks(...$this->links, ...array_values($links));
     }
 
     public function setLinks(Link ...$links): self
     {
-        $this->links = $links;
+        $this->links = array_values($links);
 
         return $this;
     }

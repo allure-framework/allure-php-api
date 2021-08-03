@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Qameta\Allure\Model;
 
 use DateTimeImmutable;
-use JetBrains\PhpStorm\Pure;
 use Qameta\Allure\Internal\SerializableDate;
 
 trait TimeAwareTrait
@@ -21,7 +20,6 @@ trait TimeAwareTrait
 
     protected ?SerializableDate $stop = null;
 
-    #[Pure]
     final public function getName(): ?string
     {
         return $this->name;
@@ -34,7 +32,6 @@ trait TimeAwareTrait
         return $this;
     }
 
-    #[Pure]
     final public function getDescription(): ?string
     {
         return $this->description;
@@ -47,7 +44,6 @@ trait TimeAwareTrait
         return $this;
     }
 
-    #[Pure]
     final public function getDescriptionHtml(): ?string
     {
         return $this->descriptionHtml;
@@ -60,7 +56,6 @@ trait TimeAwareTrait
         return $this;
     }
 
-    #[Pure]
     final public function getStart(): ?DateTimeImmutable
     {
         return isset($this->start) ? $this->start->getDate() : null;
@@ -73,7 +68,6 @@ trait TimeAwareTrait
         return $this;
     }
 
-    #[Pure]
     final public function getStop(): ?DateTimeImmutable
     {
         return isset($this->stop) ? $this->stop->getDate() : null;

@@ -34,6 +34,9 @@ class AllureIdTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getAllureIdInstance(string $methodName): AllureId
     {
         return $this->getLegacyAttributeInstance(AllureId::class, $methodName);

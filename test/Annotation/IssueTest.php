@@ -28,6 +28,9 @@ class IssueTest extends TestCase
         self::assertSame($expectedValue, $issue->getName());
     }
 
+    /**
+     * @return iterable<string, array{string, string|null}>
+     */
     public function providerGetName(): iterable
     {
         return [
@@ -47,6 +50,9 @@ class IssueTest extends TestCase
         self::assertSame($expectedValue, $issue->getUrl());
     }
 
+    /**
+     * @return iterable<string, array{string, string|null}>
+     */
     public function providerGetUrl(): iterable
     {
         return [

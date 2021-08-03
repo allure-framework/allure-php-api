@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Qameta\Allure\Internal\JsonSerializableTrait;
 
@@ -12,7 +11,6 @@ final class StatusDetails implements JsonSerializable
 {
     use JsonSerializableTrait;
 
-    #[Pure]
     public function __construct(
         private ?bool $known = null,
         private ?bool $muted = null,
@@ -22,7 +20,6 @@ final class StatusDetails implements JsonSerializable
     ) {
     }
 
-    #[Pure]
     public function isKnown(): ?bool
     {
         return $this->known;
@@ -35,7 +32,6 @@ final class StatusDetails implements JsonSerializable
         return $this;
     }
 
-    #[Pure]
     public function isMuted(): ?bool
     {
         return $this->muted;
@@ -48,7 +44,6 @@ final class StatusDetails implements JsonSerializable
         return $this;
     }
 
-    #[Pure]
     public function getFlaky(): ?bool
     {
         return $this->flaky;
@@ -61,7 +56,6 @@ final class StatusDetails implements JsonSerializable
         return $this;
     }
 
-    #[Pure]
     public function getMessage(): ?string
     {
         return $this->message;
@@ -74,7 +68,6 @@ final class StatusDetails implements JsonSerializable
         return $this;
     }
 
-    #[Pure]
     public function getTrace(): ?string
     {
         return $this->trace;

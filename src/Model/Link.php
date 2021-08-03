@@ -2,7 +2,6 @@
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Qameta\Allure\Internal\JsonSerializableTrait;
 
@@ -10,7 +9,6 @@ final class Link implements JsonSerializable
 {
     use JsonSerializableTrait;
 
-    #[Pure]
     public function __construct(
         private ?string $name = null,
         private ?string $url = null,
@@ -18,7 +16,6 @@ final class Link implements JsonSerializable
     ) {
     }
 
-    #[Pure]
     public static function issue(string $name, string $url): self
     {
         return new self(
@@ -28,7 +25,6 @@ final class Link implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function tms(string $name, string $url): self
     {
         return new self(
@@ -38,7 +34,6 @@ final class Link implements JsonSerializable
         );
     }
 
-    #[Pure]
     public static function custom(string $name, string $url): self
     {
         return new self(
@@ -48,7 +43,6 @@ final class Link implements JsonSerializable
         );
     }
 
-    #[Pure]
     public function getName(): ?string
     {
         return $this->name;
@@ -61,7 +55,6 @@ final class Link implements JsonSerializable
         return $this;
     }
 
-    #[Pure]
     public function getUrl(): ?string
     {
         return $this->url;
@@ -74,10 +67,9 @@ final class Link implements JsonSerializable
         return $this;
     }
 
-    #[Pure]
     public function getType(): ?LinkType
     {
-        return new $this->type();
+        return $this->type;
     }
 
     public function setType(?LinkType $type): self

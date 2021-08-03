@@ -32,12 +32,12 @@ class LabelTest extends TestCase
     }
 
     #[Label("a")]
-    protected function demoWithoutValue()
+    protected function demoWithoutValue(): void
     {
     }
 
     #[Label("a", "b")]
-    protected function demoWithNameAndValue()
+    protected function demoWithNameAndValue(): void
     {
     }
 

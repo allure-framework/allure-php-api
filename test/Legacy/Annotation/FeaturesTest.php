@@ -73,6 +73,9 @@ class FeaturesTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getFeaturesInstance(string $methodName): Features
     {
         return $this->getLegacyAttributeInstance(Features::class, $methodName);

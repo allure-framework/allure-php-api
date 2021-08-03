@@ -51,5 +51,5 @@ interface AllureLifecycleInterface
 
     public function stopStep(?string $uuid = null): void;
 
-    public function addAttachment(Attachment $attachment, StreamFactory $data): void;
+    public function addAttachment(Attachment $attachment, StreamFactoryInterface $data): void;
 }

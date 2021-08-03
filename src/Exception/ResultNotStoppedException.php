@@ -12,7 +12,7 @@ final class ResultNotStoppedException extends ResultException
 
     public function __construct(
         ResultType $resultType,
-        private string $uuid,
+        private ?string $uuid,
         ?Throwable $previous = null,
     ) {
         parent::__construct($resultType, $previous);
@@ -20,10 +20,14 @@ final class ResultNotStoppedException extends ResultException
 
     protected function buildMessage(): string
     {
-        return "{$this->buildResultName()} with UUID {$this->uuid} was not stopped";
+        $uuidText = isset($this->uuid)
+            ? " with UUID {$this->uuid}"
+            : '';
+
+        return "{$this->buildResultName()}{$uuidText} was not stopped";
     }
 
-    public function getUuid(): string
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }

@@ -2,19 +2,11 @@
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
-
-/**
- * Interface AttachmentsAware
- *
- * @package Qameta\Allure\Model
- */
-interface AttachmentsAware
+interface AttachmentsAwareInterface
 {
     /**
      * @return list<Attachment>
      */
-    #[Pure]
     public function getAttachments(): array;
 
     public function addAttachments(Attachment ...$attachments): static;

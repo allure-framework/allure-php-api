@@ -10,6 +10,7 @@ use Qameta\Allure\Legacy\Annotation\LegacyAnnotationInterface;
 /**
  * @Annotation
  * @Target({"PROPERTY"})
+ * @psalm-suppress MissingConstructor
  */
 final class ConvertableLegacyPropertyAnnotation implements LegacyAnnotationInterface
 {

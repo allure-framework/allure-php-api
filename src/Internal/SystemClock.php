@@ -21,7 +21,7 @@ final class SystemClock implements ClockInterface
     {
         [$mSec, $sec] = explode(' ', microtime(false));
 
-        $mSec = (int) round($mSec * 1000000);
+        $mSec = (int) round(1000000 * (float) $mSec);
 
         return (new DateTimeImmutable("@{$sec}"))->modify("+{$mSec} microsecond");
     }

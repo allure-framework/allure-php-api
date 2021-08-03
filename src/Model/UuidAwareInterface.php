@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JetBrains\PhpStorm\Pure;
-
-interface UuidAware extends Storable
+interface UuidAwareInterface extends StorableInterface
 {
 
-    #[Pure]
     public function getUuid(): string;
 }

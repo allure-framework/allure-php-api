@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Internal;
 
-use Qameta\Allure\Model\AttachmentsAware;
+use Qameta\Allure\Model\AttachmentsAwareInterface;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\StepResult;
-use Qameta\Allure\Model\StepsAware;
-use Qameta\Allure\Model\Storable;
+use Qameta\Allure\Model\StepsAwareInterface;
+use Qameta\Allure\Model\StorableInterface;
 use Qameta\Allure\Model\TestResult;
 use Qameta\Allure\Model\ResultContainer;
-use Qameta\Allure\Model\UuidAware;
+use Qameta\Allure\Model\UuidAwareInterface;
 
 /**
  * @internal
@@ -19,9 +19,9 @@ use Qameta\Allure\Model\UuidAware;
 interface AllureStorageInterface
 {
 
-    public function set(UuidAware $object): void;
+    public function set(UuidAwareInterface $object): void;
 
-    public function setByUuid(string $uuid, Storable $object): void;
+    public function setByUuid(string $uuid, StorableInterface $object): void;
 
     public function unset(string $uuid): void;
 
@@ -33,7 +33,7 @@ interface AllureStorageInterface
 
     public function getStep(string $uuid): StepResult;
 
-    public function getStepsAware(string $uuid): StepsAware;
+    public function getStepsAware(string $uuid): StepsAwareInterface;
 
-    public function getAttachmentsAware(string $uuid): AttachmentsAware;
+    public function getAttachmentsAware(string $uuid): AttachmentsAwareInterface;
 }

@@ -22,6 +22,9 @@ class LinkTest extends TestCase
         self::assertSame($expectedValue, $link->getType());
     }
 
+    /**
+     * @return iterable<string, array{string, string}>
+     */
     public function providerGetType(): iterable
     {
         return [
@@ -44,6 +47,9 @@ class LinkTest extends TestCase
         self::assertSame($expectedValue, $link->getName());
     }
 
+    /**
+     * @return iterable<string, array{string, string|null}>
+     */
     public function providerGetName(): iterable
     {
         return [
@@ -63,6 +69,9 @@ class LinkTest extends TestCase
         self::assertSame($expectedValue, $link->getUrl());
     }
 
+    /**
+     * @return iterable<string, array{string, string|null}>
+     */
     public function providerGetUrl(): iterable
     {
         return [

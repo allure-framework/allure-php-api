@@ -73,6 +73,9 @@ class StoriesTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getStoriesInstance(string $methodName): Stories
     {
         return $this->getLegacyAttributeInstance(Stories::class, $methodName);

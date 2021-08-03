@@ -6,7 +6,7 @@ namespace Qameta\Allure\Listener;
 
 use Qameta\Allure\Model\Attachment;
 
-interface AttachmentListener
+interface AttachmentListenerInterface
 {
 
     public function beforeAttachmentWrite(Attachment $attachment): void;

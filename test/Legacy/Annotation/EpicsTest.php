@@ -73,6 +73,9 @@ class EpicsTest extends TestCase
     {
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function getEpicsInstance(string $methodName): Epics
     {
         return $this->getLegacyAttributeInstance(Epics::class, $methodName);

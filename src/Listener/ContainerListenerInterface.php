@@ -6,7 +6,7 @@ namespace Qameta\Allure\Listener;
 
 use Qameta\Allure\Model\ResultContainer;
 
-interface ContainerListener extends LifecycleListener
+interface ContainerListenerInterface extends LifecycleListenerInterface
 {
 
     public function beforeContainerStart(ResultContainer $container): void;
