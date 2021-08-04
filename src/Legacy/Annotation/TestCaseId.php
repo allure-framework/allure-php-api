@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yandex\Allure\Adapter\Annotation;
 
 use Doctrine\Common\Annotations\Annotation\Required;
-use Qameta\Allure\Annotation\TestCaseId as QametaTestCaseId;
+use Qameta\Allure\Annotation\TmsLink;
 use Qameta\Allure\Legacy\Annotation\LegacyAnnotationInterface;
 
 use function array_map;
@@ -13,7 +13,7 @@ use function array_map;
 /**
  * @Annotation
  * @Target({"CLASS", "METHOD"})
- * @deprecated Use native PHP attribute {@see \Qameta\Allure\Annotation\TestCaseId}
+ * @deprecated Use native PHP attribute {@see \Qameta\Allure\Annotation\TmsLink}
  * @psalm-suppress MissingConstructor
  */
 class TestCaseId implements LegacyAnnotationInterface
@@ -31,12 +31,12 @@ class TestCaseId implements LegacyAnnotationInterface
     }
 
     /**
-     * @return list<QametaTestCaseId>
+     * @return list<TmsLink>
      */
     public function convert(): array
     {
         return array_map(
-            fn (string $id) => new QametaTestCaseId($id),
+            fn (string $id) => new TmsLink($id),
             $this->testCaseIds,
         );
     }

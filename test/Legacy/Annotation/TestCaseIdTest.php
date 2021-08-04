@@ -6,7 +6,7 @@ namespace Qameta\Allure\Legacy\Annotation;
 
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Annotation\AnnotationTestTrait;
-use Qameta\Allure\Annotation\TestCaseId as QametaTestCaseId;
+use Qameta\Allure\Annotation\TmsLink;
 use Yandex\Allure\Adapter\Annotation\TestCaseId;
 
 /**
@@ -33,12 +33,12 @@ class TestCaseIdTest extends TestCase
         $testCaseId = $this->getTestCaseIdInstance('demoWithSingleValue');
         $expectedList = [
             [
-                'class' => QametaTestCaseId::class,
-                'name' => 'testId',
+                'class' => TmsLink::class,
+                'type' => 'tms',
                 'value' => 'a',
             ],
         ];
-        self::assertSame($expectedList, $this->exportLabels(...$testCaseId->convert()));
+        self::assertSame($expectedList, $this->exportLinks(...$testCaseId->convert()));
     }
 
     public function testConvert_WithTwoValues_ResultHasSameValuesInList(): void
@@ -46,17 +46,17 @@ class TestCaseIdTest extends TestCase
         $testCaseId = $this->getTestCaseIdInstance('demoWithTwoValues');
         $expectedList = [
             [
-                'class' => QametaTestCaseId::class,
-                'name' => 'testId',
+                'class' => TmsLink::class,
+                'type' => 'tms',
                 'value' => 'a',
             ],
             [
-                'class' => QametaTestCaseId::class,
-                'name' => 'testId',
+                'class' => TmsLink::class,
+                'type' => 'tms',
                 'value' => 'b',
             ],
         ];
-        self::assertSame($expectedList, $this->exportLabels(...$testCaseId->convert()));
+        self::assertSame($expectedList, $this->exportLinks(...$testCaseId->convert()));
     }
 
     /**
