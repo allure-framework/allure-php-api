@@ -74,7 +74,7 @@ final class AttributeReader implements AttributeReaderInterface
         );
 
         return array_map(
-            fn (ReflectionAttribute $attribute): AttributeInterface => $attribute->newInstance() ,
+            fn (ReflectionAttribute $attribute): AttributeInterface => $attribute->newInstance(),
             array_values($filteredAttributes),
         );
     }
