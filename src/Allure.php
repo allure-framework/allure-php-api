@@ -400,8 +400,11 @@ final class Allure
     {
         $attributeReader = new AttributeReader();
         if (is_array($callable)) {
-            $attributes = count($callable) == 2
-                ? $attributeReader->getMethodAnnotations(new ReflectionMethod(...$callable))
+            [$object, $method] = count($callable) == 2
+                ? $callable
+                : [null, null];
+            $attributes = isset($object, $method)
+                ? $attributeReader->getMethodAnnotations(new ReflectionMethod($object, $method))
                 : [];
         } else {
             $attributes = $attributeReader->getFunctionAnnotations(new ReflectionFunction($callable));
