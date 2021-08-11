@@ -3,7 +3,6 @@
 namespace Qameta\Allure\Model;
 
 use JsonSerializable;
-use Qameta\Allure\Internal\JsonSerializableTrait;
 
 final class Link implements JsonSerializable
 {
@@ -16,7 +15,7 @@ final class Link implements JsonSerializable
     ) {
     }
 
-    public static function issue(string $name, string $url): self
+    public static function issue(string $name, ?string $url): self
     {
         return new self(
             name: $name,
@@ -25,7 +24,7 @@ final class Link implements JsonSerializable
         );
     }
 
-    public static function tms(string $name, string $url): self
+    public static function tms(string $name, ?string $url): self
     {
         return new self(
             name: $name,
@@ -34,7 +33,7 @@ final class Link implements JsonSerializable
         );
     }
 
-    public static function custom(string $name, string $url): self
+    public static function custom(string $name, ?string $url): self
     {
         return new self(
             name: $name,

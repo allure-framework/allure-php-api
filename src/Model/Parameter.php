@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Qameta\Allure\Model;
 
 use JsonSerializable;
-use Qameta\Allure\Internal\JsonSerializableTrait;
 
 final class Parameter implements JsonSerializable
 {
@@ -14,6 +13,8 @@ final class Parameter implements JsonSerializable
     public function __construct(
         private string $name,
         private ?string $value = null,
+        private ?bool $excluded = null,
+        private ?ParameterMode $mode = null,
     ) {
     }
 
@@ -37,6 +38,30 @@ final class Parameter implements JsonSerializable
     public function setValue(?string $value): self
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getExcluded(): ?bool
+    {
+        return $this->excluded;
+    }
+
+    public function setExcluded(?bool $excluded): self
+    {
+        $this->excluded = $excluded;
+
+        return $this;
+    }
+
+    public function getMode(): ?ParameterMode
+    {
+        return $this->mode;
+    }
+
+    public function setMode(?ParameterMode $mode): self
+    {
+        $this->mode = $mode;
 
         return $this;
     }

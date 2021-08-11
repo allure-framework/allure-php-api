@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Qameta\Allure\Model;
 
 use JsonSerializable;
-use Qameta\Allure\Internal\JsonSerializableTrait;
 
 final class Label implements JsonSerializable
 {
@@ -24,7 +23,6 @@ final class Label implements JsonSerializable
     public const LEAD = "lead";
     public const HOST = "host";
     public const THREAD = "thread";
-    public const TEST_ID = "testId";
     public const TEST_METHOD = "testMethod";
     public const TEST_CLASS = "testClass";
     public const PACKAGE = "package";
@@ -137,14 +135,6 @@ final class Label implements JsonSerializable
     {
         return new self(
             name: self::THREAD,
-            value: $value,
-        );
-    }
-
-    public static function testId(?string $value): self
-    {
-        return new self(
-            name: self::TEST_ID,
             value: $value,
         );
     }

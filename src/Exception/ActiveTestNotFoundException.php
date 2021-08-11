@@ -12,6 +12,6 @@ final class ActiveTestNotFoundException extends LogicException
 
     public function __construct(Throwable $previous = null)
     {
-        parent::__construct("Active test not found", 0, $previous);
+        parent::__construct("Active test or fixture not found", 0, $previous);
     }
 }

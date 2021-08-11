@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Qameta\Allure\Internal\Exception;
 
 use LogicException;
+use Qameta\Allure\Model\ResultType;
 use Throwable;
 
-abstract class StorableNotFoundException extends LogicException
+final class StorableNotFoundException extends LogicException
 {
 
-    public function __construct(private string $uuid, ?Throwable $previous = null)
-    {
+    public function __construct(
+        private ResultType $resultType,
+        private string $uuid,
+        ?Throwable $previous = null,
+    ) {
         parent::__construct(
             $this->buildMessage(),
             0,
@@ -19,13 +23,19 @@ abstract class StorableNotFoundException extends LogicException
         );
     }
 
-    abstract protected function buildMessage(): string;
-
-    protected function buildStandardMessage(string $item, ?string $action = null): string
+    private function buildMessage(): string
     {
-        $action ??= 'is not found';
+        $resultName = match ($this->resultType) {
+            ResultType::attachment() => 'Attachment',
+            ResultType::container() => 'Container',
+            ResultType::test() => 'Test',
+            ResultType::fixture() => 'Fixture',
+            ResultType::step() => 'Step',
+            ResultType::executableContext() => 'Executable context',
+            default => '<Unknown result>',
+        };
 
-        return "{$item} with UUID {$this->uuid} {$action}";
+        return "{$resultName} with UUID {$this->uuid} is not found";
     }
 
     final public function getUuid(): string

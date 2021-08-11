@@ -41,9 +41,9 @@ final class Status implements JsonSerializable, Stringable
         return $this->value;
     }
 
-    public function is(self $another): bool
+    public function equals(self $status): bool
     {
-        return $another->value == $this->value;
+        return $status->value == $this->value;
     }
 
     public function jsonSerialize(): string

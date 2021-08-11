@@ -3,82 +3,76 @@
 namespace Qameta\Allure;
 
 use Psr\Log\LoggerInterface;
-use Qameta\Allure\Exception\ActiveFixtureNotFoundException;
+use Qameta\Allure\Exception\ActiveContainerNotFoundException;
+use Qameta\Allure\Exception\ActiveExecutionContextNotFoundException;
 use Qameta\Allure\Exception\ActiveStepNotFoundException;
 use Qameta\Allure\Exception\ActiveTestNotFoundException;
-use Qameta\Allure\Exception\ActiveAttachmentContextNotFoundException;
-use Qameta\Allure\Exception\AttachmentNotAddedException;
-use Qameta\Allure\Exception\ResultNotStartedException;
-use Qameta\Allure\Exception\ResultNotStoppedException;
-use Qameta\Allure\Exception\ResultNotUpdatedException;
-use Qameta\Allure\Exception\TestNotScheduledException;
-use Qameta\Allure\Exception\ResultNotWrittenException;
-use Qameta\Allure\Internal\AllureStorageInterface;
-use Qameta\Allure\Internal\ProcessExceptionTrait;
-use Qameta\Allure\Internal\ListenerInterfaceInterfaceInterfaceNotifierInterface;
-use Qameta\Allure\Model\Attachment;
+use Qameta\Allure\Internal\HooksNotifierInterface;
+use Qameta\Allure\Internal\LoggerTrait;
+use Qameta\Allure\Internal\ResultStorageInterface;
+use Qameta\Allure\Io\ClockInterface;
+use Qameta\Allure\Io\DataSourceInterface;
+use Qameta\Allure\Io\ResultsWriterInterface;
+use Qameta\Allure\Model\AttachmentResult;
+use Qameta\Allure\Model\ContainerResult;
 use Qameta\Allure\Model\FixtureResult;
-use Qameta\Allure\Model\ResultType;
+use Qameta\Allure\Model\ResultInterface;
 use Qameta\Allure\Model\Stage;
 use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\Model\TestResult;
-use Qameta\Allure\Model\ResultContainer;
 use Throwable;
 
+use function array_key_last;
 use function array_pop;
-use function count;
-use function in_array;
 
 final class AllureLifecycle implements AllureLifecycleInterface
 {
-    use ProcessExceptionTrait;
+    use LoggerTrait;
 
     /**
      * @var list<string>
      */
-    private array $contexts = [];
+    private array $executionContexts = [];
+
+    private ?string $container = null;
 
     public function __construct(
         LoggerInterface $logger,
         private ClockInterface $clock,
-        private AllureResultsWriterInterface $resultsWriter,
-        private ListenerInterfaceInterfaceInterfaceNotifierInterface $notifier,
-        private AllureStorageInterface $storage,
+        private ResultsWriterInterface $resultsWriter,
+        private HooksNotifierInterface $notifier,
+        private ResultStorageInterface $storage,
     ) {
         $this->logger = $logger;
     }
 
-    public function startTestContainer(ResultContainer $container, ?string $parentUuid = null): void
+    public function startContainer(ContainerResult $container): void
     {
         $this->notifier->beforeContainerStart($container);
         try {
-            if (isset($parentUuid)) {
-                $this
-                    ->storage
-                    ->getContainer($parentUuid)
-                    ->addChildren($container->getUuid());
-            }
             $this->storage->set(
                 $container->setStart($this->clock->now()),
             );
+            $this->container = $container->getUuid();
+            $isSuccess = true;
         } catch (Throwable $e) {
-            $this->processException(
-                new ResultNotStartedException($container->getResultType(), $container->getUuid(), $e),
-            );
+            $isSuccess = false;
+            $this->logException('Container (UUID: {uuid}) not started', $e, ['uuid' => $container->getUuid()]);
         }
-        $this->notifier->afterContainerStart($container);
+        $this->notifier->afterContainerStart($container, $isSuccess);
     }
 
     /**
-     * @param string   $uuid
-     * @param callable $update
+     * @param callable    $update
+     * @param string|null $uuid
      */
-    public function updateTestContainer(string $uuid, callable $update): void
+    public function updateContainer(callable $update, ?string $uuid = null): void
     {
         try {
-            $container = $this->storage->getContainer($uuid);
+            $uuid ??= $this->container;
+            $container = $this->storage->getContainer($uuid ?? throw new ActiveContainerNotFoundException());
         } catch (Throwable $e) {
-            $this->processException(new ResultNotUpdatedException(ResultType::container(), $uuid, $e));
+            $this->logException('Container (UUID: {uuid}) not updated', $e, ['uuid' => $uuid]);
 
             return;
         }
@@ -86,84 +80,109 @@ final class AllureLifecycle implements AllureLifecycleInterface
         try {
             $update($container);
         } catch (Throwable $e) {
-            $this->processException(
-                new ResultNotUpdatedException($container->getResultType(), $container->getUuid(), $e),
-            );
+            $this->logException('Container (UUID: {uuid}) not updated', $e, ['uuid' => $container->getUuid()]);
         }
         $this->notifier->afterContainerUpdate($container);
     }
 
-    public function stopTestContainer(string $uuid): void
+    public function stopContainer(?string $uuid = null): void
     {
         try {
-            $container = $this->storage->getContainer($uuid);
+            $uuid ??= $this->container;
+            $container = $this->storage->getContainer($uuid ?? throw new ActiveContainerNotFoundException());
         } catch (Throwable $e) {
-            $this->processException(
-                new ResultNotStoppedException(ResultType::container(), $uuid, $e),
-            );
+            $this->logException('Container (UUID: {uuid}) not stopped', $e, ['uuid' => $uuid]);
 
             return;
         }
         $this->notifier->beforeContainerStop($container);
         try {
             $container->setStop($this->clock->now());
+            $this->container = null;
         } catch (Throwable $e) {
-            $this->processException(
-                new ResultNotStoppedException($container->getResultType(), $container->getUuid(), $e),
-            );
+            $this->logException('Container (UUID: {uuid}) not stopped', $e, ['uuid' => $container->getUuid()]);
         }
         $this->notifier->afterContainerStop($container);
     }
 
-    public function writeTestContainer(string $uuid): void
+    public function writeContainer(string $uuid): void
     {
         try {
             $container = $this->storage->getContainer($uuid);
         } catch (Throwable $e) {
-            $this->processException(
-                new ResultNotWrittenException(ResultType::container(), $uuid, $e),
-            );
+            $this->logException('Container (UUID: {uuid}) not written', $e, ['uuid' => $uuid]);
 
             return;
         }
         $this->notifier->beforeContainerWrite($container);
         try {
-            $this->resultsWriter->writeContainer($container);
+            $nestedResults = $container->getNestedResults();
+            if ($container->getExcluded()) {
+                $this->excludeNestedResults($container);
+            }
+            $this->removeExcludedNestedResults(...$nestedResults);
+            if (!$container->getExcluded()) {
+                $this->resultsWriter->writeContainer($container);
+            }
             $this->storage->unset($container->getUuid());
         } catch (Throwable $e) {
-            $this->processException(
-                new ResultNotWrittenException($container->getResultType(), $container->getUuid(), $e),
-            );
+            $this->logException('Container (UUID: {uuid}) not written', $e, ['uuid' => $container->getUuid()]);
         }
         $this->notifier->afterContainerWrite($container);
     }
 
-    public function startSetUpFixture(string $containerUuid, FixtureResult $fixture): void
+    private function excludeNestedResults(ResultInterface $result): void
+    {
+        foreach ($result->getNestedResults() as $nestedResult) {
+            $nestedResult->setExcluded(true);
+            $this->excludeNestedResults($nestedResult);
+        }
+    }
+
+    private function removeExcludedNestedResults(ResultInterface $result): void
+    {
+        foreach ($result->getNestedResults() as $nestedResult) {
+            $this->removeExcludedNestedResults($nestedResult);
+            if ($nestedResult->getExcluded()) {
+                if ($nestedResult instanceof AttachmentResult) {
+                    $this->removeAttachment($nestedResult);
+                } elseif ($nestedResult instanceof TestResult) {
+                    $this->removeTest($nestedResult);
+                } else {
+                    $this->logger->error('Result not removed', ['class' => $nestedResult::class]);
+                }
+            }
+        }
+    }
+
+    public function startSetUpFixture(FixtureResult $fixture, ?string $containerUuid = null): void
     {
         $this->notifier->beforeFixtureStart($fixture);
         try {
+            $containerUuid ??= $this->container;
             $this
                 ->storage
-                ->getContainer($containerUuid)
+                ->getContainer($containerUuid ?? throw new ActiveContainerNotFoundException())
                 ->addSetUps($fixture);
             $this->startFixture($fixture);
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStartedException($fixture->getResultType(), $fixture->getUuid(), $e));
+            $this->logException('Fixture (setUp, UUID: {uuid}) not started', $e, ['uuid' => $containerUuid]);
         }
         $this->notifier->afterFixtureStart($fixture);
     }
 
-    public function startTearDownFixture(string $containerUuid, FixtureResult $fixture): void
+    public function startTearDownFixture(FixtureResult $fixture, ?string $containerUuid = null): void
     {
         $this->notifier->beforeFixtureStart($fixture);
         try {
+            $containerUuid ??= $this->container;
             $this
                 ->storage
-                ->getContainer($containerUuid)
+                ->getContainer($containerUuid ?? throw new ActiveContainerNotFoundException())
                 ->addTearDowns($fixture);
             $this->startFixture($fixture);
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStartedException($fixture->getResultType(), $fixture->getUuid(), $e));
+            $this->logException('Fixture (tearDown, UUID: {uuid}) not started', $e, ['uuid' => $containerUuid]);
         }
         $this->notifier->afterFixtureStart($fixture);
     }
@@ -173,19 +192,18 @@ final class AllureLifecycle implements AllureLifecycleInterface
         $this->storage->set(
             $fixture
                 ->setStage(Stage::running())
-                ->setStart($this->clock->now())
+                ->setStart($this->clock->now()),
         );
-        $this->contexts = [$fixture->getUuid()];
+        $this->executionContexts = [$fixture->getUuid()];
     }
 
     public function updateFixture(callable $update, ?string $uuid = null): void
     {
         try {
-            $fixture = $this->storage->getFixture(
-                $uuid ?? $this->findRootContext() ?? throw new ActiveFixtureNotFoundException(),
-            );
+            $uuid ??= $this->getCurrentTest();
+            $fixture = $this->storage->getFixture($uuid ?? throw new ActiveTestNotFoundException());
         } catch (Throwable $e) {
-            $this->processException(new ResultNotUpdatedException(ResultType::fixture(), $uuid, $e));
+            $this->logException('Fixture (UUID: {uuid}) not updated', $e, ['uuid' => $uuid]);
 
             return;
         }
@@ -193,19 +211,18 @@ final class AllureLifecycle implements AllureLifecycleInterface
         try {
             $update($fixture);
         } catch (Throwable $e) {
-            $this->processException(new ResultNotUpdatedException($fixture->getResultType(), $fixture->getUuid(), $e));
+            $this->logException('Fixture (UUID: {uuid}) not updated', $e, ['uuid' => $fixture->getUuid()]);
         }
         $this->notifier->afterFixtureUpdate($fixture);
     }
 
-    public function stopFixture(string $uuid): void
+    public function stopFixture(?string $uuid = null): void
     {
         try {
-            $fixture = $this->storage->getFixture(
-                $this->findRootContext($uuid) ?? throw new ActiveFixtureNotFoundException(),
-            );
+            $uuid ??= $this->getCurrentTest();
+            $fixture = $this->storage->getFixture($uuid ?? throw new ActiveTestNotFoundException());
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStoppedException(ResultType::fixture(), $uuid, $e));
+            $this->logException('Fixture (UUID: {uuid}) not stopped', $e, ['uuid' => $uuid]);
 
             return;
         }
@@ -215,95 +232,86 @@ final class AllureLifecycle implements AllureLifecycleInterface
                 ->setStage(Stage::finished())
                 ->setStop($this->clock->now());
             $this->storage->unset($fixture->getUuid());
-            $this->contexts = [];
+            $this->executionContexts = [];
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStoppedException($fixture->getResultType(), $fixture->getUuid(), $e));
+            $this->logException('Fixture (UUID: {uuid}) not stopped', $e, ['uuid' => $fixture->getUuid()]);
         }
         $this->notifier->afterFixtureStop($fixture);
     }
 
-    public function getCurrentTestCase(): ?string
+    public function getCurrentTest(): ?string
     {
-        return $this->findRootContext();
+        return $this->executionContexts[0] ?? null;
     }
 
-    public function getCurrentTestCaseOrStep(): ?string
+    public function getCurrentStep(): ?string
     {
-        return $this->findCurrentContext();
+        $top = array_key_last($this->executionContexts);
+
+        return isset($top) && $top > 0
+            ? $this->executionContexts[$top] ?? null
+            : null;
     }
 
-    public function setCurrentTestCase(string $uuid): bool
+    public function getCurrentTestOrStep(): ?string
     {
-        try {
-            $this->contexts = [
-                $this
-                    ->storage
-                    ->getTest($uuid)
-                    ->getUuid(),
-            ];
-
-            return true;
-        } catch (Throwable $e) {
-            $this->processException($e);
-
-            return false;
-        }
+        return $this->getCurrentStep() ?? $this->getCurrentTest();
     }
 
-    /**
-     * @param TestResult  $test
-     * @param string|null $containerUuid
-     */
-    public function scheduleTestCase(TestResult $test, ?string $containerUuid = null): void
+    public function scheduleTest(TestResult $test, ?string $containerUuid = null): void
     {
         $this->notifier->beforeTestSchedule($test);
+        $containerUuid ??= $this->container;
         try {
             if (isset($containerUuid)) {
                 $this
                     ->storage
                     ->getContainer($containerUuid)
-                    ->addChildren($test->getUuid());
+                    ->addChildren($test);
             }
             $this->storage->set(
                 $test->setStage(Stage::scheduled()),
             );
         } catch (Throwable $e) {
-            $this->processException(new TestNotScheduledException($test->getUuid(), $e));
+            $this->logException(
+                'Test (UUID: {uuid}) not scheduled (container UUID: {containerUuid})',
+                $e,
+                ['uuid' => $test->getUuid(), 'containerUuid' => $containerUuid],
+            );
         }
         $this->notifier->afterTestSchedule($test);
     }
 
-    public function startTestCase(string $uuid): void
+    public function startTest(string $uuid): void
     {
         try {
             $test = $this->storage->getTest($uuid);
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStartedException(ResultType::test(), $uuid, $e));
+            $this->logException('Test (UUID: {uuid}) not started', $e, ['uuid' => $uuid]);
 
             return;
         }
         $this->notifier->beforeTestStart($test);
         try {
-            $this->contexts = [
+            $this->executionContexts = [
                 $test
                     ->setStage(Stage::running())
                     ->setStart($this->clock->now())
                     ->getUuid(),
             ];
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStartedException($test->getResultType(), $test->getUuid(), $e));
+            $this->logException('Test (UUID: {uuid}) not started', $e, ['uuid' => $test->getUuid()]);
         }
         $this->notifier->afterTestStart($test);
     }
 
-    public function updateTestCase(callable $update, ?string $uuid = null): void
+    public function updateTest(callable $update, ?string $uuid = null): void
     {
         try {
-            $test = $this->storage->getTest(
-                $uuid ?? $this->findRootContext() ?? throw new ActiveTestNotFoundException(),
-            );
+            $uuid ??= $this->getCurrentTest();
+            $test = $this->storage->getTest($uuid ?? throw new ActiveTestNotFoundException());
         } catch (Throwable $e) {
-            $this->processException(new ResultNotUpdatedException(ResultType::test(), $uuid, $e));
+            $this->logException('Test (UUID: {uuid}) not updated', $e, ['uuid' => $uuid]);
 
             return;
         }
@@ -311,19 +319,18 @@ final class AllureLifecycle implements AllureLifecycleInterface
         try {
             $update($test);
         } catch (Throwable $e) {
-            $this->processException(new ResultNotUpdatedException($test->getResultType(), $test->getUuid(), $e));
+            $this->logException('Test (UUID: {uuid}) not updated', $e, ['uuid' => $test->getUuid()]);
         }
         $this->notifier->afterTestUpdate($test);
     }
 
-    public function stopTestCase(string $uuid): void
+    public function stopTest(?string $uuid = null): void
     {
         try {
-            $test = $this->storage->getTest(
-                $this->findRootContext($uuid) ?? throw new ActiveTestNotFoundException(),
-            );
+            $uuid ??= $this->getCurrentTest();
+            $test = $this->storage->getTest($uuid ?? throw new ActiveTestNotFoundException());
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStoppedException(ResultType::test(), $uuid, $e));
+            $this->logException('Test (UUID: {uuid}) not stopped', $e, ['uuid' => $uuid]);
 
             return;
         }
@@ -332,42 +339,55 @@ final class AllureLifecycle implements AllureLifecycleInterface
             $test
                 ->setStage(Stage::finished())
                 ->setStop($this->clock->now());
-            $this->contexts = [];
+            $this->executionContexts = [];
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStoppedException($test->getResultType(), $test->getUuid(), $e));
+            $this->logException('Test (UUID: {uuid}) not stopped', $e, ['uuid' => $test->getUuid()]);
         }
         $this->notifier->afterTestStop($test);
     }
 
-    public function writeTestCase(string $uuid): void
+    public function writeTest(string $uuid): void
     {
         try {
             $test = $this->storage->getTest($uuid);
         } catch (Throwable $e) {
-            $this->processException(new ResultNotWrittenException(ResultType::test(), $uuid, $e));
+            $this->logException('Test (UUID: {uuid}) not written', $e, ['uuid' => $uuid]);
 
             return;
         }
         $this->notifier->beforeTestWrite($test);
         try {
-            $this->resultsWriter->writeTest($test);
+            if ($test->getExcluded()) {
+                $this->excludeNestedResults($test);
+            }
+            $this->removeExcludedNestedResults($test);
+            if (!$test->getExcluded()) {
+                $this->resultsWriter->writeTest($test);
+            }
             $this->storage->unset($test->getUuid());
         } catch (Throwable $e) {
-            $this->processException(new ResultNotWrittenException($test->getResultType(), $test->getUuid(), $e));
+            $this->logException('Test (UUID: {uuid}) not written', $e, ['uuid' => $test->getUuid()]);
         }
         $this->notifier->afterTestWrite($test);
+    }
+
+    private function removeTest(TestResult $test): void
+    {
+        try {
+            $this->resultsWriter->removeTest($test);
+        } catch (Throwable $e) {
+            $this->logException('Test (UUID: {uuid}) not removed', $e, ['uuid' => $test->getUuid()]);
+        }
     }
 
     public function startStep(StepResult $step, ?string $parentUuid = null): AllureLifecycleInterface
     {
         $this->notifier->beforeStepStart($step);
         try {
-            $parentContext = isset($parentUuid)
-                ? $this->findContext($parentUuid)
-                : $this->findCurrentContext();
+            $parentUuid ??= $this->getCurrentTestOrStep();
             $this
                 ->storage
-                ->getStepsAware($parentContext ?? throw new ActiveStepNotFoundException())
+                ->getExecutionContext($parentUuid ?? throw new ActiveExecutionContextNotFoundException())
                 ->addSteps($step);
             $this
                 ->storage
@@ -376,9 +396,13 @@ final class AllureLifecycle implements AllureLifecycleInterface
                         ->setStage(Stage::running())
                         ->setStart($this->clock->now()),
                 );
-            $this->contexts[] = $step->getUuid();
+            $this->executionContexts[] = $step->getUuid();
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStartedException($step->getResultType(), $step->getUuid(), $e));
+            $this->logException(
+                'Step (UUID: {uuid}) not started (parent UUID: {parentUuid})',
+                $e,
+                ['uuid' => $step->getUuid(), 'parentUuid' => $parentUuid],
+            );
         }
         $this->notifier->afterStepStart($step);
 
@@ -388,11 +412,10 @@ final class AllureLifecycle implements AllureLifecycleInterface
     public function updateStep(callable $update, ?string $uuid = null): void
     {
         try {
-            $step = $this->storage->getStep(
-                $uuid ?? $this->findCurrentNotRootContext() ?? throw new ActiveStepNotFoundException(),
-            );
+            $uuid ??= $this->getCurrentStep();
+            $step = $this->storage->getStep($uuid ?? throw new ActiveStepNotFoundException());
         } catch (Throwable $e) {
-            $this->processException(new ResultNotUpdatedException(ResultType::step(), $uuid, $e));
+            $this->logException('Step (UUID: {uuid}) not updated', $e, ['uuid' => $uuid]);
 
             return;
         }
@@ -400,20 +423,45 @@ final class AllureLifecycle implements AllureLifecycleInterface
         try {
             $update($step);
         } catch (Throwable $e) {
-            $this->processException(new ResultNotUpdatedException($step->getResultType(), $step->getUuid(), $e));
+            $this->logException('Step (UUID: {uuid}) not updated', $e, ['uuid' => $step->getUuid()]);
         }
         $this->notifier->afterStepUpdate($step);
     }
 
-    public function stopStep(?string $uuid = null): void
+    public function updateExecutionContext(callable $update, ?string $uuid = null): void
     {
         try {
-            $step = $this->storage->getStep(
-                // TODO: findNotRootContext?
-                $this->findCurrentNotRootContext($uuid) ?? throw new ActiveStepNotFoundException(),
+            $uuid ??= $this->getCurrentTestOrStep();
+            $context = $this->storage->getExecutionContext(
+                $uuid ?? throw new ActiveExecutionContextNotFoundException()
             );
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStoppedException(ResultType::step(), $uuid, $e));
+            $this->logException('Execution context (UUID: {uuid}) not updated', $e, ['uuid' => $uuid]);
+
+            return;
+        }
+
+        if ($context instanceof FixtureResult) {
+            $this->updateFixture($update, $context->getUuid());
+        } elseif ($context instanceof TestResult) {
+            $this->updateTest($update, $context->getUuid());
+        } elseif ($context instanceof StepResult) {
+            $this->updateStep($update, $context->getUuid());
+        } else {
+            $this->logger->error(
+                'Execution context (UUID: {uuid}) not updated',
+                ['uuid' => $context->getUuid()],
+            );
+        }
+    }
+
+    public function stopStep(?string $uuid = null): void
+    {
+        $uuid ??= $this->getCurrentStep();
+        try {
+            $step = $this->storage->getStep($uuid ?? throw new ActiveStepNotFoundException());
+        } catch (Throwable $e) {
+            $this->logException('Step (UUID: {uuid}) not stopped', $e, ['uuid' => $uuid]);
 
             return;
         }
@@ -423,82 +471,51 @@ final class AllureLifecycle implements AllureLifecycleInterface
                 ->setStage(Stage::finished())
                 ->setStop($this->clock->now());
             $this->storage->unset($step->getUuid());
-            array_pop($this->contexts);
+            array_pop($this->executionContexts);
         } catch (Throwable $e) {
-            $this->processException(new ResultNotStoppedException($step->getResultType(), $step->getUuid(), $e));
+            $this->logException('Step (UUID: {uuid}) not stopped', $e, ['uuid' => $step->getUuid()]);
         }
         $this->notifier->afterStepStop($step);
     }
 
-    public function addAttachment(Attachment $attachment, StreamFactoryInterface $data): void
+    public function addAttachment(AttachmentResult $attachment, DataSourceInterface $data): void
     {
+        $parentUuid = $this->getCurrentTestOrStep();
         try {
-            $this->prepareAttachment($attachment);
+            $context = $this
+                ->storage
+                ->getExecutionContext($parentUuid ?? throw new ActiveExecutionContextNotFoundException())
+                ->addAttachments($attachment);
         } catch (Throwable $e) {
-            $this->processException(new AttachmentNotAddedException($attachment, $e));
+            $this->logException(
+                'Attachment (UUID: {uuid}) not added (parent UUID: {parentUuid})',
+                $e,
+                ['uuid' => $attachment->getUuid(), 'parentUuid' => $parentUuid],
+            );
 
             return;
         }
         $this->notifier->beforeAttachmentWrite($attachment);
         try {
-            $this->resultsWriter->writeAttachment($attachment, $data);
+            if (!$attachment->getExcluded()) {
+                $this->resultsWriter->writeAttachment($attachment, $data);
+            }
         } catch (Throwable $e) {
-            $this->processException(new AttachmentNotAddedException($attachment, $e));
+            $this->logException(
+                'Attachment (UUID: {uuid}) not added (parent UUID: {parentUuid})',
+                $e,
+                ['uuid' => $attachment->getUuid(), 'parentUuid' => $context->getUuid()],
+            );
         }
         $this->notifier->afterAttachmentWrite($attachment);
     }
 
-    private function findContext(string $context): ?string
+    private function removeAttachment(AttachmentResult $attachment): void
     {
-        return in_array($context, $this->contexts, true)
-            ? $context
-            : null;
-    }
-
-    private function findRootContext(?string $context = null): ?string
-    {
-        $rootContext = $this->contexts[0] ?? null;
-        if (!isset($rootContext)) {
-            return null;
+        try {
+            $this->resultsWriter->removeAttachment($attachment);
+        } catch (Throwable $e) {
+            $this->logException('Attachment (UUID: {uuid}) not removed', $e, ['uuid' => $attachment->getUuid()]);
         }
-
-        return isset($context) && $context != $rootContext
-            ? null
-            : $rootContext;
-    }
-
-    private function findCurrentNotRootContext(?string $context = null): ?string
-    {
-        $rootContext = $this->findRootContext();
-        $currentContext = $this->findCurrentContext($context);
-
-        return isset($rootContext, $currentContext) && $currentContext != $rootContext
-            ? $currentContext
-            : null;
-    }
-
-    private function findCurrentContext(?string $context = null): ?string
-    {
-        $currentContext = $this->contexts[count($this->contexts) - 1] ?? null;
-
-        if (!isset($currentContext)) {
-            return null;
-        }
-
-        return isset($context) && $context != $currentContext
-            ? null
-            : $currentContext;
-    }
-
-    private function prepareAttachment(Attachment $attachment): Attachment
-    {
-        $this
-            ->storage
-            ->getAttachmentsAware(
-                $this->findCurrentContext() ?? throw new ActiveAttachmentContextNotFoundException(),
-            )
-            ->addAttachments($attachment);
-
-        return $attachment;
     }
 }

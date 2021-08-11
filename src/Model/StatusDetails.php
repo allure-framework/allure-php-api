@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Qameta\Allure\Model;
 
 use JsonSerializable;
-use Qameta\Allure\Internal\JsonSerializableTrait;
 
 final class StatusDetails implements JsonSerializable
 {

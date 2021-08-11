@@ -6,7 +6,7 @@ namespace Qameta\Allure\Internal;
 
 use Qameta\Allure\Model\Status;
 use Qameta\Allure\Model\StatusDetails;
-use Qameta\Allure\StatusDetectorInterface;
+use Qameta\Allure\Setup\StatusDetectorInterface;
 use Throwable;
 
 /**

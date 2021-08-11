@@ -4,25 +4,10 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use JsonSerializable;
-use Qameta\Allure\Internal\AttachmentsAwareStorableInterface;
-use Qameta\Allure\Internal\JsonSerializableTrait;
-use Qameta\Allure\Internal\StepsAwareStorableInterface;
-
 use function array_values;
 
-final class TestResult implements
-    AttachmentsAwareStorableInterface,
-    ParametersAwareInterface,
-    StatusDetailsAwareInterface,
-    StepsAwareStorableInterface,
-    JsonSerializable,
-    UuidAwareInterface,
-    LabelsAwareInterface,
-    ResultInterface
+final class TestResult extends ExecutionContext
 {
-    use ExecutableTrait;
-    use JsonSerializableTrait;
 
     private ?string $historyId = null;
 
@@ -42,18 +27,9 @@ final class TestResult implements
      */
     private array $links = [];
 
-    public function __construct(private string $uuid)
-    {
-    }
-
     public function getResultType(): ResultType
     {
         return ResultType::test();
-    }
-
-    public function getUuid(): string
-    {
-        return $this->uuid;
     }
 
     public function getHistoryId(): ?string
@@ -112,12 +88,12 @@ final class TestResult implements
         return $this->labels;
     }
 
-    public function addLabels(Label ...$labels): static
+    public function addLabels(Label ...$labels): self
     {
-        return $this->setLabels(...$this->labels, ...\array_values($labels));
+        return $this->setLabels(...$this->labels, ...array_values($labels));
     }
 
-    public function setLabels(Label ...$labels): static
+    public function setLabels(Label ...$labels): self
     {
         $this->labels = array_values($labels);
 

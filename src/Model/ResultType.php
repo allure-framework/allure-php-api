@@ -9,11 +9,13 @@ use Stringable;
 final class ResultType implements Stringable
 {
 
+    private const UNKNOWN = 'unknown';
     private const CONTAINER = 'container';
     private const FIXTURE = 'fixture';
-    private const TEST = 'test';
+    private const TEST_CASE = 'testCase';
     private const STEP = 'step';
     private const ATTACHMENT = 'attachment';
+    private const EXECUTABLE_CONTEXT = 'executable_context';
 
     /**
      * @var array<string, ResultType>
@@ -22,6 +24,11 @@ final class ResultType implements Stringable
 
     private function __construct(private string $value)
     {
+    }
+
+    public static function unknown(): self
+    {
+        return self::$instances[self::UNKNOWN] ??= new self(self::UNKNOWN);
     }
 
     public static function container(): self
@@ -36,7 +43,7 @@ final class ResultType implements Stringable
 
     public static function test(): self
     {
-        return self::$instances[self::TEST] ??= new self(self::TEST);
+        return self::$instances[self::TEST_CASE] ??= new self(self::TEST_CASE);
     }
 
     public static function step(): self
@@ -49,9 +56,14 @@ final class ResultType implements Stringable
         return self::$instances[self::ATTACHMENT] ??= new self(self::ATTACHMENT);
     }
 
-    public function is(ResultType $type): bool
+    public static function executableContext(): self
     {
-        return $this->value == $type->value;
+        return self::$instances[self::EXECUTABLE_CONTEXT] ??= new self(self::EXECUTABLE_CONTEXT);
+    }
+
+    public function equals(self $type): bool
+    {
+        return $this->value === $type->value;
     }
 
     public function __toString(): string

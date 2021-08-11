@@ -4,52 +4,55 @@ declare(strict_types=1);
 
 namespace Qameta\Allure;
 
-use Qameta\Allure\Model\Attachment;
+use Qameta\Allure\Io\DataSourceInterface;
+use Qameta\Allure\Model\AttachmentResult;
+use Qameta\Allure\Model\ContainerResult;
 use Qameta\Allure\Model\FixtureResult;
 use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\Model\TestResult;
-use Qameta\Allure\Model\ResultContainer;
 
 interface AllureLifecycleInterface
 {
 
-    public function startTestContainer(ResultContainer $container, ?string $parentUuid = null): void;
+    public function startContainer(ContainerResult $container): void;
 
-    public function updateTestContainer(string $uuid, callable $update): void;
+    public function updateContainer(callable $update, ?string $uuid = null): void;
 
-    public function stopTestContainer(string $uuid): void;
+    public function stopContainer(?string $uuid = null): void;
 
-    public function writeTestContainer(string $uuid): void;
+    public function writeContainer(string $uuid): void;
 
-    public function startSetUpFixture(string $containerUuid, FixtureResult $fixture): void;
+    public function startSetUpFixture(FixtureResult $fixture, ?string $containerUuid = null): void;
 
-    public function startTearDownFixture(string $containerUuid, FixtureResult $fixture): void;
+    public function startTearDownFixture(FixtureResult $fixture, ?string $containerUuid = null): void;
 
     public function updateFixture(callable $update, ?string $uuid = null): void;
 
-    public function stopFixture(string $uuid): void;
+    public function stopFixture(?string $uuid = null): void;
 
-    public function getCurrentTestCase(): ?string;
+    public function getCurrentTest(): ?string;
 
-    public function getCurrentTestCaseOrStep(): ?string;
+    public function getCurrentStep(): ?string;
 
-    public function setCurrentTestCase(string $uuid): bool;
+    public function getCurrentTestOrStep(): ?string;
 
-    public function scheduleTestCase(TestResult $test, ?string $containerUuid = null): void;
+    public function scheduleTest(TestResult $test, ?string $containerUuid = null): void;
 
-    public function startTestCase(string $uuid): void;
+    public function startTest(string $uuid): void;
 
-    public function updateTestCase(callable $update, ?string $uuid = null): void;
+    public function updateTest(callable $update, ?string $uuid = null): void;
 
-    public function stopTestCase(string $uuid): void;
+    public function stopTest(?string $uuid = null): void;
 
-    public function writeTestCase(string $uuid): void;
+    public function writeTest(string $uuid): void;
 
     public function startStep(StepResult $step, ?string $parentUuid = null): AllureLifecycleInterface;
 
     public function updateStep(callable $update, ?string $uuid = null): void;
 
+    public function updateExecutionContext(callable $update, ?string $uuid = null): void;
+
     public function stopStep(?string $uuid = null): void;
 
-    public function addAttachment(Attachment $attachment, StreamFactoryInterface $data): void;
+    public function addAttachment(AttachmentResult $attachment, DataSourceInterface $data): void;
 }

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Qameta\Allure\Legacy\Annotation;
+namespace Qameta\Allure\Test\Legacy\Annotation;
 
 use PHPUnit\Framework\TestCase;
-use Qameta\Allure\Annotation\AnnotationTestTrait;
-use Qameta\Allure\Annotation\TmsLink;
+use Qameta\Allure\Test\Attribute\AnnotationTestTrait;
+use Qameta\Allure\Attribute\TmsLink;
 use Yandex\Allure\Adapter\Annotation\TestCaseId;
 
 /**

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Qameta\Allure\Legacy\Annotation;
+namespace Qameta\Allure\Test\Legacy\Annotation;
 
 use PHPUnit\Framework\TestCase;
-use Qameta\Allure\Annotation\Label as QametaLabel;
-use Qameta\Allure\Annotation\AnnotationTestTrait;
+use Qameta\Allure\Attribute\Label as QametaLabel;
+use Qameta\Allure\Test\Attribute\AnnotationTestTrait;
 use Yandex\Allure\Adapter\Annotation\Label;
 use Yandex\Allure\Adapter\Annotation\Labels;
 

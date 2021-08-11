@@ -1,15 +1,20 @@
 <?php
 
-namespace Qameta\Allure\Model;
+namespace Qameta\Allure\Test\Model;
 
 use DateTime;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Qameta\Allure\Allure;
-use Qameta\Allure\AllureFactory;
-use Qameta\Allure\Annotation\Title;
-use Qameta\Allure\ClockInterface;
+use Qameta\Allure\Attribute\Title;
+use Qameta\Allure\Attribute\Parameter as AttrParameter;
+use Qameta\Allure\Io\ClockInterface;
+use Qameta\Allure\Model\Label;
+use Qameta\Allure\Model\Parameter;
+use Qameta\Allure\Model\Severity;
+use Qameta\Allure\Model\Status;
+use Qameta\Allure\Model\StatusDetails;
 use Qameta\Allure\StepContextInterface;
 use RuntimeException;
 
@@ -18,13 +23,13 @@ class TemporaryTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        Allure::setOutputDirectory(__DIR__ . '/../../../../build/allure');
+        Allure::reset();
+        Allure::setOutputDirectory(__DIR__ . '/../../build/allure');
     }
 
     public function testLifecycle(): void
     {
         $this->expectNotToPerformAssertions();
-        $factory = new AllureFactory();
 
         $logger = $this->createMock(LoggerInterface::class);
         $logger
@@ -32,7 +37,6 @@ class TemporaryTest extends TestCase
             ->willReturnCallback(
                 fn (string $message) => throw new RuntimeException($message),
             );
-        $factory->setLogger($logger);
 
         $clock = $this->createMock(ClockInterface::class);
         $time = new DateTime('@0');
@@ -43,25 +47,24 @@ class TemporaryTest extends TestCase
                     $time->modify('+1 second')->modify('+1 millisecond'),
                 ),
             );
-        $factory->setClock($clock);
-        $resultFactory = $factory->getResultFactory();
-
-        Allure::setFactory($factory);
-        Allure::cleanOutputDirectory();
+        Allure::getLifecycleConfigurator()
+            ->setLogger($logger)
+            ->setClock($clock);
+        $resultFactory = Allure::getResultFactory();
         $lifecycle = Allure::getLifecycle();
         $container = $resultFactory->createContainer();
-        $lifecycle->startTestContainer($container);
+        $lifecycle->startContainer($container);
 
         $setupFixture = $resultFactory
             ->createFixture()
             ->setName('Setup fixture')
             ->setStatus(Status::failed());
-        $lifecycle->startSetUpFixture($container->getUuid(), $setupFixture);
+        $lifecycle->startSetUpFixture($setupFixture, $container->getUuid());
         $lifecycle->stopFixture($setupFixture->getUuid());
         $test = $resultFactory
             ->createTest()
             ->setHistoryId('history-id')
-            ->setTestCaseId('C123')
+            ->setTestCaseId('test-case-id')
             ->setName('Test name')
             ->setFullName('Full test name')
             ->setStatus(Status::failed())
@@ -78,8 +81,8 @@ class TemporaryTest extends TestCase
                 Label::thread('Thread label'),
                 Label::testMethod('testMethod'),
             );
-        $lifecycle->scheduleTestCase($test, $container->getUuid());
-        $lifecycle->startTestCase($test->getUuid());
+        $lifecycle->scheduleTest($test, $container->getUuid());
+        $lifecycle->startTest($test->getUuid());
 
         Allure::owner('Owner label');
         Allure::lead('Lead label');
@@ -108,6 +111,8 @@ class TemporaryTest extends TestCase
         Allure::attachmentFile('Attachment2 name', __FILE__, 'text/plain', 'txt');
 
         Allure::runStep(
+            #[Title('Step 1 attribute')]
+            #[AttrParameter('foo', 'bar')]
             function (StepContextInterface $step): void {
                 $step->parameter('Step 1 param', 'xxx');
                 Allure::descriptionHtml('<a href="#">Step HTML description</a>');
@@ -118,8 +123,8 @@ class TemporaryTest extends TestCase
                     'txt',
                 );
             },
-            'Step 1 name',
         );
+        Allure::runStep([$this, 'step']);
 
         $secondStep = $resultFactory
             ->createStep()
@@ -140,9 +145,15 @@ class TemporaryTest extends TestCase
         $lifecycle->startStep($nestedStep);
         $lifecycle->stopStep($nestedStep->getUuid());
         $lifecycle->stopStep($secondStep->getUuid());
-        $lifecycle->stopTestCase($test->getUuid());
-        $lifecycle->writeTestCase($test->getUuid());
-        $lifecycle->stopTestContainer($container->getUuid());
-        $lifecycle->writeTestContainer($container->getUuid());
+        $lifecycle->stopTest($test->getUuid());
+        $lifecycle->writeTest($test->getUuid());
+        $lifecycle->stopContainer($container->getUuid());
+        $lifecycle->writeContainer($container->getUuid());
+    }
+
+    #[Title('Method step')]
+    public function step(StepContextInterface $context): void
+    {
+        $context->parameter('baz', 'bar');
     }
 }

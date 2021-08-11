@@ -38,6 +38,11 @@ final class LinkType implements JsonSerializable, Stringable
         return $this->value;
     }
 
+    public function equals(self $type): bool
+    {
+        return $type->value === $this->value;
+    }
+
     public function jsonSerialize(): string
     {
         return (string) $this;

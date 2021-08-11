@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yandex\Allure\Adapter\Annotation;
 
 use Doctrine\Common\Annotations\Annotation\Required;
-use Qameta\Allure\Annotation\TmsLink;
+use Qameta\Allure\Attribute\TmsLink;
 use Qameta\Allure\Legacy\Annotation\LegacyAnnotationInterface;
 
 use function array_map;
@@ -13,7 +13,7 @@ use function array_map;
 /**
  * @Annotation
  * @Target({"CLASS", "METHOD"})
- * @deprecated Use native PHP attribute {@see \Qameta\Allure\Annotation\TmsLink}
+ * @deprecated Use native PHP attribute {@see \Qameta\Allure\Attribute\TmsLink}
  * @psalm-suppress MissingConstructor
  */
 class TestCaseId implements LegacyAnnotationInterface

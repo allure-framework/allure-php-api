@@ -56,13 +56,18 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Qameta\\Allure\\": "test",
+      "Qameta\\Allure\\Test\\": "test",
       "Yandex\\Allure\\Adapter\\": "test/Yandex/Allure/Adapter"
     }
   },
   "scripts": {
     "test-cs": "vendor/bin/phpcs -sp",
+    "test-unit": "vendor/bin/phpunit",
     "test-psalm": "vendor/bin/psalm --threads=8",
-    "test": "vendor/bin/phpunit"
+    "test": [
+      "@test-cs",
+      "@test-unit",
+      "@test-psalm"
+    ]
   }
 }

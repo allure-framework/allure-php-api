@@ -9,5 +9,5 @@ interface StepContextInterface
 
     public function name(string $name): void;
 
-    public function parameter(string $name, string $value): ?string;
+    public function parameter(string $name, ?string $value): ?string;
 }

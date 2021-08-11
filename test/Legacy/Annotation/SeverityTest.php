@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Qameta\Allure\Legacy\Annotation;
+namespace Qameta\Allure\Test\Legacy\Annotation;
 
 use PHPUnit\Framework\TestCase;
-use Qameta\Allure\Annotation\AnnotationTestTrait;
-use Qameta\Allure\Annotation\Severity as QametaSeverity;
+use Qameta\Allure\Test\Attribute\AnnotationTestTrait;
+use Qameta\Allure\Attribute\Severity as QametaSeverity;
 use Qameta\Allure\Model;
 use Yandex\Allure\Adapter\Annotation\Severity;
 use Yandex\Allure\Adapter\Model\SeverityLevel;
