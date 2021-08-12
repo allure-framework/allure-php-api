@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure;
 
+use Closure;
 use Qameta\Allure\Attribute\AttributeParser;
 use Qameta\Allure\Attribute\AttributeReader;
 use Qameta\Allure\Exception\OutputDirectorySetFailureException;
@@ -407,6 +408,7 @@ final class Allure
                 ? $attributeReader->getMethodAnnotations(new ReflectionMethod($object, $method))
                 : [];
         } else {
+            /** @var Closure|callable-string $callable */
             $attributes = $attributeReader->getFunctionAnnotations(new ReflectionFunction($callable));
         }
 
