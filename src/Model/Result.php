@@ -32,6 +32,9 @@ abstract class Result implements ResultInterface
         return $this;
     }
 
+    /**
+     * @return list<string>
+     */
     protected function excludeFromSerialization(): array
     {
         return ['excluded'];
