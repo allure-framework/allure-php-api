@@ -27,6 +27,7 @@ use Qameta\Allure\Setup\LifecycleBuilderInterface;
 use Qameta\Allure\Setup\LifecycleConfigInterface;
 use Qameta\Allure\Setup\LifecycleConfiguratorInterface;
 use Qameta\Allure\Setup\LifecycleFactoryInterface;
+use Qameta\Allure\Setup\StatusDetectorInterface;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -74,6 +75,11 @@ final class Allure
     public static function getResultFactory(): ResultFactoryInterface
     {
         return self::getInstance()->getLifecycleConfig()->getResultFactory();
+    }
+
+    public static function getStatusDetector(): StatusDetectorInterface
+    {
+        return self::getInstance()->getLifecycleConfig()->getStatusDetector();
     }
 
     /**
@@ -346,10 +352,8 @@ final class Allure
             ->createStep()
             ->setName($name)
             ->setStatus($status ?? Status::passed());
-        $this
-            ->doGetLifecycle()
-            ->startStep($step)
-            ->stopStep($step->getUuid());
+        $this->doGetLifecycle()->startStep($step);
+        $this->doGetLifecycle()->stopStep($step->getUuid());
     }
 
     /**

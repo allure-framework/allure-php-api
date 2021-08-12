@@ -9,23 +9,23 @@ use function array_values;
 final class TestResult extends ExecutionContext
 {
 
-    private ?string $historyId = null;
+    protected ?string $historyId = null;
 
-    private ?string $testCaseId = null;
+    protected ?string $testCaseId = null;
 
-    private ?string $rerunOf = null;
+    protected ?string $rerunOf = null;
 
-    private ?string $fullName = null;
+    protected ?string $fullName = null;
 
     /**
      * @var list<Label>
      */
-    private array $labels = [];
+    protected array $labels = [];
 
     /**
      * @var list<Link>
      */
-    private array $links = [];
+    protected array $links = [];
 
     public function getResultType(): ResultType
     {

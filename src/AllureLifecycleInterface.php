@@ -16,9 +16,9 @@ interface AllureLifecycleInterface
 
     public function startContainer(ContainerResult $container): void;
 
-    public function updateContainer(callable $update, ?string $uuid = null): void;
+    public function updateContainer(callable $update, ?string $uuid = null): ?string;
 
-    public function stopContainer(?string $uuid = null): void;
+    public function stopContainer(?string $uuid = null): ?string;
 
     public function writeContainer(string $uuid): void;
 
@@ -26,9 +26,9 @@ interface AllureLifecycleInterface
 
     public function startTearDownFixture(FixtureResult $fixture, ?string $containerUuid = null): void;
 
-    public function updateFixture(callable $update, ?string $uuid = null): void;
+    public function updateFixture(callable $update, ?string $uuid = null): ?string;
 
-    public function stopFixture(?string $uuid = null): void;
+    public function stopFixture(?string $uuid = null): ?string;
 
     public function getCurrentTest(): ?string;
 
@@ -40,19 +40,19 @@ interface AllureLifecycleInterface
 
     public function startTest(string $uuid): void;
 
-    public function updateTest(callable $update, ?string $uuid = null): void;
+    public function updateTest(callable $update, ?string $uuid = null): ?string;
 
-    public function stopTest(?string $uuid = null): void;
+    public function stopTest(?string $uuid = null): ?string;
 
     public function writeTest(string $uuid): void;
 
-    public function startStep(StepResult $step, ?string $parentUuid = null): AllureLifecycleInterface;
+    public function startStep(StepResult $step, ?string $parentUuid = null): void;
 
-    public function updateStep(callable $update, ?string $uuid = null): void;
+    public function updateStep(callable $update, ?string $uuid = null): ?string;
 
-    public function updateExecutionContext(callable $update, ?string $uuid = null): void;
+    public function updateExecutionContext(callable $update, ?string $uuid = null): ?string;
 
-    public function stopStep(?string $uuid = null): void;
+    public function stopStep(?string $uuid = null): ?string;
 
     public function addAttachment(AttachmentResult $attachment, DataSourceInterface $data): void;
 }
