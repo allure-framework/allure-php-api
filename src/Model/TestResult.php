@@ -61,7 +61,7 @@ final class TestResult extends ExecutionContext
         return $this->rerunOf;
     }
 
-    public function setRerunOf(string $rerunOf): self
+    public function setRerunOf(?string $rerunOf): self
     {
         $this->rerunOf = $rerunOf;
 
