@@ -17,7 +17,7 @@ final class DefaultStatusDetector implements StatusDetectorInterface
 
     public function getStatus(Throwable $error): ?Status
     {
-        return null;
+        return Status::failed();
     }
 
     public function getStatusDetails(Throwable $error): ?StatusDetails
