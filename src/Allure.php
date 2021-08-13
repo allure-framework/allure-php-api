@@ -388,8 +388,6 @@ final class Allure
                 fn (StepResult $step) => $step->setStatus(Status::passed()),
                 $step->getUuid(),
             );
-
-            return $result;
         } catch (Throwable $e) {
             $statusDetector = $this->getLifecycleConfig()->getStatusDetector();
             $this->doGetLifecycle()->updateStep(
@@ -398,11 +396,13 @@ final class Allure
                     ->setStatusDetails($statusDetector->getStatusDetails($e)),
                 $step->getUuid(),
             );
-
-            return null;
-        } finally {
             $this->doGetLifecycle()->stopStep($step->getUuid());
+
+            throw $e;
         }
+        $this->doGetLifecycle()->stopStep($step->getUuid());
+
+        return $result;
     }
 
     /**
