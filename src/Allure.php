@@ -18,6 +18,7 @@ use Qameta\Allure\Model\Label;
 use Qameta\Allure\Model\Link;
 use Qameta\Allure\Model\LinkType;
 use Qameta\Allure\Model\Parameter;
+use Qameta\Allure\Model\ParameterMode;
 use Qameta\Allure\Model\ResultFactoryInterface;
 use Qameta\Allure\Model\Severity;
 use Qameta\Allure\Model\Status;
@@ -232,13 +233,19 @@ final class Allure
         );
     }
 
-    public static function parameter(string $name, ?string $value = null): void
-    {
+    public static function parameter(
+        string $name,
+        ?string $value,
+        bool $excluded = false,
+        ?ParameterMode $mode = null,
+    ): void {
         self::getLifecycle()->updateTest(
             fn (TestResult $test) => $test->addParameters(
                 new Parameter(
                     name: $name,
                     value: $value,
+                    excluded: $excluded,
+                    mode: $mode,
                 ),
             ),
         );

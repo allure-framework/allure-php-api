@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use Stringable;
-
-final class ResultType implements Stringable
+final class ResultType extends AbstractEnum
 {
 
     private const UNKNOWN = 'unknown';
@@ -17,57 +15,38 @@ final class ResultType implements Stringable
     private const ATTACHMENT = 'attachment';
     private const EXECUTABLE_CONTEXT = 'executable_context';
 
-    /**
-     * @var array<string, ResultType>
-     */
-    private static array $instances = [];
-
-    private function __construct(private string $value)
-    {
-    }
-
     public static function unknown(): self
     {
-        return self::$instances[self::UNKNOWN] ??= new self(self::UNKNOWN);
+        return self::create(self::UNKNOWN);
     }
 
     public static function container(): self
     {
-        return self::$instances[self::CONTAINER] ??= new self(self::CONTAINER);
+        return self::create(self::CONTAINER);
     }
 
     public static function fixture(): self
     {
-        return self::$instances[self::FIXTURE] ??= new self(self::FIXTURE);
+        return self::create(self::FIXTURE);
     }
 
     public static function test(): self
     {
-        return self::$instances[self::TEST_CASE] ??= new self(self::TEST_CASE);
+        return self::create(self::TEST_CASE);
     }
 
     public static function step(): self
     {
-        return self::$instances[self::STEP] ??= new self(self::STEP);
+        return self::create(self::STEP);
     }
 
     public static function attachment(): self
     {
-        return self::$instances[self::ATTACHMENT] ??= new self(self::ATTACHMENT);
+        return self::create(self::ATTACHMENT);
     }
 
     public static function executableContext(): self
     {
-        return self::$instances[self::EXECUTABLE_CONTEXT] ??= new self(self::EXECUTABLE_CONTEXT);
-    }
-
-    public function equals(self $type): bool
-    {
-        return $this->value === $type->value;
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
+        return self::create(self::EXECUTABLE_CONTEXT);
     }
 }

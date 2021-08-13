@@ -11,10 +11,10 @@ final class Parameter implements JsonSerializable
     use JsonSerializableTrait;
 
     public function __construct(
-        private string $name,
-        private ?string $value = null,
-        private ?bool $excluded = null,
-        private ?ParameterMode $mode = null,
+        protected string $name,
+        protected ?string $value = null,
+        protected ?bool $excluded = null,
+        protected ?ParameterMode $mode = null,
     ) {
     }
 
@@ -64,5 +64,10 @@ final class Parameter implements JsonSerializable
         $this->mode = $mode;
 
         return $this;
+    }
+
+    protected function excludeFromSerialization(): array
+    {
+        return ['excluded', 'mode'];
     }
 }

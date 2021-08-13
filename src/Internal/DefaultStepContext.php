@@ -6,6 +6,7 @@ namespace Qameta\Allure\Internal;
 
 use Qameta\Allure\AllureLifecycleInterface;
 use Qameta\Allure\Model\Parameter;
+use Qameta\Allure\Model\ParameterMode;
 use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\StepContextInterface;
 
@@ -29,9 +30,18 @@ final class DefaultStepContext implements StepContextInterface
         );
     }
 
-    public function parameter(string $name, ?string $value): ?string
-    {
-        $param = new Parameter($name, $value);
+    public function parameter(
+        string $name,
+        ?string $value,
+        bool $excluded = false,
+        ?ParameterMode $mode = null,
+    ): ?string {
+        $param = new Parameter(
+            name: $name,
+            value: $value,
+            excluded: $excluded,
+            mode: $mode,
+        );
         $this->lifecycle->updateStep(
             fn (StepResult $step) => $step->addParameters($param),
             $this->uuid,

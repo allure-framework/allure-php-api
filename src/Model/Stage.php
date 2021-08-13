@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Qameta\Allure\Model;
 
 use JsonSerializable;
-use Stringable;
 
-final class Stage implements JsonSerializable, Stringable
+final class Stage extends AbstractEnum implements JsonSerializable
 {
 
     private const SCHEDULED = 'scheduled';
@@ -16,43 +15,29 @@ final class Stage implements JsonSerializable, Stringable
     private const PENDING = 'pending';
     private const INTERRUPTED = 'interrupted';
 
-    private function __construct(private string $value)
-    {
-    }
-
     public static function scheduled(): self
     {
-        return new self(self::SCHEDULED);
+        return self::create(self::SCHEDULED);
     }
 
     public static function running(): self
     {
-        return new self(self::RUNNING);
+        return self::create(self::RUNNING);
     }
 
     public static function finished(): self
     {
-        return new self(self::FINISHED);
+        return self::create(self::FINISHED);
     }
 
     public static function pending(): self
     {
-        return new self(self::PENDING);
+        return self::create(self::PENDING);
     }
 
     public static function interrupted(): self
     {
-        return new self(self::INTERRUPTED);
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
-    }
-
-    public function equals(self $stage): bool
-    {
-        return $stage->value === $this->value;
+        return self::create(self::INTERRUPTED);
     }
 
     public function jsonSerialize(): string

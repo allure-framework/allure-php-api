@@ -90,7 +90,7 @@ class TemporaryTest extends TestCase
         Allure::host('Host label');
         Allure::severity(Severity::critical());
         Allure::parameter('Test param1 name', 'Test param1 value');
-        Allure::parameter('Test param2 name');
+        Allure::parameter('Test param2 name', null);
         Allure::suite('Suite label');
         Allure::parentSuite('Parent suite label');
         Allure::subSuite('Sub-suite label');

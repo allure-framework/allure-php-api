@@ -11,11 +11,11 @@ final class StatusDetails implements JsonSerializable
     use JsonSerializableTrait;
 
     public function __construct(
-        private ?bool $known = null,
-        private ?bool $muted = null,
-        private ?bool $flaky = null,
-        private ?string $message = null,
-        private ?string $trace = null,
+        protected ?bool $known = null,
+        protected ?bool $muted = null,
+        protected ?bool $flaky = null,
+        protected ?string $message = null,
+        protected ?string $trace = null,
     ) {
     }
 

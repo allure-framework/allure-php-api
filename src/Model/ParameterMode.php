@@ -5,37 +5,30 @@ declare(strict_types=1);
 namespace Qameta\Allure\Model;
 
 use JsonSerializable;
-use Stringable;
 
-final class ParameterMode implements JsonSerializable, Stringable
+final class ParameterMode extends AbstractEnum implements JsonSerializable
 {
 
-    private const MASKED = 'masked';
-    private const HIDDEN = 'hidden';
+    public const MASKED = 'masked';
+    public const HIDDEN = 'hidden';
 
-    private function __construct(
-        private string $value,
-    ) {
+    public static function fromOptionalString(?string $value): ?self
+    {
+        return match ($value) {
+            self::MASKED => self::masked(),
+            self::HIDDEN => self::hidden(),
+            default => null,
+        };
     }
 
     public static function masked(): self
     {
-        return new self(self::MASKED);
+        return self::create(self::MASKED);
     }
 
     public static function hidden(): self
     {
-        return new self(self::HIDDEN);
-    }
-
-    public function equals(self $mode): bool
-    {
-        return $mode->value === $this->value;
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
+        return self::create(self::HIDDEN);
     }
 
     public function jsonSerialize(): string

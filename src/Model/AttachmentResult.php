@@ -13,7 +13,7 @@ final class AttachmentResult extends Result
 
     protected ?string $type = null;
 
-    private ?string $fileExtension = null;
+    protected ?string $fileExtension = null;
 
     public function getResultType(): ResultType
     {
@@ -69,7 +69,7 @@ final class AttachmentResult extends Result
 
     protected function excludeFromSerialization(): array
     {
-        return ['uuid', ...parent::excludeFromSerialization()];
+        return ['uuid', 'fileExtension', ...parent::excludeFromSerialization()];
     }
 
     public function getNestedResults(): array

@@ -74,7 +74,7 @@ class AttributeParser
             name: $link->getName(),
             url: $link->getUrl() ?? $this->getLinkUrl($link->getName(), $linkType),
             type: isset($linkType)
-                ? new Model\LinkType($linkType)
+                ? Model\LinkType::fromString($linkType)
                 : null,
         );
     }
@@ -115,6 +115,8 @@ class AttributeParser
         return new Model\Parameter(
             name: $parameter->getName(),
             value: $parameter->getValue(),
+            excluded: $parameter->getExcluded(),
+            mode: Model\ParameterMode::fromOptionalString($parameter->getMode()),
         );
     }
 

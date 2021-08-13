@@ -5,42 +5,36 @@ declare(strict_types=1);
 namespace Qameta\Allure\Model;
 
 use JsonSerializable;
-use Stringable;
 
-final class LinkType implements JsonSerializable, Stringable
+final class LinkType extends AbstractEnum implements JsonSerializable
 {
 
     public const ISSUE = "issue";
     public const TMS = "tms";
     public const CUSTOM = "custom";
 
-    public function __construct(private string $value)
+    public static function fromString(string $value): self
     {
+        return match ($value) {
+            self::ISSUE => self::issue(),
+            self::TMS => self::tms(),
+            default => parent::create(self::CUSTOM),
+        };
     }
 
     public static function issue(): self
     {
-        return new self(self::ISSUE);
+        return self::create(self::ISSUE);
     }
 
     public static function tms(): self
     {
-        return new self(self::TMS);
+        return self::create(self::TMS);
     }
 
     public static function custom(): self
     {
-        return new self(self::CUSTOM);
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
-    }
-
-    public function equals(self $type): bool
-    {
-        return $type->value === $this->value;
+        return self::create(self::CUSTOM);
     }
 
     public function jsonSerialize(): string

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\Model;
 
-use Stringable;
+use JsonSerializable;
 
-final class Severity implements Stringable
+final class Severity extends AbstractEnum implements JsonSerializable
 {
 
     public const BLOCKER = "blocker";
@@ -15,37 +15,33 @@ final class Severity implements Stringable
     public const MINOR = "minor";
     public const TRIVIAL = "trivial";
 
-    public function __construct(private string $value)
-    {
-    }
-
     public static function blocker(): self
     {
-        return new self(self::BLOCKER);
+        return self::create(self::BLOCKER);
     }
 
     public static function critical(): self
     {
-        return new self(self::CRITICAL);
+        return self::create(self::CRITICAL);
     }
 
     public static function normal(): self
     {
-        return new self(self::NORMAL);
+        return self::create(self::NORMAL);
     }
 
     public static function minor(): self
     {
-        return new self(self::MINOR);
+        return self::create(self::MINOR);
     }
 
     public static function trivial(): self
     {
-        return new self(self::TRIVIAL);
+        return self::create(self::TRIVIAL);
     }
 
-    public function __toString(): string
+    public function jsonSerialize(): string
     {
-        return $this->value;
+        return (string) $this;
     }
 }
