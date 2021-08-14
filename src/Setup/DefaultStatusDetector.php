@@ -2,16 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Qameta\Allure\Internal;
+namespace Qameta\Allure\Setup;
 
 use Qameta\Allure\Model\Status;
 use Qameta\Allure\Model\StatusDetails;
-use Qameta\Allure\Setup\StatusDetectorInterface;
 use Throwable;
 
-/**
- * @internal
- */
 final class DefaultStatusDetector implements StatusDetectorInterface
 {
 

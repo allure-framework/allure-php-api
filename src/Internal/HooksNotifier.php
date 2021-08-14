@@ -50,7 +50,7 @@ use function array_values;
 
 final class HooksNotifier implements HooksNotifierInterface
 {
-    use LoggerTrait;
+    use LoggerAwareTrait;
 
     /**
      * @var list<LifecycleHookInterface>

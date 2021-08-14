@@ -4,7 +4,7 @@ namespace Qameta\Allure\Io;
 
 use JsonException;
 use Psr\Log\LoggerInterface;
-use Qameta\Allure\Internal\LoggerTrait;
+use Qameta\Allure\Internal\LoggerAwareTrait;
 use Qameta\Allure\Io\Exception\DirectoryNotCreatedException;
 use Qameta\Allure\Io\Exception\DirectoryNotResolvedException;
 use Qameta\Allure\Io\Exception\InvalidDirectoryException;
@@ -35,7 +35,7 @@ use const DIRECTORY_SEPARATOR;
  */
 class FileSystemResultsWriter implements ResultsWriterInterface
 {
-    use LoggerTrait;
+    use LoggerAwareTrait;
 
     private const FILE_EXTENSION = '.json';
 
@@ -230,6 +230,10 @@ class FileSystemResultsWriter implements ResultsWriterInterface
         $isCreated = @mkdir($this->outputDirectory, 0777, true);
         if (!$isCreated) {
             $error = error_get_last();
+            if (!$this->shouldCreateOutputDirectory()) {
+                // Output directory was successfully created by another thread.
+                return;
+            }
             throw new DirectoryNotCreatedException(
                 $this->outputDirectory,
                 $error['message'] ?? null,

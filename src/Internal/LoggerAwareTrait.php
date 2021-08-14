@@ -10,7 +10,7 @@ use Throwable;
 /**
  * @internal
  */
-trait LoggerTrait
+trait LoggerAwareTrait
 {
 
     private LoggerInterface $logger;

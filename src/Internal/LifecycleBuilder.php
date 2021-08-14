@@ -15,6 +15,7 @@ use Qameta\Allure\Io\ResultsWriterInterface;
 use Qameta\Allure\Io\SystemClock;
 use Qameta\Allure\Model\ResultFactory;
 use Qameta\Allure\Model\ResultFactoryInterface;
+use Qameta\Allure\Setup\DefaultStatusDetector;
 use Qameta\Allure\Setup\LifecycleBuilderInterface;
 use Qameta\Allure\Setup\StatusDetectorInterface;
 use Ramsey\Uuid\UuidFactory;

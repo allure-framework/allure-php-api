@@ -8,7 +8,7 @@ use Closure;
 use Qameta\Allure\Attribute\AttributeParser;
 use Qameta\Allure\Attribute\AttributeReader;
 use Qameta\Allure\Exception\OutputDirectorySetFailureException;
-use Qameta\Allure\Internal\DefaultStepContext;
+use Qameta\Allure\Internal\StepContext;
 use Qameta\Allure\Internal\LifecycleBuilder;
 use Qameta\Allure\Io\DataSourceFactory;
 use Qameta\Allure\Io\DataSourceInterface;
@@ -383,7 +383,7 @@ final class Allure
             );
 
             /** @var mixed $result */
-            $result = $callable(new DefaultStepContext($this->doGetLifecycle(), $step->getUuid()));
+            $result = $callable(new StepContext($this->doGetLifecycle(), $step->getUuid()));
             $this->doGetLifecycle()->updateStep(
                 fn (StepResult $step) => $step->setStatus(Status::passed()),
                 $step->getUuid(),
@@ -392,7 +392,7 @@ final class Allure
             $statusDetector = $this->getLifecycleConfig()->getStatusDetector();
             $this->doGetLifecycle()->updateStep(
                 fn (StepResult $step) => $step
-                    ->setStatus($statusDetector->getStatus($e) ?? Status::broken())
+                    ->setStatus($statusDetector->getStatus($e))
                     ->setStatusDetails($statusDetector->getStatusDetails($e)),
                 $step->getUuid(),
             );

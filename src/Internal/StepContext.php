@@ -13,7 +13,7 @@ use Qameta\Allure\StepContextInterface;
 /**
  * @internal
  */
-final class DefaultStepContext implements StepContextInterface
+final class StepContext implements StepContextInterface
 {
 
     public function __construct(

@@ -7,8 +7,10 @@ use Qameta\Allure\Exception\ActiveContainerNotFoundException;
 use Qameta\Allure\Exception\ActiveExecutionContextNotFoundException;
 use Qameta\Allure\Exception\ActiveStepNotFoundException;
 use Qameta\Allure\Exception\ActiveTestNotFoundException;
+use Qameta\Allure\Internal\ThreadContext;
+use Qameta\Allure\Internal\ThreadContextInterface;
 use Qameta\Allure\Internal\HooksNotifierInterface;
-use Qameta\Allure\Internal\LoggerTrait;
+use Qameta\Allure\Internal\LoggerAwareTrait;
 use Qameta\Allure\Internal\ResultStorageInterface;
 use Qameta\Allure\Io\ClockInterface;
 use Qameta\Allure\Io\DataSourceInterface;
@@ -22,17 +24,11 @@ use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\Model\TestResult;
 use Throwable;
 
-use function array_key_last;
-use function array_pop;
-
 final class AllureLifecycle implements AllureLifecycleInterface
 {
-    use LoggerTrait;
+    use LoggerAwareTrait;
 
-    /**
-     * @var list<string>
-     */
-    private array $executionContexts = [];
+    private ThreadContextInterface $threadContext;
 
     private ?string $container = null;
 
@@ -44,6 +40,12 @@ final class AllureLifecycle implements AllureLifecycleInterface
         private ResultStorageInterface $storage,
     ) {
         $this->logger = $logger;
+        $this->threadContext = new ThreadContext();
+    }
+
+    public function switchThread(?string $thread): void
+    {
+        $this->threadContext->switchThread($thread);
     }
 
     public function startContainer(ContainerResult $container): void
@@ -199,7 +201,10 @@ final class AllureLifecycle implements AllureLifecycleInterface
                 ->setStage(Stage::running())
                 ->setStart($this->clock->now()),
         );
-        $this->executionContexts = [$fixture->getUuid()];
+        $this
+            ->threadContext
+            ->reset()
+            ->push($fixture->getUuid());
     }
 
     public function updateFixture(callable $update, ?string $uuid = null): ?string
@@ -239,7 +244,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
                 ->setStage(Stage::finished())
                 ->setStop($this->clock->now());
             $this->storage->unset($fixture->getUuid());
-            $this->executionContexts = [];
+            $this->threadContext->reset();
         } catch (Throwable $e) {
             $this->logException('Fixture (UUID: {uuid}) not stopped', $e, ['uuid' => $fixture->getUuid()]);
         }
@@ -250,16 +255,12 @@ final class AllureLifecycle implements AllureLifecycleInterface
 
     public function getCurrentTest(): ?string
     {
-        return $this->executionContexts[0] ?? null;
+        return $this->threadContext->getCurrentTest();
     }
 
     public function getCurrentStep(): ?string
     {
-        $top = array_key_last($this->executionContexts);
-
-        return isset($top) && $top > 0
-            ? $this->executionContexts[$top] ?? null
-            : null;
+        return $this->threadContext->getCurrentStep();
     }
 
     public function getCurrentTestOrStep(): ?string
@@ -302,12 +303,13 @@ final class AllureLifecycle implements AllureLifecycleInterface
         }
         $this->notifier->beforeTestStart($test);
         try {
-            $this->executionContexts = [
-                $test
-                    ->setStage(Stage::running())
-                    ->setStart($this->clock->now())
-                    ->getUuid(),
-            ];
+            $test
+                ->setStage(Stage::running())
+                ->setStart($this->clock->now());
+            $this
+                ->threadContext
+                ->reset()
+                ->push($test->getUuid());
         } catch (Throwable $e) {
             $this->logException('Test (UUID: {uuid}) not started', $e, ['uuid' => $test->getUuid()]);
         }
@@ -350,7 +352,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
             $test
                 ->setStage(Stage::finished())
                 ->setStop($this->clock->now());
-            $this->executionContexts = [];
+            $this->threadContext->reset();
         } catch (Throwable $e) {
             $this->logException('Test (UUID: {uuid}) not stopped', $e, ['uuid' => $test->getUuid()]);
         }
@@ -409,7 +411,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
                         ->setStage(Stage::running())
                         ->setStart($this->clock->now()),
                 );
-            $this->executionContexts[] = $step->getUuid();
+            $this->threadContext->push($step->getUuid());
         } catch (Throwable $e) {
             $this->logException(
                 'Step (UUID: {uuid}) not started (parent UUID: {parentUuid})',
@@ -488,7 +490,7 @@ final class AllureLifecycle implements AllureLifecycleInterface
                 ->setStage(Stage::finished())
                 ->setStop($this->clock->now());
             $this->storage->unset($step->getUuid());
-            array_pop($this->executionContexts);
+            $this->threadContext->pop();
         } catch (Throwable $e) {
             $this->logException('Step (UUID: {uuid}) not stopped', $e, ['uuid' => $step->getUuid()]);
         }
