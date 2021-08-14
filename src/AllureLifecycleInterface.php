@@ -14,6 +14,8 @@ use Qameta\Allure\Model\TestResult;
 interface AllureLifecycleInterface
 {
 
+    public function switchThread(?string $thread): void;
+
     public function startContainer(ContainerResult $container): void;
 
     public function updateContainer(callable $update, ?string $uuid = null): ?string;
