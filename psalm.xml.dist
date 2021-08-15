@@ -9,8 +9,6 @@
         <directory name="test"/>
         <ignoreFiles>
             <directory name="vendor"/>
-            <directory name="src/Yandex"/>
-            <directory name="test/Yandex"/>
         </ignoreFiles>
     </projectFiles>
     <plugins>
