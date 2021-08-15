@@ -3,11 +3,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
         colors="true"
-        defaultTestSuite="Allure PHP API Tests">
+        defaultTestSuite="unit">
     <testsuites>
-        <testsuite name="Allure PHP API Tests">
+        <testsuite name="unit">
             <directory>test/</directory>
-            <directory>test/Yandex/Allure/Adapter/</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
