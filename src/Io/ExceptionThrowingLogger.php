@@ -11,7 +11,6 @@ use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionClassConstant;
 use RuntimeException;
-use Stringable;
 
 use function array_flip;
 use function array_map;
@@ -54,7 +53,7 @@ final class ExceptionThrowingLogger implements LoggerInterface
         );
     }
 
-    public function log(mixed $level, Stringable|string $message, array $context = []): void
+    public function log(mixed $level, $message, array $context = []): void
     {
         $this->delegate->log($level, $message, $context);
         if ($this->shouldThrowException($level)) {

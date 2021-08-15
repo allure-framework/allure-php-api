@@ -30,7 +30,7 @@
     "php": "^8",
     "ext-json": "*",
     "doctrine/annotations": "^1.12",
-    "psr/log": "^1 || ^2 || ^3",
+    "psr/log": "^1",
     "ramsey/uuid": "^3 || ^4"
   },
   "require-dev": {
