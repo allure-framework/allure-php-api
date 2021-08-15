@@ -15,8 +15,10 @@ class Parameter extends AbstractParameter
         string $name,
         ?string $value,
         ?bool $excluded = null,
+        // @codingStandardsIgnoreStart
         #[ExpectedValues(flagsFromClass: ParameterMode::class)]
         ?string $mode = null,
+        // @codingStandardsIgnoreEnd
     ) {
         parent::__construct($name, $value, $excluded, $mode);
     }

@@ -27,6 +27,9 @@ class Parameter implements LegacyAnnotationInterface
      */
     public string $value;
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     public string $kind = ParameterKind::ARGUMENT;
 
     public function convert(): QametaParameter

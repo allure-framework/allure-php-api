@@ -10,7 +10,7 @@ namespace Yandex\Allure\Adapter\Model;
  */
 final class ParameterKind
 {
-    const ARGUMENT = 'argument';
-    const SYSTEM_PROPERTY = 'system-property';
-    const ENVIRONMENT_VARIABLE = 'environment-variable';
+    public const ARGUMENT = 'argument';
+    public const SYSTEM_PROPERTY = 'system-property';
+    public const ENVIRONMENT_VARIABLE = 'environment-variable';
 }

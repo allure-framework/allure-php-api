@@ -14,6 +14,7 @@ use RuntimeException;
 use Stringable;
 
 use function array_flip;
+use function array_map;
 use function array_values;
 use function is_string;
 
@@ -21,6 +22,9 @@ final class ExceptionThrowingLogger implements LoggerInterface
 {
     use LoggerTrait;
 
+    /**
+     * @var array<string, int>
+     */
     private array $logLevels;
 
     private LoggerInterface $delegate;
@@ -33,13 +37,19 @@ final class ExceptionThrowingLogger implements LoggerInterface
         $this->logLevels = $this->setupLogLevels();
     }
 
+    /**
+     * @return array<string, int>
+     */
     private function setupLogLevels(): array
     {
         $logLevelsRef = new ReflectionClass(LogLevel::class);
 
         return array_flip(
-            array_values(
-                $logLevelsRef->getConstants(ReflectionClassConstant::IS_PUBLIC),
+            array_map(
+                fn (mixed $value): string => (string) $value,
+                array_values(
+                    $logLevelsRef->getConstants(ReflectionClassConstant::IS_PUBLIC),
+                ),
             ),
         );
     }
@@ -48,7 +58,7 @@ final class ExceptionThrowingLogger implements LoggerInterface
     {
         $this->delegate->log($level, $message, $context);
         if ($this->shouldThrowException($level)) {
-            throw new RuntimeException($message);
+            throw new RuntimeException((string) $message);
         }
     }
 

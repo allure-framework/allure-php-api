@@ -14,7 +14,7 @@ abstract class AbstractEnum implements Stringable
      */
     private static array $instances = [];
 
-    private function __construct(private string $value)
+    final protected function __construct(private string $value)
     {
     }
 
