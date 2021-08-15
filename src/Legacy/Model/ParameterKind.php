@@ -4,7 +4,9 @@ namespace Yandex\Allure\Adapter\Model;
 
 /**
  * Parameter kind
- * @package Yandex\Allure\Adapter\Model
+ *
+ * @deprecated Used only with legacy annotation {@see \Yandex\Allure\Adapter\Annotation\Parameter} and ignored by
+ *      this implementation.
  */
 final class ParameterKind
 {
