@@ -7,7 +7,7 @@ In order to use this API you simply need to add the following to **composer.json
 {
     "require": {
         "php": "^8",
-        "allure-framework/allure-php-api": "^2"
+        "allure-framework/allure-php-commons": "^2"
     }
 }
 ```
