@@ -1,6 +1,6 @@
 # Allure PHP API
 
-[![Build](https://github.com/allure-framework/allure-php-commons/actions/workflows/build.yml/badge.svg)](https://github.com/allure-framework/allure-php-commons/actions/workflows/build.yml)
+[![Build](https://github.com/allure-framework/allure-php-api/actions/workflows/build.yml/badge.svg)](https://github.com/allure-framework/allure-php-api/actions/workflows/build.yml)
 
 This repository contains PHP API for Allure framework. The main idea is to reuse this API when creating adapters for different test frameworks.
 
