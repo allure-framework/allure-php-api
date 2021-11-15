@@ -254,7 +254,24 @@ class TestSuite implements \Serializable, Entity
      */
     public function unserialize($serialized)
     {
-        return $this->getSerializer()->deserialize($serialized, 'Yandex\Allure\Adapter\Model\TestSuite', 'xml');
+        return $this->getSerializer()->deserialize($serialized, \Yandex\Allure\Adapter\Model\TestSuite::class, 'xml');
+    }
+    
+    /**
+    +     * @return string
+    +     */
+    public function __serialize()
+    {
+        return $this->getSerializer()->serialize($this, 'xml');
+    }
+    
+    /**
+    +     * @param string $serialized
+    +     * @return mixed
+    +     */
+    public function __unserialize($serialized)
+    {
+        return $this->getSerializer()->deserialize($serialized, \Yandex\Allure\Adapter\Model\TestSuite::class, 'xml');
     }
 
     /**
