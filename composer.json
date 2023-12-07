@@ -1,8 +1,8 @@
 {
-    "name": "allure-framework/allure-php-api",
-    "keywords":["php", "report", "allure", "api"],
+    "name": "allure-framework/allure-php-API",
+    "keywords":["PHP", "report", "allure", "API"],
     "description": "Allure PHP commons",
-    "homepage": "http://allure.qatools.ru/",
+    "homepage": "https://allurereport.org/",
     "license": "Apache-2.0",
     "authors": [
         {
