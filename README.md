@@ -1,4 +1,6 @@
-# Allure PHP API
+# Allure PHP API (maintenance)
+
+This project is in Maintenance mode. The new version of PHP API is available https://github.com/allure-framework/allure-php-commons2 .
 
 [![Build](https://github.com/allure-framework/allure-php-api/actions/workflows/build.yml/badge.svg)](https://github.com/allure-framework/allure-php-api/actions/workflows/build.yml)
 
