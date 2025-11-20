@@ -9,6 +9,9 @@ on:
       - 'master'
       - 'hotfix-*'
 
+permissions:
+  contents: read
+
 jobs:
   build71:
     runs-on: ubuntu-latest
