@@ -210,7 +210,7 @@ class TestSuite implements \Serializable, Entity
      */
     public function addTestCase(TestCase $testCase)
     {
-        $this->testCases[$testCase->getName()] = $testCase;
+        $this->testCases[$testCase->getName() ?? ''] = $testCase;
     }
 
     /**
@@ -220,7 +220,7 @@ class TestSuite implements \Serializable, Entity
      */
     public function getTestCase($name)
     {
-        return $this->testCases[$name];
+        return $this->testCases[$name ?? ''];
     }
 
     /**
