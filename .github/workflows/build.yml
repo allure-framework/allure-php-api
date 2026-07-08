@@ -13,36 +13,70 @@ permissions:
   contents: read
 
 jobs:
-  build73:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["7.3", "7.4", "8.0"]
     steps:
       - uses: actions/checkout@v6
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.3'
+          php-version: ${{ matrix.php-version }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20.x'
+      - name: Normalize ALLURE_MATRIX_ENV
+        run: |
+          raw_value="ubuntu-php-${{ matrix.php-version }}"
+          value="$raw_value"
+          value="${value//./_}"
+          value="${value//\*/x}"
+          echo "ALLURE_MATRIX_ENV=${value}" >> "$GITHUB_ENV"
+          echo "ALLURE_TEST_DUMP_NAME=allure-results-${value}" >> "$GITHUB_ENV"
       - name: Install
         run: composer update
       - name: Test
-        run: composer test
-  build74:
+        run: |
+          npx -y allure@3 run --config ./allurerc.mjs --rerun 2 --environment="${{ env.ALLURE_MATRIX_ENV }}" --dump="${{ env.ALLURE_TEST_DUMP_NAME }}" -- \
+          composer test
+      - name: Upload report
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.ALLURE_TEST_DUMP_NAME }}
+          path: ./${{ env.ALLURE_TEST_DUMP_NAME }}.zip
+          retention-days: 1
+  report:
+    needs: [build]
+    name: Build Allure report
     runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    env:
+      ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+      ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
+      ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v6
-      - uses: shivammathur/setup-php@v2
+      - uses: actions/setup-node@v6
         with:
-          php-version: '7.4'
-      - name: Install
-        run: composer update
-      - name: Test
-        run: composer test
-  build80:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: shivammathur/setup-php@v2
+          node-version: '20.x'
+      - name: Download Allure dumps
+        uses: actions/download-artifact@v8
+        continue-on-error: true
         with:
-          php-version: '8.0'
-      - name: Install
-        run: composer update
-      - name: Test
-        run: composer test
+          pattern: allure-results-*
+          path: ./
+          merge-multiple: true
+      - name: Generate Allure report
+        run: npx -y allure@3 generate --config ./allurerc.mjs --dump="allure-results-*.zip" --output=./out/allure-report
+      - name: Post Allure summary
+        if: ${{ always() && !cancelled() && contains(fromJSON('["success","failure"]'), needs.build.result) }}
+        uses: allure-framework/allure-action@v0
+        with:
+          report-directory: ./out/allure-report
+          github-token: ${{ secrets.GITHUB_TOKEN }}
