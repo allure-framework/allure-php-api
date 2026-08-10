@@ -2,7 +2,6 @@
 
 namespace Yandex\Allure\Adapter;
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Exporter\Exception;
@@ -63,10 +62,6 @@ class XMLValidationTest extends TestCase
 
     private function generateXML($tmpDir)
     {
-        AnnotationRegistry::registerAutoloadNamespace(
-            'JMS\Serializer\Annotation',
-            __DIR__ . "/../../../../vendor/jms/serializer/src"
-        );
         Model\Provider::setOutputDirectory($tmpDir);
         Allure::setDefaultLifecycle();
         $testSuiteStartedEvent = new TestSuiteStartedEvent(TEST_SUITE_NAME);

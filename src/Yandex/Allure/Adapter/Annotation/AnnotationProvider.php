@@ -3,7 +3,6 @@
 namespace Yandex\Allure\Adapter\Annotation;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\IndexedReader;
 
 class AnnotationProvider
@@ -49,7 +48,6 @@ class AnnotationProvider
     private static function getIndexedReader()
     {
         if (!isset(self::$indexedReader)) {
-            self::registerAnnotationNamespaces();
             self::$indexedReader = new IndexedReader(self::getAnnotationReader());
         }
 
@@ -62,16 +60,10 @@ class AnnotationProvider
     private static function getAnnotationReader()
     {
         if (!isset(self::$annotationReader)) {
-            self::registerAnnotationNamespaces();
             self::$annotationReader = new AnnotationReader();
         }
 
         return self::$annotationReader;
-    }
-
-    public static function registerAnnotationNamespaces()
-    {
-        AnnotationRegistry::registerUniqueLoader('class_exists');
     }
 
     /**

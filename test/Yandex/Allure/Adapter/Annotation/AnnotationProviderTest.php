@@ -3,7 +3,6 @@
 namespace Yandex\Allure\Adapter\Annotation;
 
 use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use PHPUnit\Framework\TestCase;
 
 class AnnotationProviderTest extends TestCase
@@ -11,11 +10,6 @@ class AnnotationProviderTest extends TestCase
     private const TYPE_CLASS = 'class';
     private const TYPE_METHOD = 'method';
     private const METHOD_NAME = 'methodWithAnnotations';
-
-    public static function setUpBeforeClass(): void
-    {
-        AnnotationRegistry::registerFile(__DIR__ . '/Fixtures/TestAnnotation.php');
-    }
 
     protected function tearDown(): void
     {
