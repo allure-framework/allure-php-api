@@ -21,7 +21,7 @@ jobs:
         php-version: ["7.3", "7.4", "8.0"]
     steps:
       - uses: actions/checkout@v6
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@2.37.2
         with:
           php-version: ${{ matrix.php-version }}
       - uses: actions/setup-node@v6
