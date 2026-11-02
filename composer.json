@@ -19,7 +19,7 @@
         "php": ">=7.3",
         "jms/serializer": "^1 | ^2 | ^3",
         "ramsey/uuid": "^3 | ^4",
-        "symfony/mime": "^5.4.52 || ^6.4.40 || ^7.4.12",
+        "symfony/mime": "^8.1.10",
         "doctrine/annotations": "^1.2.7"
     },
     "require-dev": {
